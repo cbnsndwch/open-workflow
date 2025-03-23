@@ -9,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { WorkflowGraph } from '@/lib/workflow/types';
 import { executeWorkflow } from '@/lib/workflow/executor';
 import { toast } from 'sonner';
+import { ArrowRightFromLine, Expand } from 'lucide-react';
 
 const exampleWorkflow: WorkflowGraph = {
   "nodes": [
@@ -343,6 +344,7 @@ const Index = () => {
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [selectedWorkflow, setSelectedWorkflow] = useState<string>('simple');
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [fullscreenEdit, setFullscreenEdit] = useState<boolean>(false);
   
   useEffect(() => {
     if (selectedWorkflow === 'simple') {
@@ -422,6 +424,16 @@ const Index = () => {
     }
   };
   
+  if (fullscreenEdit) {
+    return (
+      <WorkflowEditor
+        initialWorkflow={activeWorkflow}
+        onChange={handleWorkflowChange}
+        fullscreen={true}
+      />
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 px-6 py-10">
       <div className="max-w-6xl mx-auto">
@@ -474,9 +486,20 @@ const Index = () => {
                   </Button>
                 </div>
                 
+                {editMode && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full flex items-center justify-center"
+                    onClick={() => setFullscreenEdit(true)}
+                  >
+                    <Expand className="mr-2 h-4 w-4" />
+                    <span>Fullscreen Editor</span>
+                  </Button>
+                )}
+                
                 <Button 
                   onClick={executeActiveWorkflow} 
-                  disabled={isExecuting}
+                  disabled={isExecuting || editMode}
                   className="w-full"
                 >
                   {isExecuting ? 'Executing...' : 'Execute Workflow'}

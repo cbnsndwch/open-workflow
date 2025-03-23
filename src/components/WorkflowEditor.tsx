@@ -18,12 +18,14 @@ interface WorkflowEditorProps {
   initialWorkflow?: WorkflowGraph;
   onChange?: (workflow: WorkflowGraph) => void;
   className?: string;
+  fullscreen?: boolean;
 }
 
 const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
   initialWorkflow,
   onChange,
   className,
+  fullscreen = false,
 }) => {
   const [workflowJson, setWorkflowJson] = useState<string>('');
   const [validationMessage, setValidationMessage] = useState<string>('');
@@ -106,7 +108,7 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
   };
   
   return (
-    <div className={`workflow-editor ${className || ''}`}>
+    <div className={`workflow-editor ${fullscreen ? 'fixed inset-0 z-50 p-6 bg-background' : ''} ${className || ''}`}>
       <div className="workflow-editor-header flex justify-between items-center">
         <h3 className="text-lg font-medium">Workflow Editor</h3>
         <div className={`workflow-badge ${isValid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -120,13 +122,13 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
           <TabsTrigger value="json">JSON</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="visual" className="min-h-[400px]">
+        <TabsContent value="visual" className={`${fullscreen ? 'h-[calc(100vh-12rem)]' : 'min-h-[400px]'}`}>
           {activeWorkflow && (
             <WorkflowVisualizer 
               workflow={activeWorkflow} 
               onWorkflowChange={handleWorkflowChange}
               readOnly={false}
-              className="h-[500px]"
+              className={fullscreen ? 'h-full' : 'h-[500px]'}
             />
           )}
         </TabsContent>
@@ -162,6 +164,18 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
       {validationMessage && (
         <div className={`mt-4 p-3 rounded-md text-sm ${isValid ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
           {validationMessage}
+        </div>
+      )}
+      
+      {fullscreen && (
+        <div className="absolute bottom-4 right-4">
+          <Button 
+            variant="secondary" 
+            onClick={() => window.history.back()} 
+            size="sm"
+          >
+            Close Editor
+          </Button>
         </div>
       )}
     </div>

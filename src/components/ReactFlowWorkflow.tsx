@@ -15,9 +15,13 @@ import {
   EdgeTypes,
   Panel,
   MarkerType,
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { WorkflowGraph } from '@/lib/workflow/types';
+import { ArrowRightIcon, Plus } from 'lucide-react';
+import { Button } from './ui/button';
+import NodePalette from './NodePalette';
 
 // Custom node component
 const CustomNode = ({ data, selected }: { data: any; selected: boolean }) => {
@@ -42,6 +46,21 @@ const CustomNode = ({ data, selected }: { data: any; selected: boolean }) => {
     <div className={`px-4 py-2 rounded-lg shadow-sm border ${nodeColor} ${selected ? 'ring-2 ring-blue-500' : ''}`}>
       <div className="font-medium text-gray-800">{data.label}</div>
       <div className="text-xs text-gray-500 mt-1">{data.kind}</div>
+      {!data.isTerminal && (
+        <div className="absolute -bottom-3 right-1/2 translate-x-1/2 z-10">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="h-6 w-6 rounded-full bg-white"
+            onClick={(e) => {
+              e.stopPropagation();
+              data.onAddNode(data.id);
+            }}
+          >
+            <Plus className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -50,19 +69,74 @@ interface ReactFlowWorkflowProps {
   workflow: WorkflowGraph;
   onWorkflowChange?: (workflow: WorkflowGraph) => void;
   readOnly?: boolean;
+  className?: string;
 }
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 
+// Custom edge with arrow
+const CustomEdge = ({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  style = {},
+  markerEnd,
+  data,
+}: any) => {
+  const path = `M${sourceX},${sourceY} C${sourceX + 50},${sourceY} ${targetX - 50},${targetY} ${targetX},${targetY}`;
+  
+  return (
+    <>
+      <path
+        id={id}
+        style={{
+          ...style,
+          strokeWidth: 2,
+          stroke: '#b1b1b7',
+        }}
+        className="react-flow__edge-path"
+        d={path}
+        markerEnd={markerEnd}
+      />
+      {data?.label && (
+        <text>
+          <textPath
+            href={`#${id}`}
+            style={{ fontSize: '12px' }}
+            startOffset="50%"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="text-[10px] fill-gray-500"
+          >
+            {data.label}
+          </textPath>
+        </text>
+      )}
+    </>
+  );
+};
+
+const edgeTypes: EdgeTypes = {
+  custom: CustomEdge,
+};
+
 const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({ 
   workflow, 
   onWorkflowChange,
-  readOnly = false
+  readOnly = false,
+  className,
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [showNodePalette, setShowNodePalette] = useState(false);
+  const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<string | null>(null);
+  const { fitView } = useReactFlow();
 
   // Convert workflow to React Flow nodes and edges
   useEffect(() => {
@@ -77,12 +151,17 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
         label: node.name,
         kind: node.kind,
         version: node.version,
+        isTerminal: !Object.keys(workflow.edges).includes(node.name),
+        onAddNode: (nodeId: string) => {
+          setSelectedSourceNodeId(nodeId);
+          setShowNodePalette(true);
+        },
         ...node,
       },
     }));
 
-    // Apply simple layout - position nodes in a tree-like structure
-    const layoutNodes = applySimpleLayout(flowNodes, workflow);
+    // Apply layout
+    const layoutNodes = applyDagreLayout(flowNodes, workflow);
 
     // Create edges from workflow connections
     const flowEdges: Edge[] = [];
@@ -101,9 +180,14 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
             target: targetNode.id,
             sourceHandle: sourcePort,
             targetHandle: target.port,
-            label: `${sourcePort} → ${target.port}`,
+            type: 'custom',
+            data: {
+              label: `${sourcePort} → ${target.port}`,
+            },
             markerEnd: {
               type: MarkerType.ArrowClosed,
+              width: 20,
+              height: 20,
             },
             style: { stroke: '#b1b1b7' },
           });
@@ -113,46 +197,35 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
 
     setNodes(layoutNodes);
     setEdges(flowEdges);
-  }, [workflow, setNodes, setEdges]);
+    
+    // Fit view after a short delay to ensure all elements are rendered
+    setTimeout(() => {
+      fitView({ padding: 0.2 });
+    }, 100);
+  }, [workflow, setNodes, setEdges, fitView]);
 
-  // Simple layout function to position nodes in a tree-like structure
-  const applySimpleLayout = (nodes: Node[], workflow: WorkflowGraph) => {
-    // Find start nodes (nodes with no incoming edges)
-    const nodeIncomingEdges: Record<string, number> = {};
+  // Dagre layout for better node positioning
+  const applyDagreLayout = (nodes: Node[], workflow: WorkflowGraph) => {
+    // For simplicity, we'll use a structured tree layout
+    const levelMap = new Map<string, number>();
+    const horizontalSpacing = 250;
+    const verticalSpacing = 150;
     
-    // Count incoming edges for all nodes
-    Object.values(workflow.edges).forEach(connections => {
-      Object.values(connections).forEach(targets => {
-        targets.forEach(target => {
-          const targetNode = workflow.nodes.find(n => n.name === target.node);
-          if (targetNode) {
-            nodeIncomingEdges[targetNode.id] = (nodeIncomingEdges[targetNode.id] || 0) + 1;
-          }
-        });
-      });
-    });
-    
-    // Nodes with no incoming edges are start nodes
-    const startNodeIds = workflow.nodes
-      .filter(node => !nodeIncomingEdges[node.id])
-      .map(node => node.id);
-    
-    // Calculate node levels (distance from start nodes)
-    const nodeLevels: Record<string, number> = {};
-    const calculateLevels = (nodeId: string, level: number, visited: Set<string> = new Set()) => {
-      if (visited.has(nodeId)) return; // Prevent cycles
+    // Determine node levels (depth in the graph)
+    const calculateLevels = (nodeId: string, level: number, visited = new Set<string>()) => {
+      if (visited.has(nodeId)) return;
       visited.add(nodeId);
       
-      nodeLevels[nodeId] = Math.max(level, nodeLevels[nodeId] || 0);
+      const currentLevel = levelMap.get(nodeId) || 0;
+      levelMap.set(nodeId, Math.max(currentLevel, level));
       
-      // Find outgoing edges
       const node = workflow.nodes.find(n => n.id === nodeId);
       if (!node) return;
       
-      const connections = workflow.edges[node.name];
-      if (!connections) return;
+      const outgoingConnections = workflow.edges[node.name];
+      if (!outgoingConnections) return;
       
-      Object.values(connections).forEach(targets => {
+      Object.values(outgoingConnections).forEach(targets => {
         targets.forEach(target => {
           const targetNode = workflow.nodes.find(n => n.name === target.node);
           if (targetNode) {
@@ -162,30 +235,48 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
       });
     };
     
-    startNodeIds.forEach(id => calculateLevels(id, 0));
+    // Find start nodes (nodes with no incoming connections)
+    const nodeIncomingEdges = new Map<string, number>();
+    for (const sourceNodeName in workflow.edges) {
+      for (const sourcePort in workflow.edges[sourceNodeName]) {
+        for (const target of workflow.edges[sourceNodeName][sourcePort]) {
+          const targetNode = workflow.nodes.find(n => n.name === target.node);
+          if (targetNode) {
+            nodeIncomingEdges.set(targetNode.id, (nodeIncomingEdges.get(targetNode.id) || 0) + 1);
+          }
+        }
+      }
+    }
+    
+    const startNodeIds = workflow.nodes
+      .filter(node => !nodeIncomingEdges.has(node.id))
+      .map(node => node.id);
+    
+    // Calculate levels starting from root nodes
+    startNodeIds.forEach(nodeId => calculateLevels(nodeId, 0));
     
     // Group nodes by level
-    const nodesByLevel: Record<number, string[]> = {};
-    Object.entries(nodeLevels).forEach(([nodeId, level]) => {
-      if (!nodesByLevel[level]) nodesByLevel[level] = [];
-      nodesByLevel[level].push(nodeId);
+    const nodesByLevel = new Map<number, string[]>();
+    levelMap.forEach((level, nodeId) => {
+      if (!nodesByLevel.has(level)) {
+        nodesByLevel.set(level, []);
+      }
+      nodesByLevel.get(level)?.push(nodeId);
     });
     
     // Position nodes by level
-    const levelSpacing = 150;
-    const nodeSpacing = 200;
-    const maxNodesInLevel = Math.max(...Object.values(nodesByLevel).map(nodesInLevel => nodesInLevel.length));
-    
     return nodes.map(node => {
-      const level = nodeLevels[node.id] || 0;
-      const nodesInThisLevel = nodesByLevel[level] || [];
-      const nodeIndexInLevel = nodesInThisLevel.indexOf(node.id);
-      const nodesCount = nodesInThisLevel.length;
+      const level = levelMap.get(node.id) || 0;
+      const nodesInLevel = nodesByLevel.get(level) || [];
+      const indexInLevel = nodesInLevel.indexOf(node.id);
       
-      const x = level * levelSpacing;
-      const totalWidth = (nodesCount - 1) * nodeSpacing;
-      const startY = -totalWidth / 2;
-      const y = startY + nodeIndexInLevel * nodeSpacing;
+      // Calculate horizontal position
+      const x = level * horizontalSpacing;
+      
+      // Calculate vertical position
+      const totalLevelHeight = nodesInLevel.length * verticalSpacing;
+      const startY = -totalLevelHeight / 2 + verticalSpacing / 2;
+      const y = startY + indexInLevel * verticalSpacing;
       
       return {
         ...node,
@@ -201,8 +292,11 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
       // Add the new edge
       setEdges((eds) => addEdge({
         ...params,
+        type: 'custom',
         markerEnd: { type: MarkerType.ArrowClosed },
-        label: `${params.sourceHandle} → ${params.targetHandle}`,
+        data: {
+          label: `${params.sourceHandle} → ${params.targetHandle}`,
+        },
         style: { stroke: '#b1b1b7' },
       }, eds));
       
@@ -242,8 +336,49 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
     [workflow, onWorkflowChange, readOnly, setEdges]
   );
 
+  const handleAddNode = (nodeType: string, nodeName: string) => {
+    if (readOnly || !selectedSourceNodeId || !onWorkflowChange) return;
+    
+    // Create a new node
+    const newNodeId = `node-${Date.now()}`;
+    const newNode = {
+      id: newNodeId,
+      name: nodeName,
+      kind: nodeType,
+      version: "1.0.0",
+    };
+    
+    // Find source node
+    const sourceNode = workflow.nodes.find(n => n.id === selectedSourceNodeId);
+    if (!sourceNode) return;
+    
+    // Create a new connection
+    const newEdges = { ...workflow.edges };
+    if (!newEdges[sourceNode.name]) {
+      newEdges[sourceNode.name] = {};
+    }
+    if (!newEdges[sourceNode.name]["main"]) {
+      newEdges[sourceNode.name]["main"] = [];
+    }
+    
+    newEdges[sourceNode.name]["main"].push({
+      node: nodeName,
+      port: "main",
+      order: newEdges[sourceNode.name]["main"].length
+    });
+    
+    // Update workflow
+    onWorkflowChange({
+      nodes: [...workflow.nodes, newNode],
+      edges: newEdges
+    });
+    
+    setShowNodePalette(false);
+    setSelectedSourceNodeId(null);
+  };
+
   return (
-    <div className="w-full h-full bg-slate-50 rounded-xl border">
+    <div className={`w-full h-full relative ${className || ''}`}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -251,21 +386,34 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
         onEdgesChange={readOnly ? undefined : onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        fitView
+        edgeTypes={edgeTypes}
         minZoom={0.1}
         maxZoom={1.5}
+        fitView
         attributionPosition="bottom-right"
         className="rounded-xl"
       >
+        <Background gap={12} size={1} />
         <Controls />
         <MiniMap nodeStrokeWidth={3} zoomable pannable />
-        <Background gap={12} size={1} />
-        <Panel position="top-right" className="bg-white p-2 rounded shadow-md">
+        <Panel position="top-right" className="bg-white p-2 rounded shadow-md z-10">
           <div className="text-xs text-gray-500">
             {readOnly ? 'Read-only view' : 'Editing enabled'}
           </div>
         </Panel>
       </ReactFlow>
+      
+      {showNodePalette && (
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-20">
+          <NodePalette
+            onSelect={handleAddNode}
+            onClose={() => {
+              setShowNodePalette(false);
+              setSelectedSourceNodeId(null);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
