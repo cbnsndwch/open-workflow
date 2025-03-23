@@ -1,8 +1,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { WorkflowGraph } from '@/lib/workflow/types';
+import { WorkflowGraph, ValidationResult } from '@/lib/workflow/types';
 import { calculateLayout, LayoutResult } from '@/lib/workflow/visualization';
-import { validateWorkflow, ValidationResult } from '@/lib/workflow/validator';
+import { validateWorkflow } from '@/lib/workflow/validator';
 
 interface WorkflowVisualizerProps {
   workflow: WorkflowGraph;
