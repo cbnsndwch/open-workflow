@@ -1,3 +1,4 @@
+
 import { WorkflowGraph } from '../types';
 import { findStartNodes, findTerminalNodes } from '../traversal';
 import { LayoutResult, PositionedNode, PositionedEdge, VisualizationOptions } from './types';
@@ -51,8 +52,6 @@ export function calculateLayout(
   options: VisualizationOptions = {}
 ): LayoutResult {
   const {
-    width = 800,
-    height = 600,
     nodeWidth = 150,
     nodeHeight = 80,
     nodePadding = 40,
@@ -165,16 +164,16 @@ export function calculateLayout(
     }
   }
   
-  // Calculate total width and height
+  // Calculate total dimensions based on node positions and sizes
   const nodesPerLevelCount = Object.values(nodesPerLevel).map(nodes => nodes.length);
   const maxNodesPerLevel = Math.max(...nodesPerLevelCount, 1);
-  const width = maxNodesPerLevel * (nodeWidth + nodePadding) - nodePadding + 80;
-  const height = (maxLevel + 1) * levelSpacing + 80;
+  const calculatedWidth = maxNodesPerLevel * (nodeWidth + nodePadding) - nodePadding + 80;
+  const calculatedHeight = (maxLevel + 1) * levelSpacing + 80;
   
   return {
     nodes: positionedNodes,
     edges: positionedEdges,
-    width,
-    height,
+    width: calculatedWidth,
+    height: calculatedHeight,
   };
 }
