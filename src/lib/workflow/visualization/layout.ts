@@ -1,4 +1,3 @@
-
 import { WorkflowGraph } from '../types';
 import { findStartNodes, findTerminalNodes } from '../traversal';
 import { LayoutResult, PositionedNode, PositionedEdge, VisualizationOptions } from './types';
@@ -52,10 +51,12 @@ export function calculateLayout(
   options: VisualizationOptions = {}
 ): LayoutResult {
   const {
+    width = 800,
+    height = 600,
     nodeWidth = 150,
     nodeHeight = 80,
     nodePadding = 40,
-    levelSpacing = 180,
+    levelSpacing = 220,
   } = options;
   
   // Find start and terminal nodes

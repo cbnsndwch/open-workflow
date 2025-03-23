@@ -33,22 +33,33 @@ const CustomNode: React.FC<CustomNodeProps> = ({ data, selected }) => {
   const nodeColor = nodeTypeColors[data.kind] || nodeTypeColors.default;
   
   return (
-    <div className={`px-4 py-2 rounded-lg shadow-sm border ${nodeColor} ${selected ? 'ring-2 ring-blue-500' : ''}`}>
-      <div className="font-medium text-gray-800">{data.label}</div>
-      <div className="text-xs text-gray-500 mt-1">{data.kind}</div>
+    <div className="relative">
+      {/* Main node */}
+      <div className={`px-4 py-2 rounded-lg shadow-sm border ${nodeColor} ${selected ? 'ring-2 ring-blue-500' : ''}`}>
+        <div className="font-medium text-gray-800">{data.label}</div>
+        <div className="text-xs text-gray-500 mt-1">{data.kind}</div>
+      </div>
+      
+      {/* Connector line and add button for non-terminal nodes */}
       {!data.isTerminal && (
-        <div className="absolute -bottom-3 right-1/2 translate-x-1/2 z-10">
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="h-6 w-6 rounded-full bg-white"
-            onClick={(e) => {
-              e.stopPropagation();
-              data.onAddNode(data.id);
-            }}
-          >
-            <Plus className="h-3 w-3" />
-          </Button>
+        <div className="flex flex-col items-center">
+          {/* Vertical connector line */}
+          <div className="w-[2px] h-[30px] bg-gray-300 mt-1"></div>
+          
+          {/* Terminator with plus button */}
+          <div className="relative -mt-[1px]">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-6 w-6 rounded-full bg-white border-gray-300"
+              onClick={(e) => {
+                e.stopPropagation();
+                data.onAddNode(data.id);
+              }}
+            >
+              <Plus className="h-3 w-3" />
+            </Button>
+          </div>
         </div>
       )}
     </div>

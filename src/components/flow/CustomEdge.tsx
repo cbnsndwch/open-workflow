@@ -14,7 +14,11 @@ const CustomEdge: React.FC<EdgeProps> = ({
   markerEnd,
   data,
 }) => {
-  const path = `M${sourceX},${sourceY} C${sourceX + 50},${sourceY} ${targetX - 50},${targetY} ${targetX},${targetY}`;
+  // Adjust the source point to account for the connector line
+  // The actual connection should start from the end of the connector line
+  const adjustedSourceY = sourceY + 30; // Add the height of the connector line
+  
+  const path = `M${sourceX},${adjustedSourceY} C${sourceX},${adjustedSourceY + 50} ${targetX},${targetY - 50} ${targetX},${targetY}`;
   
   return (
     <>

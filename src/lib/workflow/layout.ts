@@ -1,4 +1,3 @@
-
 import { Node } from '@xyflow/react';
 import { WorkflowGraph } from './types';
 
@@ -6,7 +5,7 @@ export const applyDagreLayout = (nodes: Node[], workflow: WorkflowGraph) => {
   // For simplicity, we'll use a structured tree layout
   const levelMap = new Map<string, number>();
   const horizontalSpacing = 200;
-  const verticalSpacing = 150;
+  const verticalSpacing = 200; // Increased spacing to account for connector lines
   
   // Determine node levels (depth in the graph)
   const calculateLevels = (nodeId: string, level: number, visited = new Set<string>()) => {
