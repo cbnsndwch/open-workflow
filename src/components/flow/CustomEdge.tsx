@@ -39,7 +39,7 @@ const CustomEdge: React.FC<EdgeProps> = ({
             dominantBaseline="middle"
             className="text-[10px] fill-gray-500"
           >
-            {data.label}
+            {data.label as string}
           </textPath>
         </text>
       )}
