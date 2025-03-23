@@ -14,11 +14,15 @@ const CustomEdge: React.FC<EdgeProps> = ({
   markerEnd,
   data,
 }) => {
-  // Adjust the source point to account for the connector line
-  // The actual connection should start from the end of the connector line
-  const adjustedSourceY = sourceY + 30; // Add the height of the connector line
-  
-  const path = `M${sourceX},${adjustedSourceY} C${sourceX},${adjustedSourceY + 50} ${targetX},${targetY - 50} ${targetX},${targetY}`;
+  // For vertical layout, we need to create a path from source to target
+  const path = getBezierPath({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+  });
   
   return (
     <>

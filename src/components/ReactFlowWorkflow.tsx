@@ -90,22 +90,24 @@ const ReactFlowWorkflowInner: React.FC<ReactFlowWorkflowProps> = ({
           const targetNode = workflow.nodes.find(n => n.name === target.node);
           if (!targetNode) return;
 
+          // Create the edge with the proper type and style
           flowEdges.push({
             id: `${sourceNode.id}-${sourcePort}-${targetNode.id}-${target.port}`,
             source: sourceNode.id,
             target: targetNode.id,
+            type: 'custom',
             sourceHandle: sourcePort,
             targetHandle: target.port,
-            type: 'custom',
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 15,
+              height: 15,
+              color: '#b1b1b7',
+            },
+            style: { stroke: '#b1b1b7', strokeWidth: 2 },
             data: {
               label: `${sourcePort} → ${target.port}`,
             },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              width: 20,
-              height: 20,
-            },
-            style: { stroke: '#b1b1b7' },
           });
         });
       });
@@ -227,6 +229,12 @@ const ReactFlowWorkflowInner: React.FC<ReactFlowWorkflowProps> = ({
         fitView
         attributionPosition="bottom-right"
         className="rounded-xl"
+        defaultEdgeOptions={{
+          type: 'custom',
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+          },
+        }}
       >
         <Background gap={12} size={1} />
         <Controls />
