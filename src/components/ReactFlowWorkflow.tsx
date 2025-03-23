@@ -16,6 +16,7 @@ import {
   Panel,
   MarkerType,
   useReactFlow,
+  ReactFlowProvider,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { WorkflowGraph } from '@/lib/workflow/types';
@@ -40,7 +41,8 @@ const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 };
 
-const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({ 
+// Inner component that uses the React Flow hooks
+const ReactFlowWorkflowInner: React.FC<ReactFlowWorkflowProps> = ({ 
   workflow, 
   onWorkflowChange,
   readOnly = false,
@@ -211,7 +213,7 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
   };
 
   return (
-    <div className={`w-full h-full relative ${className || ''}`}>
+    <>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -244,6 +246,17 @@ const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = ({
         }}
         onAddNode={handleAddNode}
       />
+    </>
+  );
+};
+
+// Outer component that provides the ReactFlow context
+const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = (props) => {
+  return (
+    <div className={`w-full h-full relative ${props.className || ''}`}>
+      <ReactFlowProvider>
+        <ReactFlowWorkflowInner {...props} />
+      </ReactFlowProvider>
     </div>
   );
 };
