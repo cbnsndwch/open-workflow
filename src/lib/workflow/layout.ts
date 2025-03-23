@@ -6,7 +6,7 @@ export const applyDagreLayout = (nodes: Node[], workflow: WorkflowGraph) => {
   // For simplicity, we'll use a structured tree layout
   const levelMap = new Map<string, number>();
   const horizontalSpacing = 200;
-  const verticalSpacing = 220; // Increased spacing to account for connector lines
+  const verticalSpacing = 250; // Increased vertical spacing for better visibility of edges
   
   // Determine node levels (depth in the graph)
   const calculateLevels = (nodeId: string, level: number, visited = new Set<string>()) => {

@@ -17,7 +17,7 @@ const CustomEdge: React.FC<EdgeProps> = ({
   // For vertical layout, we need to create a path from source to target
   // getBezierPath returns an array with [path, labelX, labelY, offsetX, offsetY]
   // We only need the first element which is the SVG path string
-  const [pathString] = getBezierPath({
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -36,7 +36,7 @@ const CustomEdge: React.FC<EdgeProps> = ({
           stroke: '#b1b1b7',
         }}
         className="react-flow__edge-path"
-        d={pathString}
+        d={edgePath}
         markerEnd={markerEnd}
       />
       {data?.label && (

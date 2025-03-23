@@ -113,6 +113,10 @@ const ReactFlowWorkflowInner: React.FC<ReactFlowWorkflowProps> = ({
       });
     });
 
+    // Log for debugging
+    console.log("Setting nodes:", layoutNodes);
+    console.log("Setting edges:", flowEdges);
+
     setNodes(layoutNodes);
     setEdges(flowEdges);
     

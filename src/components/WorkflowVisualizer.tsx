@@ -34,6 +34,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
         workflow={workflow} 
         onWorkflowChange={onWorkflowChange}
         readOnly={readOnly}
+        className="w-full h-full"
       />
       
       {validation && !validation.valid && (
