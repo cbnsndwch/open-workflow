@@ -55,7 +55,7 @@ export function calculateLayout(
     nodeWidth = 150,
     nodeHeight = 80,
     nodePadding = 40,
-    levelHeight = 180,
+    levelSpacing = 180,
   } = options;
   
   // Find start and terminal nodes
@@ -81,7 +81,7 @@ export function calculateLayout(
   const levels = Object.keys(nodesPerLevel).map(Number);
   const maxLevel = levels.length > 0 ? Math.max(...levels) : 0;
   
-  // Calculate node positions
+  // Calculate node positions - vertical layout (top to bottom)
   const positionedNodes: PositionedNode[] = [];
   const nodePositions: Record<string, { x: number; y: number }> = {};
   
@@ -92,7 +92,7 @@ export function calculateLayout(
     
     nodesInLevel.forEach((node, index) => {
       const x = startX + index * (nodeWidth + nodePadding);
-      const y = level * levelHeight;
+      const y = level * levelSpacing;  // Position based on level (vertical layout)
       
       nodePositions[node.name] = { x, y };
       
@@ -109,7 +109,7 @@ export function calculateLayout(
     });
   }
   
-  // Calculate edge paths
+  // Calculate edge paths (now for vertical flow)
   const positionedEdges: PositionedEdge[] = [];
   let edgeId = 0;
   
@@ -129,26 +129,24 @@ export function calculateLayout(
         
         if (!targetNode) return;
         
-        // Calculate edge path
+        // Calculate edge path - updated for vertical flow
         const sourceX = sourceNode.x;
-        const sourceY = sourceNode.y + sourceNode.height / 2;
+        const sourceY = sourceNode.y + sourceNode.height / 2; // Bottom of source
         const targetX = targetNode.x;
-        const targetY = targetNode.y - targetNode.height / 2;
+        const targetY = targetNode.y - targetNode.height / 2; // Top of target
         
         // Use a bezier curve for the edge
-        const sourceBottom = sourceY;
-        const targetTop = targetY;
-        const controlPointY = (sourceBottom + targetTop) / 2;
+        const controlPointY = (sourceY + targetY) / 2;
         
         const controlPoints = [
-          { x: sourceX, y: sourceBottom },
+          { x: sourceX, y: sourceY },
           { x: sourceX, y: controlPointY },
           { x: targetX, y: controlPointY },
-          { x: targetX, y: targetTop },
+          { x: targetX, y: targetY },
         ];
         
         // Create SVG path
-        const path = `M ${sourceX} ${sourceBottom} C ${sourceX} ${controlPointY}, ${targetX} ${controlPointY}, ${targetX} ${targetTop}`;
+        const path = `M ${sourceX} ${sourceY} C ${sourceX} ${controlPointY}, ${targetX} ${controlPointY}, ${targetX} ${targetY}`;
         
         positionedEdges.push({
           id: `edge-${edgeId++}`,
@@ -170,7 +168,7 @@ export function calculateLayout(
   const nodesPerLevelCount = Object.values(nodesPerLevel).map(nodes => nodes.length);
   const maxNodesPerLevel = Math.max(...nodesPerLevelCount, 1);
   const width = maxNodesPerLevel * (nodeWidth + nodePadding) - nodePadding + 80;
-  const height = (maxLevel + 1) * levelHeight + 80;
+  const height = (maxLevel + 1) * levelSpacing + 80;
   
   return {
     nodes: positionedNodes,

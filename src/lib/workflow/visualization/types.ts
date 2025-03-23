@@ -10,7 +10,7 @@ export interface VisualizationOptions {
   nodeWidth?: number;
   nodeHeight?: number;
   nodePadding?: number;
-  levelHeight?: number;
+  levelSpacing?: number;
 }
 
 /**

@@ -5,7 +5,7 @@ import { WorkflowGraph } from './types';
 export const applyDagreLayout = (nodes: Node[], workflow: WorkflowGraph) => {
   // For simplicity, we'll use a structured tree layout
   const levelMap = new Map<string, number>();
-  const horizontalSpacing = 250;
+  const horizontalSpacing = 200;
   const verticalSpacing = 150;
   
   // Determine node levels (depth in the graph)
@@ -61,19 +61,19 @@ export const applyDagreLayout = (nodes: Node[], workflow: WorkflowGraph) => {
     nodesByLevel.get(level)?.push(nodeId);
   });
   
-  // Position nodes by level
+  // Position nodes by level - vertical layout (top to bottom)
   return nodes.map(node => {
     const level = levelMap.get(node.id) || 0;
     const nodesInLevel = nodesByLevel.get(level) || [];
     const indexInLevel = nodesInLevel.indexOf(node.id);
     
-    // Calculate horizontal position
-    const x = level * horizontalSpacing;
+    // Calculate vertical position (y-axis is now the primary direction)
+    const y = level * verticalSpacing;
     
-    // Calculate vertical position
-    const totalLevelHeight = nodesInLevel.length * verticalSpacing;
-    const startY = -totalLevelHeight / 2 + verticalSpacing / 2;
-    const y = startY + indexInLevel * verticalSpacing;
+    // Calculate horizontal position
+    const totalLevelWidth = nodesInLevel.length * horizontalSpacing;
+    const startX = -totalLevelWidth / 2 + horizontalSpacing / 2;
+    const x = startX + indexInLevel * horizontalSpacing;
     
     return {
       ...node,
