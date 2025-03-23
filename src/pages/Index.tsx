@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import WorkflowVisualizer from '@/components/WorkflowVisualizer';
 import WorkflowEditor from '@/components/WorkflowEditor';
@@ -8,10 +7,9 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { WorkflowGraph } from '@/lib/workflow/types';
-import { executeWorkflow, defaultNodeExecutor } from '@/lib/workflow/executor';
+import { executeWorkflow } from '@/lib/workflow/executor';
 import { toast } from 'sonner';
 
-// Example workflow from the specification
 const exampleWorkflow: WorkflowGraph = {
   "nodes": [
     {
@@ -266,7 +264,6 @@ const exampleWorkflow: WorkflowGraph = {
   }
 };
 
-// Simple workflow
 const simpleWorkflow: WorkflowGraph = {
   "nodes": [
     {
@@ -345,9 +342,9 @@ const Index = () => {
   const [executionNodes, setExecutionNodes] = useState<string[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [selectedWorkflow, setSelectedWorkflow] = useState<string>('simple');
+  const [editMode, setEditMode] = useState<boolean>(false);
   
   useEffect(() => {
-    // Set the workflow based on selection
     if (selectedWorkflow === 'simple') {
       setActiveWorkflow(simpleWorkflow);
     } else {
@@ -356,7 +353,6 @@ const Index = () => {
   }, [selectedWorkflow]);
   
   const handleNodeClick = (nodeId: string) => {
-    // Find the node by ID
     const node = activeWorkflow.nodes.find(n => n.id === nodeId);
     if (node) {
       toast.info(`Node: ${node.name}`, {
@@ -379,10 +375,8 @@ const Index = () => {
     try {
       const result = await executeWorkflow(activeWorkflow, {
         nodeExecutors: {
-          // Example custom node executor
           'core:http_request': async (node, inputs, context) => {
             console.log(`Executing HTTP request node: ${node.name}`);
-            // Simulate an HTTP request
             await new Promise(resolve => setTimeout(resolve, 500));
             return {
               outputs: {
@@ -463,6 +457,23 @@ const Index = () => {
                   </Button>
                 </div>
                 
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant={!editMode ? 'default' : 'outline'}
+                    onClick={() => setEditMode(false)}
+                    className="flex-1"
+                  >
+                    View Mode
+                  </Button>
+                  <Button
+                    variant={editMode ? 'default' : 'outline'}
+                    onClick={() => setEditMode(true)}
+                    className="flex-1"
+                  >
+                    Edit Mode
+                  </Button>
+                </div>
+                
                 <Button 
                   onClick={executeActiveWorkflow} 
                   disabled={isExecuting}
@@ -496,109 +507,18 @@ const Index = () => {
               <CardDescription>Explore and interact with the workflow</CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="visualizer" value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-4">
-                  <TabsTrigger value="visualizer">Visualizer</TabsTrigger>
-                  <TabsTrigger value="editor">Editor</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="visualizer" className="mt-0">
-                  <WorkflowVisualizer 
-                    workflow={activeWorkflow} 
-                    onNodeClick={handleNodeClick}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="editor" className="mt-0">
-                  <WorkflowEditor 
-                    initialWorkflow={activeWorkflow}
-                    onChange={handleWorkflowChange}
-                  />
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Graph Validation</CardTitle>
-              <CardDescription>Ensure workflow integrity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  Node structure validation
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  Edge connectivity checks
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  Cycle detection
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  Port compatibility validation
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-          
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Traversal Utilities</CardTitle>
-              <CardDescription>Navigate complex workflows</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                  Find start and terminal nodes
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                  Get all possible execution paths
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                  Topological sorting
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                  Advanced cycle handling
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-          
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Execution Engine</CardTitle>
-              <CardDescription>Run workflows with ease</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                  Async node execution
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                  Custom node executors
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                  Execution lifecycle hooks
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                  State management during execution
-                </li>
-              </ul>
+              {editMode ? (
+                <WorkflowEditor 
+                  initialWorkflow={activeWorkflow}
+                  onChange={handleWorkflowChange}
+                />
+              ) : (
+                <WorkflowVisualizer 
+                  workflow={activeWorkflow} 
+                  onNodeClick={handleNodeClick}
+                  className="h-[600px]"
+                />
+              )}
             </CardContent>
           </Card>
         </div>

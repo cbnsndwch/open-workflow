@@ -10,7 +10,9 @@ import {
   findTerminalNodes,
 } from '@/lib/workflow';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
+import WorkflowVisualizer from './WorkflowVisualizer';
 
 interface WorkflowEditorProps {
   initialWorkflow?: WorkflowGraph;
@@ -26,9 +28,12 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
   const [workflowJson, setWorkflowJson] = useState<string>('');
   const [validationMessage, setValidationMessage] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [activeWorkflow, setActiveWorkflow] = useState<WorkflowGraph | undefined>(initialWorkflow);
+  const [activeTab, setActiveTab] = useState('visual');
   
   useEffect(() => {
     if (initialWorkflow) {
+      setActiveWorkflow(initialWorkflow);
       setWorkflowJson(serializeWorkflowToJson(initialWorkflow));
       validateWorkflowJson(serializeWorkflowToJson(initialWorkflow));
     }
@@ -55,6 +60,8 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
         setValidationMessage(
           `Workflow is valid. ${startNodes.length} start node(s), ${terminalNodes.length} terminal node(s), ${nodeCount} reachable node(s).`
         );
+        
+        setActiveWorkflow(workflow);
         
         if (onChange) {
           onChange(workflow);
@@ -89,38 +96,68 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
     }
   };
   
+  const handleWorkflowChange = (updatedWorkflow: WorkflowGraph) => {
+    setActiveWorkflow(updatedWorkflow);
+    setWorkflowJson(serializeWorkflowToJson(updatedWorkflow));
+    
+    if (onChange) {
+      onChange(updatedWorkflow);
+    }
+  };
+  
   return (
     <div className={`workflow-editor ${className || ''}`}>
       <div className="workflow-editor-header flex justify-between items-center">
         <h3 className="text-lg font-medium">Workflow Editor</h3>
-        <div className="workflow-badge bg-gray-100 text-gray-800">
+        <div className={`workflow-badge ${isValid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
           {isValid ? 'Valid' : 'Invalid'}
         </div>
       </div>
       
-      <textarea
-        className="code-editor font-mono w-full"
-        value={workflowJson}
-        onChange={handleJsonChange}
-        placeholder="Paste workflow JSON here..."
-      />
-      
-      <div className="workflow-controls">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={handleValidate}
-        >
-          Validate
-        </Button>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={formatJson}
-        >
-          Format
-        </Button>
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+        <TabsList className="mb-4">
+          <TabsTrigger value="visual">Visual</TabsTrigger>
+          <TabsTrigger value="json">JSON</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="visual" className="min-h-[400px]">
+          {activeWorkflow && (
+            <WorkflowVisualizer 
+              workflow={activeWorkflow} 
+              onWorkflowChange={handleWorkflowChange}
+              readOnly={false}
+              className="h-[500px]"
+            />
+          )}
+        </TabsContent>
+        
+        <TabsContent value="json">
+          <textarea
+            className="code-editor font-mono w-full"
+            value={workflowJson}
+            onChange={handleJsonChange}
+            placeholder="Paste workflow JSON here..."
+          />
+          
+          <div className="workflow-controls mt-4">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleValidate}
+            >
+              Validate
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={formatJson}
+              className="ml-2"
+            >
+              Format
+            </Button>
+          </div>
+        </TabsContent>
+      </Tabs>
       
       {validationMessage && (
         <div className={`mt-4 p-3 rounded-md text-sm ${isValid ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
