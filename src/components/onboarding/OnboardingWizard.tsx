@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Badge } from '@/components/ui/badge';
 
 interface OnboardingWizardProps {
   open: boolean;
@@ -106,9 +107,10 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
               onClick={() => setSelectedOption('guided')}
             >
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center text-muted-foreground">
+                <CardTitle className="flex items-center">
                   <ArrowRight className="w-5 h-5 mr-2" />
-                  Guided Setup (Soon)
+                  Guided Setup
+                  <Badge variant="secondary" className="ml-2 text-xs">Soon</Badge>
                 </CardTitle>
                 <CardDescription>Answer a few questions to create your workflow</CardDescription>
               </CardHeader>
