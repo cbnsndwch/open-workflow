@@ -37,7 +37,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
       />
       
       {validation && !validation.valid && (
-        <div className="absolute bottom-4 right-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg max-w-md text-sm shadow-md">
+        <div className="absolute bottom-4 right-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg max-w-md text-sm shadow-md z-10">
           <h4 className="font-medium mb-1">Validation Errors</h4>
           <ul className="list-disc pl-5 text-xs">
             {validation.errors.map((error, index) => (
@@ -48,7 +48,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
       )}
       
       {validation && validation.warnings.length > 0 && (
-        <div className="absolute bottom-4 left-4 bg-yellow-50 border border-yellow-200 text-yellow-700 p-3 rounded-lg max-w-md text-sm shadow-md">
+        <div className="absolute bottom-4 left-4 bg-yellow-50 border border-yellow-200 text-yellow-700 p-3 rounded-lg max-w-md text-sm shadow-md z-10">
           <h4 className="font-medium mb-1">Workflow Warnings</h4>
           <ul className="list-disc pl-5 text-xs">
             {validation.warnings.map((warning, index) => (

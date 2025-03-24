@@ -9,29 +9,32 @@ interface WorkflowPanelProps {
   editMode: boolean;
   onNodeClick: (nodeId: string) => void;
   onWorkflowChange: (workflow: WorkflowGraph) => void;
+  className?: string;
 }
 
 const WorkflowPanel: React.FC<WorkflowPanelProps> = ({ 
   workflow, 
   editMode,
   onNodeClick, 
-  onWorkflowChange 
+  onWorkflowChange,
+  className
 }) => {
   return (
-    <>
+    <div className={className}>
       {editMode ? (
         <WorkflowEditor 
           initialWorkflow={workflow}
           onChange={onWorkflowChange}
+          className="h-full"
         />
       ) : (
         <WorkflowVisualizer 
           workflow={workflow} 
           onNodeClick={onNodeClick}
-          className="h-[600px]"
+          className="h-full"
         />
       )}
-    </>
+    </div>
   );
 };
 

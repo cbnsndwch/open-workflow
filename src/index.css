@@ -91,7 +91,7 @@
 }
 
 .workflow-container {
-  @apply w-full h-[600px] bg-[#fcfcfc] rounded-xl relative overflow-hidden border border-[rgba(0,0,0,0.05)];
+  @apply w-full h-full bg-[#fcfcfc] relative overflow-hidden border border-[rgba(0,0,0,0.05)];
   box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
 
