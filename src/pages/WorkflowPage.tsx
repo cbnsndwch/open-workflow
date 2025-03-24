@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
@@ -6,7 +5,6 @@ import { useWorkflowContext } from '@/contexts/workflow';
 import WorkflowEditor from '@/components/WorkflowEditor';
 import { Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 const WorkflowPage = () => {
   const {
     id
@@ -29,7 +27,6 @@ const WorkflowPage = () => {
   if (user && !currentAccount) {
     return <Navigate to="/accounts" replace />;
   }
-  
   if (!workflow) {
     return <div className="h-full flex items-center justify-center">
         <div className="text-center">
@@ -41,45 +38,16 @@ const WorkflowPage = () => {
         </div>
       </div>;
   }
-  
-  return (
-    <div className="h-full flex flex-col">
+  return <div className="h-full flex flex-col">
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto">
         <WorkflowEditor initialWorkflow={workflow} onChange={updatedWorkflow => {
-          console.log("Workflow updated:", updatedWorkflow);
-        }} />
+        console.log("Workflow updated:", updatedWorkflow);
+      }} />
       </div>
       
       {/* Bottom Controls */}
-      <div className="flex justify-between items-center p-2 border-t border-border/30 bg-background">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={() => console.log("Zoom out")}>
-            <span className="text-xl">-</span>
-          </Button>
-          <div className="w-24 h-1 bg-gray-200 rounded-full"></div>
-          <Button variant="outline" size="icon" onClick={() => console.log("Zoom in")}>
-            <span className="text-xl">+</span>
-          </Button>
-          <span className="ml-2 text-sm text-muted-foreground">50%</span>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={() => console.log("Fullscreen")}>
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 2H13V13H2V2Z" stroke="currentColor" strokeWidth="1" fill="none" />
-              <path d="M5.5 5.5V1.5H1.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <path d="M9.5 5.5V1.5H13.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <path d="M5.5 9.5V13.5H1.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <path d="M9.5 9.5V13.5H13.5" stroke="currentColor" strokeWidth="1" fill="none" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="icon" onClick={() => console.log("Reset view")}>
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
+      
+    </div>;
 };
-
 export default WorkflowPage;
