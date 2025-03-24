@@ -25,7 +25,7 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
   const { currentAccount } = useAuth();
-  const { createWorkflow } = useWorkflowContext();
+  const { addWorkflow } = useWorkflowContext();
   const [isAdding, setIsAdding] = React.useState(false);
   const isMobile = useIsMobile();
 
@@ -52,8 +52,8 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
         lastModified: new Date().toISOString(),
       };
       
-      console.log("Calling createWorkflow with:", JSON.stringify(newWorkflow));
-      await createWorkflow(newWorkflow);
+      console.log("Calling addWorkflow with:", JSON.stringify(newWorkflow));
+      await addWorkflow(newWorkflow);
       toast.success('Sample workflow added to your account');
       onClose();
     } catch (error) {
