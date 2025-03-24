@@ -1,13 +1,21 @@
+
 import { WorkflowGraph } from '@/lib/workflow/types';
 import { WorkflowWithMeta } from './types';
 import { getWorkflowsForAccount } from '@/mocks/data/workflows';
+
+/**
+ * Helper function to check if MSW is ready
+ */
+const isMswReady = () => {
+  return Boolean(window.__MSW_REGISTRATION__ || window.__MSW_INITIALIZED__);
+};
 
 /**
  * Fetches workflows for a specific account
  */
 export const fetchWorkflowsForAccount = async (accountId: string): Promise<WorkflowWithMeta[]> => {
   // Check if we should use MSW or fallback mode
-  const useFallbackMode = !Boolean((window as any).__MSW_REGISTRATION__);
+  const useFallbackMode = !isMswReady();
   
   if (useFallbackMode) {
     console.log("Using fallback mode for workflows");
@@ -44,7 +52,7 @@ export const updateWorkflowApi = async (
   accountId: string
 ): Promise<WorkflowWithMeta | undefined> => {
   // Check if we should use fallback mode
-  const useFallbackMode = !Boolean((window as any).__MSW_REGISTRATION__);
+  const useFallbackMode = !isMswReady();
   
   // Skip API call if in fallback mode
   if (useFallbackMode) {
@@ -87,7 +95,7 @@ export const createWorkflowApi = async (
   accountId: string
 ): Promise<WorkflowWithMeta | undefined> => {
   // Check if we should use fallback mode
-  const useFallbackMode = !Boolean((window as any).__MSW_REGISTRATION__);
+  const useFallbackMode = !isMswReady();
   
   if (useFallbackMode) {
     console.log("Using fallback mode, adding workflow locally");

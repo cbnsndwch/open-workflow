@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { initMsw, isMswReady } from "./mocks/browser";
-import Routes from "./routes"; // Import the default export for the Routes component
+import Routes from "./routes";
 import { useEffect, useState } from "react";
 
 // Create QueryClient with retry options
@@ -18,53 +18,58 @@ const queryClient = new QueryClient({
   },
 });
 
+// Initialize MSW outside of the component
+// This ensures MSW is set up before any rendering happens
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Initializing MSW at startup...');
+  initMsw().then(success => {
+    if (success) {
+      console.log('MSW initialized successfully at startup');
+      // Store MSW status in window for immediate access
+      window.__MSW_INITIALIZED__ = true;
+    } else {
+      console.warn('MSW failed to initialize at startup');
+      window.__MSW_INITIALIZED__ = false;
+    }
+  });
+}
+
 const App = () => {
   const [isMockReady, setIsMockReady] = useState(process.env.NODE_ENV === 'production');
-  const [initializationAttempted, setInitializationAttempted] = useState(false);
 
   useEffect(() => {
-    // Initialize MSW in development only
-    if (process.env.NODE_ENV !== 'production' && !initializationAttempted) {
-      setInitializationAttempted(true);
-      
-      initMsw().then((success) => {
-        if (success) {
-          console.log("MSW initialization successful");
-          setIsMockReady(true);
-        } else {
-          // If initialization fails, we'll still render the app
-          // but provide fallback handlers in the AuthContext
-          console.warn('MSW initialization failed, using fallback mode');
-          setIsMockReady(true);
-        }
-      });
+    // For production, we're already set
+    if (process.env.NODE_ENV === 'production') {
+      return;
     }
-  }, [initializationAttempted]);
-
-  // Extra check to make sure MSW is actually ready
-  useEffect(() => {
-    if (!isMockReady && process.env.NODE_ENV !== 'production') {
-      const checkInterval = setInterval(() => {
-        if (isMswReady()) {
-          console.log('MSW is now confirmed ready');
-          setIsMockReady(true);
-          clearInterval(checkInterval);
-        }
-      }, 100);
-      
-      // Don't check forever
-      const timeout = setTimeout(() => {
-        console.warn('MSW readiness check timed out, proceeding anyway');
+    
+    // Check if MSW is already initialized
+    if (window.__MSW_INITIALIZED__) {
+      setIsMockReady(true);
+      return;
+    }
+    
+    // Check MSW readiness until it's ready or times out
+    const checkInterval = setInterval(() => {
+      if (isMswReady() || window.__MSW_INITIALIZED__) {
+        console.log('MSW is now confirmed ready');
         setIsMockReady(true);
         clearInterval(checkInterval);
-      }, 3000);
-      
-      return () => {
-        clearInterval(checkInterval);
-        clearTimeout(timeout);
-      };
-    }
-  }, [isMockReady]);
+      }
+    }, 100);
+    
+    // Timeout after 3 seconds
+    const timeout = setTimeout(() => {
+      console.warn('MSW readiness check timed out, proceeding in fallback mode');
+      setIsMockReady(true);
+      clearInterval(checkInterval);
+    }, 3000);
+    
+    return () => {
+      clearInterval(checkInterval);
+      clearTimeout(timeout);
+    };
+  }, []);
 
   if (!isMockReady) {
     return (

@@ -1,11 +1,15 @@
 
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isMswReady } from '../../mocks/browser';
 import { AuthContextType, AuthData, Account } from './types';
 import { checkExistingSession, loginUser, logoutUser } from './authService';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Helper function to check if MSW is ready
+const isMswReady = () => {
+  return Boolean(window.__MSW_REGISTRATION__ || window.__MSW_INITIALIZED__);
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Get the navigate function
