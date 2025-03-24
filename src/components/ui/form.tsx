@@ -104,7 +104,7 @@ const useFormField = () => {
     }
   }
   
-  // Safe field state access
+  // Safe field state access with explicit type matching to fix the error
   let fieldState = {
     invalid: false,
     isDirty: false,
@@ -114,7 +114,16 @@ const useFormField = () => {
   
   try {
     if (fieldContext.name && typeof getFieldState === 'function') {
-      fieldState = getFieldState(fieldContext.name, formState)
+      // Get the field state from react-hook-form
+      const hookFormFieldState = getFieldState(fieldContext.name, formState)
+      
+      // Map properties ensuring error is always defined (even if undefined)
+      fieldState = {
+        invalid: hookFormFieldState.invalid,
+        isDirty: hookFormFieldState.isDirty,
+        isTouched: hookFormFieldState.isTouched,
+        error: hookFormFieldState.error || undefined
+      }
     }
   } catch (error) {
     console.error("Error getting field state:", error)
