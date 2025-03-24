@@ -14,7 +14,7 @@ const Features = () => {
       icon: Bot,
       title: "AI Integration",
       description: "Connect with any AI or language model",
-      content: "Seamless integration with LLMs via all the MCP servers you're already using"
+      content: "Seamless integration with all the MCP servers you're already using"
     },
     {
       icon: Workflow,
