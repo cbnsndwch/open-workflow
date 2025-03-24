@@ -25,15 +25,7 @@ export const workflowHandlers = [
     
     const workflows = getWorkflowsForAccount(accountId);
     
-    return new HttpResponse(
-      JSON.stringify(workflows),
-      { 
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    return HttpResponse.json(workflows, { status: 200 });
   }),
   
   // Create a new workflow
@@ -42,18 +34,11 @@ export const workflowHandlers = [
     
     try {
       const requestData = await request.json();
+      console.log("MSW: Workflow data received:", requestData);
       
       // Ensure the data has the required accountId property
       if (!requestData || typeof requestData !== 'object' || !('accountId' in requestData)) {
-        return new HttpResponse(
-          JSON.stringify({ error: 'Account ID is required' }),
-          { 
-            status: 400,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
+        return HttpResponse.json({ error: 'Account ID is required' }, { status: 400 });
       }
       
       // Create a properly typed WorkflowWithMeta object
@@ -69,27 +54,12 @@ export const workflowHandlers = [
       
       // Add the workflow to the account
       const newWorkflow = addWorkflowToAccount(workflow);
+      console.log("MSW: Workflow added successfully:", newWorkflow);
       
-      return new HttpResponse(
-        JSON.stringify(newWorkflow),
-        { 
-          status: 201,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      return HttpResponse.json(newWorkflow, { status: 201 });
     } catch (error) {
       console.error('Error in workflow create handler:', error);
-      return new HttpResponse(
-        JSON.stringify({ error: 'Invalid request' }),
-        { 
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      return HttpResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
   }),
   
@@ -101,26 +71,10 @@ export const workflowHandlers = [
     const workflow = findWorkflowById(id as string);
     
     if (!workflow) {
-      return new HttpResponse(
-        JSON.stringify({ error: 'Workflow not found' }),
-        { 
-          status: 404,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      return HttpResponse.json({ error: 'Workflow not found' }, { status: 404 });
     }
     
-    return new HttpResponse(
-      JSON.stringify(workflow),
-      { 
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    return HttpResponse.json(workflow, { status: 200 });
   }),
   
   // Update a workflow
@@ -132,15 +86,7 @@ export const workflowHandlers = [
       const workflow = findWorkflowById(id as string);
       
       if (!workflow) {
-        return new HttpResponse(
-          JSON.stringify({ error: 'Workflow not found' }),
-          { 
-            status: 404,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
+        return HttpResponse.json({ error: 'Workflow not found' }, { status: 404 });
       }
       
       const updatedData = await request.json();
@@ -154,26 +100,10 @@ export const workflowHandlers = [
         lastModified: new Date().toISOString()
       };
       
-      return new HttpResponse(
-        JSON.stringify(updatedWorkflow),
-        { 
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      return HttpResponse.json(updatedWorkflow, { status: 200 });
     } catch (error) {
       console.error('Error in workflow update handler:', error);
-      return new HttpResponse(
-        JSON.stringify({ error: 'Invalid request' }),
-        { 
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      return HttpResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
   }),
 ];

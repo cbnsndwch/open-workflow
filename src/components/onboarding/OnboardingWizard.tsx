@@ -30,7 +30,10 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
   const isMobile = useIsMobile();
 
   const handleAddSampleWorkflow = async () => {
-    if (!currentAccount) return;
+    if (!currentAccount) {
+      toast.error('Please select an account first');
+      return;
+    }
     
     // Prevent multiple clicks
     if (isAdding) return;
@@ -49,12 +52,13 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
         lastModified: new Date().toISOString(),
       };
       
+      console.log("Calling addWorkflow with:", JSON.stringify(newWorkflow));
       await addWorkflow(newWorkflow);
       toast.success('Sample workflow added to your account');
       onClose();
     } catch (error) {
       console.error('Failed to add sample workflow:', error);
-      toast.error('Failed to add sample workflow');
+      toast.error('Failed to add sample workflow. Please try again later.');
     } finally {
       setIsAdding(false);
     }
@@ -67,7 +71,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()} modal={false}>
+    <Dialog open={open} onOpenChange={(open) => !open && onClose()} modal={true}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl">Welcome to OpenWorkflow</DialogTitle>
