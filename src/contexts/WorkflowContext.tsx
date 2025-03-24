@@ -6,13 +6,20 @@ import { useWorkflowExecution } from '@/hooks/useWorkflowExecution';
 
 interface WorkflowContextType {
   workflows: WorkflowWithMeta[];
-  getWorkflowById: (id: string) => WorkflowGraph | undefined;
+  getWorkflowById: (id: string) => WorkflowWithMeta | undefined;
   updateWorkflow: (id: string, workflow: WorkflowGraph) => void;
   executeWorkflow: (id: string) => void;
+  executeActiveWorkflow: () => void;
   isExecuting: boolean;
   executionStatus: string;
   executionNodes: Record<string, { status: string, result?: Record<string, any>, error?: string }>;
   executionNodeIds: string[];
+  activeWorkflow: WorkflowWithMeta | undefined;
+  editMode: boolean;
+  setEditMode: (edit: boolean) => void;
+  fullscreenEdit: boolean;
+  setFullscreenEdit: (fullscreen: boolean) => void;
+  handleWorkflowChange: (workflow: WorkflowGraph) => void;
 }
 
 export interface WorkflowWithMeta extends WorkflowGraph {
@@ -42,6 +49,8 @@ const sampleWorkflows: WorkflowWithMeta[] = [
 export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [workflows, setWorkflows] = useState<WorkflowWithMeta[]>(sampleWorkflows);
   const [activeWorkflowId, setActiveWorkflowId] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [fullscreenEdit, setFullscreenEdit] = useState<boolean>(false);
   
   const activeWorkflow = activeWorkflowId 
     ? workflows.find(w => w.id === activeWorkflowId) 
@@ -55,7 +64,7 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     executeActiveWorkflow
   } = useWorkflowExecution(activeWorkflow || workflows[0]);
   
-  const getWorkflowById = (id: string): WorkflowGraph | undefined => {
+  const getWorkflowById = (id: string): WorkflowWithMeta | undefined => {
     return workflows.find(w => w.id === id);
   };
   
@@ -77,6 +86,12 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, 0);
   };
 
+  const handleWorkflowChange = (updatedWorkflow: WorkflowGraph) => {
+    if (activeWorkflowId) {
+      updateWorkflow(activeWorkflowId, updatedWorkflow);
+    }
+  };
+
   return (
     <WorkflowContext.Provider
       value={{
@@ -84,10 +99,17 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         getWorkflowById,
         updateWorkflow,
         executeWorkflow,
+        executeActiveWorkflow,
         isExecuting,
         executionStatus,
         executionNodes,
-        executionNodeIds
+        executionNodeIds,
+        activeWorkflow,
+        editMode,
+        setEditMode,
+        fullscreenEdit,
+        setFullscreenEdit,
+        handleWorkflowChange
       }}
     >
       {children}

@@ -15,6 +15,8 @@ const Index = () => {
   } = useWorkflowContext();
   
   const handleNodeClick = (nodeId: string) => {
+    if (!activeWorkflow) return;
+    
     const node = activeWorkflow.nodes.find(n => n.id === nodeId);
     if (node) {
       toast.info(`Node: ${node.name}`, {
@@ -22,6 +24,10 @@ const Index = () => {
       });
     }
   };
+  
+  if (!activeWorkflow) {
+    return <div className="p-6">No active workflow selected.</div>;
+  }
   
   if (fullscreenEdit) {
     return (
