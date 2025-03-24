@@ -70,8 +70,9 @@ export default {
 					4: 'hsl(var(--chart-4))',
 					5: 'hsl(var(--chart-5))',
 				},
-				orange: {
-					DEFAULT: '#F97316', // The orange color from the screenshot
+				// Using the Tailwind v4 amber-500 color
+				amber: {
+					500: '#f59e0b',
 				}
 			},
 			borderRadius: {
