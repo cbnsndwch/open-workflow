@@ -21,6 +21,11 @@ export type AuthData = {
   accounts: Account[];
 };
 
+export type LoginRecord = {
+  timestamp: string;
+  email: string;
+};
+
 export interface AuthContextType {
   isLoading: boolean;
   user: User | null;

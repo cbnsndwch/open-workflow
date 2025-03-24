@@ -1,6 +1,38 @@
-
 import { toast } from 'sonner';
-import { AuthData, DEMO_AUTH_DATA } from './types';
+import { AuthData, DEMO_AUTH_DATA, LoginRecord } from './types';
+
+// Function to get login history from localStorage
+export const getLoginHistory = (userId: string): LoginRecord[] => {
+  try {
+    const historyStr = localStorage.getItem(`login_history_${userId}`);
+    if (historyStr) {
+      return JSON.parse(historyStr);
+    }
+  } catch (error) {
+    console.error('Error retrieving login history:', error);
+  }
+  return [];
+};
+
+// Function to add login record to localStorage
+export const addLoginRecord = (userId: string, email: string) => {
+  try {
+    const history = getLoginHistory(userId);
+    const newRecord: LoginRecord = {
+      timestamp: new Date().toISOString(),
+      email: email
+    };
+    
+    // Add the new record at the beginning of the array
+    history.unshift(newRecord);
+    
+    // Keep only the last 20 logins
+    const limitedHistory = history.slice(0, 20);
+    localStorage.setItem(`login_history_${userId}`, JSON.stringify(limitedHistory));
+  } catch (error) {
+    console.error('Error saving login history:', error);
+  }
+};
 
 export const checkExistingSession = async (useFallbackMode: boolean): Promise<AuthData | null> => {
   // First check localStorage
@@ -75,6 +107,9 @@ export const loginUser = async (
       const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
       if (demoData.user) {
         demoData.user.lastLogin = new Date().toISOString();
+        
+        // Add login record
+        addLoginRecord(demoData.user.id, demoData.user.email);
       }
       localStorage.setItem('auth', JSON.stringify(demoData));
       toast.success('Logged in with demo account');
@@ -106,6 +141,9 @@ export const loginUser = async (
       const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
       if (demoData.user) {
         demoData.user.lastLogin = new Date().toISOString();
+        
+        // Add login record
+        addLoginRecord(demoData.user.id, demoData.user.email);
       }
       localStorage.setItem('auth', JSON.stringify(demoData));
       toast.success('Logged in with demo account (fallback mode)');
@@ -136,6 +174,9 @@ export const loginUser = async (
     // Update lastLogin timestamp
     if (data.user) {
       data.user.lastLogin = new Date().toISOString();
+      
+      // Add login record
+      addLoginRecord(data.user.id, data.user.email);
     }
     
   } catch (e) {
@@ -148,6 +189,9 @@ export const loginUser = async (
       const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
       if (demoData.user) {
         demoData.user.lastLogin = new Date().toISOString();
+        
+        // Add login record
+        addLoginRecord(demoData.user.id, demoData.user.email);
       }
       localStorage.setItem('auth', JSON.stringify(demoData));
       toast.success('Logged in with demo account (JSON parsing failed)');

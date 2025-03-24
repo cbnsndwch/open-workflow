@@ -1,98 +1,59 @@
 
-import { createBrowserRouter, Navigate, LoaderFunctionArgs, redirect } from "react-router-dom";
-import { AppLayout } from "./components/layout/AppLayout";
-import WorkflowsPage from "./pages/WorkflowsPage";
-import WorkflowPage from "./pages/WorkflowPage";
-import LoginPage from "./pages/LoginPage";
-import NotFound from "./pages/NotFound";
-import AccountSelectPage from "./pages/AccountSelectPage";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { AuthProvider } from "./contexts/auth";
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './contexts/auth/AuthContext';
 
-// Auth check loader function
-export async function authLoader({ request }: LoaderFunctionArgs) {
-  // Check if user is authenticated
-  const authData = localStorage.getItem('auth');
-  
-  // If no auth data is found, redirect to login
-  if (!authData) {
-    // Get the current path to redirect back after login
-    const url = new URL(request.url);
-    const path = url.pathname;
-    
-    // Return a redirect with the current path as a search param
-    return redirect(`/login?redirectTo=${path}`);
-  }
-  
-  try {
-    // User is authenticated, return the parsed auth data with a standard structure
-    const parsedData = JSON.parse(authData);
-    return { 
-      user: parsedData.user || null,
-      accounts: parsedData.accounts || []
-    };
-  } catch (error) {
-    console.error("Error parsing auth data:", error);
-    localStorage.removeItem('auth'); // Clear invalid data
-    return redirect('/login');
-  }
-}
+import AppLayout from './components/layout/AppLayout';
+import LoginPage from './pages/LoginPage';
+import WorkflowsPage from './pages/WorkflowsPage';
+import WorkflowPage from './pages/WorkflowPage';
+import AccountSelectPage from './pages/AccountSelectPage';
+import NotFound from './pages/NotFound';
+import SettingsPage from './pages/SettingsPage';
 
-// Create a custom error component using ErrorBoundary
-const RouteErrorBoundary = () => <ErrorBoundary />;
-
-// Wrap each route with the AuthProvider
-const AuthRoute = ({ children }: { children: React.ReactNode }) => (
-  <AuthProvider>{children}</AuthProvider>
-);
-
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
-    path: "/",
-    element: <AuthRoute><AppLayout /></AuthRoute>,
-    errorElement: <RouteErrorBoundary />,
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/',
+    element: (
+      <AppLayout />
+    ),
     children: [
       {
-        // Root path redirects to workflows
-        index: true,
-        loader: authLoader,
-        element: <Navigate to="/workflows" replace />
+        path: '/',
+        element: <WorkflowsPage />,
       },
       {
-        path: "workflows",
-        loader: authLoader,
-        element: <WorkflowsPage />
+        path: '/workflows',
+        element: <WorkflowsPage />,
       },
       {
-        path: "workflow/:id",
-        loader: authLoader,
-        element: <WorkflowPage />
+        path: '/workflow/:id',
+        element: <WorkflowPage />,
       },
       {
-        path: "settings",
-        loader: authLoader,
-        element: <div className="p-6">Settings page coming soon</div>
+        path: '/account-select',
+        element: <AccountSelectPage />,
       },
       {
-        path: "help",
-        element: <div className="p-6">Help page coming soon</div>
-      }
-    ]
+        path: '/settings',
+        element: <SettingsPage />,
+      },
+      {
+        path: '*',
+        element: <NotFound />,
+      },
+    ],
   },
-  {
-    path: "/login",
-    element: <AuthRoute><LoginPage /></AuthRoute>,
-    errorElement: <RouteErrorBoundary />
-  },
-  {
-    path: "/account-select",
-    element: <AuthRoute><AccountSelectPage /></AuthRoute>,
-    loader: authLoader,
-    errorElement: <RouteErrorBoundary />
-  },
-  {
-    path: "*",
-    element: <NotFound />,
-    errorElement: <RouteErrorBoundary />
-  }
 ]);
+
+export default function Routes() {
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
+}
