@@ -10,58 +10,67 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { router } from "./routes";
 import { useEffect, useState } from "react";
 
-// Import the worker and the ready checker
-import { worker, isMswReady } from "./mocks/browser";
+// Import the MSW initialization function
+import { initMsw, isMswReady } from "./mocks/browser";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isMockReady, setIsMockReady] = useState(process.env.NODE_ENV === 'production');
+  const [initializationAttempted, setInitializationAttempted] = useState(false);
 
   useEffect(() => {
     // Initialize MSW in development only
-    if (process.env.NODE_ENV !== 'production') {
-      // Start the worker with explicit options
-      worker.start({ 
-        onUnhandledRequest: 'bypass',
-        // Wait until the mocks are ready before resolving
-        serviceWorker: {
-          url: '/mockServiceWorker.js',
-        }
-      })
-        .then(() => {
-          console.log('MSW Worker started successfully');
-          setIsMockReady(true);
-        })
-        .catch((error) => {
-          console.error('Failed to start MSW:', error);
-          // Fall back to allowing the app to run without MSW
-          setIsMockReady(true);
-        });
+    if (process.env.NODE_ENV !== 'production' && !initializationAttempted) {
+      setInitializationAttempted(true);
       
-      return () => {
-        worker.stop();
-      };
+      initMsw().then((success) => {
+        if (success) {
+          setIsMockReady(true);
+        } else {
+          // If initialization fails, we'll still render the app
+          // but provide fallback handlers in the AuthContext
+          console.warn('MSW initialization failed, using fallback mode');
+          setIsMockReady(true);
+        }
+      });
     }
-  }, []);
+  }, [initializationAttempted]);
 
-  // Check if MSW is actually ready
+  // Extra check to make sure MSW is actually ready
   useEffect(() => {
     if (!isMockReady && process.env.NODE_ENV !== 'production') {
       const checkInterval = setInterval(() => {
         if (isMswReady()) {
-          console.log('MSW is now ready');
+          console.log('MSW is now confirmed ready');
           setIsMockReady(true);
           clearInterval(checkInterval);
         }
       }, 100);
       
-      return () => clearInterval(checkInterval);
+      // Don't check forever
+      const timeout = setTimeout(() => {
+        console.warn('MSW readiness check timed out, proceeding anyway');
+        setIsMockReady(true);
+        clearInterval(checkInterval);
+      }, 3000);
+      
+      return () => {
+        clearInterval(checkInterval);
+        clearTimeout(timeout);
+      };
     }
   }, [isMockReady]);
 
   if (!isMockReady) {
-    return <div className="flex min-h-screen items-center justify-center">Initializing app...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-medium">Initializing app...</h2>
+          <p className="text-muted-foreground mt-2">Setting up mock API services</p>
+        </div>
+      </div>
+    );
   }
 
   return (

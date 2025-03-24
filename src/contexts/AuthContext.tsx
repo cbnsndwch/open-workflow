@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { isMswReady } from '../mocks/browser';
 
 type User = {
   id: string;
@@ -35,10 +36,26 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Demo data for fallback when MSW isn't working
+const DEMO_AUTH_DATA = {
+  user: {
+    id: '1',
+    email: 'admin@example.com',
+    name: 'Admin User',
+    role: 'admin',
+    username: 'admin'
+  },
+  organizations: [
+    { id: '1', name: 'Acme Corp', slug: 'acme-corp', ownerId: '1', role: 'owner' },
+    { id: '2', name: 'Widgets Inc', slug: 'widgets-inc', ownerId: '1', role: 'owner' }
+  ]
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [authData, setAuthData] = useState<AuthData>({ user: null, organizations: [] });
   const [currentOrganization, setCurrentOrganization] = useState<Organization | null>(null);
+  const [useFallbackMode, setUseFallbackMode] = useState(false);
 
   // Set current organization when auth changes
   useEffect(() => {
@@ -68,7 +85,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        // Then check API - using the mock service worker API
+        // Check if MSW is ready
+        const mswActive = isMswReady();
+        
+        if (!mswActive) {
+          console.log("MSW not active, using fallback mode");
+          setUseFallbackMode(true);
+          setIsLoading(false);
+          return;
+        }
+
+        // Then check API
         try {
           const response = await fetch('/api/auth/me', {
             headers: {
@@ -78,6 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           if (!response.ok) {
             console.log('Auth check failed with status:', response.status);
+            setIsLoading(false);
             return;
           }
           
@@ -95,12 +123,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           } else {
             console.log('Not a JSON response from auth check, skipping');
+            // If MSW is supposedly active but returns HTML, something is wrong
+            // Go to fallback mode
+            setUseFallbackMode(true);
           }
         } catch (error) {
           console.error('API auth check failed:', error);
+          setUseFallbackMode(true);
         }
       } catch (error) {
         console.error('Auth check failed:', error);
+        setUseFallbackMode(true);
       } finally {
         setIsLoading(false);
       }
@@ -112,6 +145,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     try {
+      // If we're in fallback mode, use demo data directly
+      if (useFallbackMode) {
+        console.log('Using fallback mode for login');
+        // Check if demo credentials match
+        if ((identifier === 'admin' && password === 'password') || 
+            (identifier === 'user' && password === 'password')) {
+          setAuthData(DEMO_AUTH_DATA);
+          localStorage.setItem('auth', JSON.stringify(DEMO_AUTH_DATA));
+          toast.success('Logged in with demo account');
+          setIsLoading(false);
+          return;
+        } else {
+          throw new Error('Invalid credentials');
+        }
+      }
+
       // Using the mock service worker API with explicit content-type
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -121,6 +170,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         body: JSON.stringify({ identifier, password }),
       });
+
+      // Check if response is HTML by looking at content-type
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('text/html')) {
+        console.warn('Received HTML response, switching to fallback mode');
+        setUseFallbackMode(true);
+        
+        // Retry with fallback mode
+        if ((identifier === 'admin' && password === 'password') || 
+            (identifier === 'user' && password === 'password')) {
+          setAuthData(DEMO_AUTH_DATA);
+          localStorage.setItem('auth', JSON.stringify(DEMO_AUTH_DATA));
+          toast.success('Logged in with demo account (fallback mode)');
+          setIsLoading(false);
+          return;
+        } else {
+          throw new Error('Invalid credentials');
+        }
+      }
 
       // First check if we got a successful response
       if (!response.ok) {
@@ -135,39 +203,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
       
-      // Check content type before parsing
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        console.warn('Expected JSON response but got:', contentType);
+      // Parse the response as JSON
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.error('Error parsing login response as JSON', e);
         
-        // For development fallback - if MSW isn't working, let's use demo data
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('Using demo data as fallback for login');
-          const demoUser = {
-            user: {
-              id: '1',
-              email: 'admin@example.com',
-              name: 'Admin User',
-              role: 'admin',
-              username: 'admin'
-            },
-            organizations: [
-              { id: '1', name: 'Acme Corp', slug: 'acme-corp', ownerId: '1', role: 'owner' },
-              { id: '2', name: 'Widgets Inc', slug: 'widgets-inc', ownerId: '1', role: 'owner' }
-            ]
-          };
-          
-          setAuthData(demoUser);
-          localStorage.setItem('auth', JSON.stringify(demoUser));
-          toast.success('Logged in with demo account (MSW fallback)');
-          setIsLoading(false);
+        // Switch to fallback mode if JSON parsing fails
+        setUseFallbackMode(true);
+        
+        if ((identifier === 'admin' && password === 'password') || 
+            (identifier === 'user' && password === 'password')) {
+          setAuthData(DEMO_AUTH_DATA);
+          localStorage.setItem('auth', JSON.stringify(DEMO_AUTH_DATA));
+          toast.success('Logged in with demo account (JSON parsing failed)');
           return;
+        } else {
+          throw new Error('Invalid credentials');
         }
-        
-        throw new Error('Server error: unexpected response format');
       }
-      
-      const data = await response.json();
       
       // Ensure consistent data structure
       const formattedData = {
@@ -193,12 +248,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await fetch('/api/auth/logout', { 
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
+      if (!useFallbackMode) {
+        await fetch('/api/auth/logout', { 
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+      }
       setAuthData({ user: null, organizations: [] });
       setCurrentOrganization(null);
       localStorage.removeItem('auth');
