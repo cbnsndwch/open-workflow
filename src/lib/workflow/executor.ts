@@ -8,4 +8,6 @@ export {
   executeWorkflow,
   defaultNodeExecutor,
   createNodeExecutor,
+  type NodeExecutor,
 } from './execution';
+
