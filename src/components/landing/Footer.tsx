@@ -23,9 +23,9 @@ const Footer = () => {
             <a href="https://github.com" className="flex items-center text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">
               <Github className="h-4 w-4 mr-2" /> GitHub
             </a>
-            <a href="#" className="flex items-center text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">
+            <Link to="/docs" className="flex items-center text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">
               <BookOpen className="h-4 w-4 mr-2" /> Documentation
-            </a>
+            </Link>
           </div>
         </div>
         

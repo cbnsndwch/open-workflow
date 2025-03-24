@@ -13,6 +13,7 @@ import AccountSelectPage from './pages/AccountSelectPage';
 import NotFound from './pages/NotFound';
 import SettingsPage from './pages/SettingsPage';
 import SubscribePage from './pages/SubscribePage';
+import Documentation from './pages/Documentation';
 
 // Create and export the router
 export const router = createBrowserRouter([
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
   {
     path: '/subscribe',
     element: <SubscribePage />,
+  },
+  {
+    path: '/docs',
+    element: <Documentation />,
   },
   {
     path: '/login',
