@@ -1,10 +1,10 @@
-
 export type User = {
   id: string;
   email: string;
   name: string;
   role: string;
   username?: string;
+  lastLogin?: string;
 };
 
 export type Organization = {
@@ -30,14 +30,14 @@ export interface AuthContextType {
   setCurrentOrganization: (org: Organization) => void;
 }
 
-// Demo data for fallback when MSW isn't working
 export const DEMO_AUTH_DATA = {
   user: {
     id: '1',
     email: 'admin@example.com',
     name: 'Admin User',
     role: 'admin',
-    username: 'admin'
+    username: 'admin',
+    lastLogin: new Date().toISOString()
   },
   organizations: [
     { id: '1', name: 'Acme Corp', slug: 'acme-corp', ownerId: '1', role: 'owner' },

@@ -1,4 +1,3 @@
-
 import { http, HttpResponse } from 'msw';
 import { users, organizations, memberships } from '../data';
 import { LoginRequest } from '../types';
@@ -44,6 +43,9 @@ export const authHandlers = [
         );
       }
       
+      // Update lastLogin timestamp
+      user.lastLogin = new Date().toISOString();
+      
       // Get user's organizations
       const userMemberships = memberships.filter(m => m.userId === user.id);
       const userOrgs = userMemberships.map(membership => {
@@ -58,7 +60,8 @@ export const authHandlers = [
             email: user.email, 
             name: user.name, 
             role: user.role,
-            username: user.username 
+            username: user.username,
+            lastLogin: user.lastLogin
           },
           organizations: userOrgs,
         }),
@@ -122,6 +125,9 @@ export const authHandlers = [
         );
       }
       
+      // Update lastLogin timestamp
+      user.lastLogin = new Date().toISOString();
+      
       // Get user's organizations
       const userMemberships = memberships.filter(m => m.userId === user.id);
       const userOrgs = userMemberships.map(membership => {
@@ -136,7 +142,8 @@ export const authHandlers = [
             email: user.email, 
             name: user.name, 
             role: user.role,
-            username: user.username 
+            username: user.username,
+            lastLogin: user.lastLogin
           },
           organizations: userOrgs,
         }),

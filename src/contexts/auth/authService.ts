@@ -71,9 +71,14 @@ export const loginUser = async (
     // Check if demo credentials match
     if ((identifier === 'admin' && password === 'password') || 
         (identifier === 'user' && password === 'password')) {
-      localStorage.setItem('auth', JSON.stringify(DEMO_AUTH_DATA));
+      // Update lastLogin timestamp
+      const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
+      if (demoData.user) {
+        demoData.user.lastLogin = new Date().toISOString();
+      }
+      localStorage.setItem('auth', JSON.stringify(demoData));
       toast.success('Logged in with demo account');
-      return DEMO_AUTH_DATA;
+      return demoData;
     } else {
       throw new Error('Invalid credentials');
     }
@@ -97,9 +102,14 @@ export const loginUser = async (
     // Retry with fallback mode credentials
     if ((identifier === 'admin' && password === 'password') || 
         (identifier === 'user' && password === 'password')) {
-      localStorage.setItem('auth', JSON.stringify(DEMO_AUTH_DATA));
+      // Update lastLogin timestamp
+      const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
+      if (demoData.user) {
+        demoData.user.lastLogin = new Date().toISOString();
+      }
+      localStorage.setItem('auth', JSON.stringify(demoData));
       toast.success('Logged in with demo account (fallback mode)');
-      return DEMO_AUTH_DATA;
+      return demoData;
     } else {
       throw new Error('Invalid credentials');
     }
@@ -122,15 +132,26 @@ export const loginUser = async (
   let data;
   try {
     data = await response.json();
+    
+    // Update lastLogin timestamp
+    if (data.user) {
+      data.user.lastLogin = new Date().toISOString();
+    }
+    
   } catch (e) {
     console.error('Error parsing login response as JSON', e);
     
     // Switch to fallback mode if JSON parsing fails
     if ((identifier === 'admin' && password === 'password') || 
         (identifier === 'user' && password === 'password')) {
-      localStorage.setItem('auth', JSON.stringify(DEMO_AUTH_DATA));
+      // Update lastLogin timestamp
+      const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
+      if (demoData.user) {
+        demoData.user.lastLogin = new Date().toISOString();
+      }
+      localStorage.setItem('auth', JSON.stringify(demoData));
       toast.success('Logged in with demo account (JSON parsing failed)');
-      return DEMO_AUTH_DATA;
+      return demoData;
     } else {
       throw new Error('Invalid credentials');
     }

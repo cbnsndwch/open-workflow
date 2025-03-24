@@ -14,6 +14,7 @@ import { LoginForm, LoginFormValues } from '@/components/auth/LoginForm';
 import { RememberForgotSection } from '@/components/auth/RememberForgotSection';
 import { DemoAccounts } from '@/components/auth/DemoAccounts';
 import { LoginHeader } from '@/components/auth/LoginHeader';
+import { LastLoginInfo } from '@/components/auth/LastLoginInfo';
 
 export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -69,6 +70,7 @@ export default function LoginPage() {
                 toggleRememberMe={toggleRememberMe} 
               />
             </div>
+            {user && <LastLoginInfo />}
           </CardContent>
           
           <CardFooter className="flex flex-col border-t border-muted/30 pt-5">

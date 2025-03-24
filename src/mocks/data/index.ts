@@ -1,22 +1,23 @@
-
-// Mock user data with usernames
+// Mock data for users
 export const users = [
-  { 
-    id: '1', 
-    email: 'admin@example.com', 
-    username: 'admin', 
-    password: 'password', 
-    name: 'Admin User', 
-    role: 'admin' 
+  {
+    id: '1',
+    email: 'admin@example.com',
+    name: 'Admin User',
+    username: 'admin',
+    password: 'password',
+    role: 'admin',
+    lastLogin: new Date().toISOString() // Add initial lastLogin
   },
-  { 
-    id: '2', 
-    email: 'user@example.com', 
-    username: 'user', 
-    password: 'password', 
-    name: 'Regular User', 
-    role: 'user' 
-  },
+  {
+    id: '2',
+    email: 'user@example.com',
+    name: 'Regular User',
+    username: 'user',
+    password: 'password',
+    role: 'user',
+    lastLogin: new Date().toISOString() // Add initial lastLogin
+  }
 ];
 
 // Mock organizations data
