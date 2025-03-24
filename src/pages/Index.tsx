@@ -1,13 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { WorkflowGraph } from '@/lib/workflow/types';
 import { simpleWorkflow, complexWorkflow } from '@/data/sampleWorkflows';
 import { useWorkflowExecution } from '@/hooks/useWorkflowExecution';
-import WorkflowHeader from '@/components/workflow/WorkflowHeader';
-import WorkflowFooter from '@/components/workflow/WorkflowFooter';
 import WorkflowControls from '@/components/workflow/WorkflowControls';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import FullscreenEditorWrapper from '@/components/workflow/FullscreenEditorWrapper';
@@ -68,50 +65,42 @@ const Index = () => {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 px-6 py-10">
-      <div className="max-w-6xl mx-auto">
-        <WorkflowHeader />
+    <div className="p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <Card className="glass-card col-span-1">
+          <CardHeader>
+            <CardTitle>Workflow Selection</CardTitle>
+            <CardDescription>Choose a workflow to visualize and edit</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WorkflowControls
+              selectedWorkflow={selectedWorkflow}
+              editMode={editMode}
+              isExecuting={isExecuting}
+              executionStatus={executionStatus}
+              executionNodes={executionNodes}
+              onWorkflowSelect={handleWorkflowSelect}
+              onEditModeToggle={handleEditModeToggle}
+              onFullscreenEdit={handleFullscreenEdit}
+              onExecuteWorkflow={executeActiveWorkflow}
+            />
+          </CardContent>
+        </Card>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="glass-card col-span-1">
-            <CardHeader>
-              <CardTitle>Workflow Selection</CardTitle>
-              <CardDescription>Choose a workflow to visualize and edit</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <WorkflowControls
-                selectedWorkflow={selectedWorkflow}
-                editMode={editMode}
-                isExecuting={isExecuting}
-                executionStatus={executionStatus}
-                executionNodes={executionNodes}
-                onWorkflowSelect={handleWorkflowSelect}
-                onEditModeToggle={handleEditModeToggle}
-                onFullscreenEdit={handleFullscreenEdit}
-                onExecuteWorkflow={executeActiveWorkflow}
-              />
-            </CardContent>
-          </Card>
-          
-          <Card className="glass-card col-span-1 lg:col-span-2">
-            <CardHeader className="pb-2">
-              <CardTitle>Workflow SDK</CardTitle>
-              <CardDescription>Explore and interact with the workflow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <WorkflowPanel
-                workflow={activeWorkflow}
-                editMode={editMode}
-                onNodeClick={handleNodeClick}
-                onWorkflowChange={handleWorkflowChange}
-              />
-            </CardContent>
-          </Card>
-        </div>
-        
-        <Separator className="my-8" />
-        
-        <WorkflowFooter />
+        <Card className="glass-card col-span-1 lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle>Workflow SDK</CardTitle>
+            <CardDescription>Explore and interact with the workflow</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WorkflowPanel
+              workflow={activeWorkflow}
+              editMode={editMode}
+              onNodeClick={handleNodeClick}
+              onWorkflowChange={handleWorkflowChange}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
