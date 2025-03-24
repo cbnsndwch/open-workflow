@@ -32,6 +32,8 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
 }) => {
   const [initialNodes, setInitialNodes] = useState([]);
   const [initialEdges, setInitialEdges] = useState([]);
+  const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<string | null>(null);
+  const [showNodePalette, setShowNodePalette] = useState(false);
 
   useEffect(() => {
     if (!workflow) return;
@@ -57,9 +59,6 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
     setInitialEdges(edges);
   }, [workflow]);
 
-  const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<string | null>(null);
-  const [showNodePalette, setShowNodePalette] = useState(false);
-
   const handleConnect = (params) => {
     if (readOnly || !onWorkflowChange) return;
     
@@ -73,6 +72,11 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
     );
     
     onWorkflowChange(updatedWorkflow);
+  };
+
+  const handleCloseNodePalette = () => {
+    setShowNodePalette(false);
+    setSelectedSourceNodeId(null);
   };
 
   const handleAddNode = (nodeType: string, nodeName: string) => {
@@ -112,8 +116,7 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
       edges: newEdges
     });
     
-    setShowNodePalette(false);
-    setSelectedSourceNodeId(null);
+    handleCloseNodePalette();
   };
 
   return (
@@ -133,10 +136,7 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
           
           <FlowNodePalette
             show={showNodePalette}
-            onClose={() => {
-              setShowNodePalette(false);
-              setSelectedSourceNodeId(null);
-            }}
+            onClose={handleCloseNodePalette}
             onAddNode={handleAddNode}
           />
         </FlowProvider>

@@ -46,18 +46,19 @@ const CustomNode: React.FC<CustomNodeProps> = ({ data, selected }) => {
           {/* Vertical connector line */}
           <div className="w-[2px] h-[30px] bg-gray-300 mt-1"></div>
           
-          {/* Terminator with plus button */}
+          {/* Add node button */}
           <div className="relative -mt-[1px]">
             <Button 
               variant="outline" 
               size="icon" 
-              className="h-6 w-6 rounded-full bg-white border-gray-300"
+              className="h-7 w-7 rounded-full bg-white border-blue-300 hover:bg-blue-50 hover:border-blue-400"
               onClick={(e) => {
                 e.stopPropagation();
                 data.onAddNode(data.id);
               }}
             >
-              <Plus className="h-3 w-3" />
+              <Plus className="h-3.5 w-3.5 text-blue-600" />
+              <span className="sr-only">Add Step</span>
             </Button>
           </div>
         </div>
