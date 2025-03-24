@@ -46,7 +46,7 @@ export function UserProfileActions({ handleNavItemClick }: UserProfileActionsPro
                 ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/account-select" onClick={handleNavItemClick}>
+                  <Link to="/app/account-select" onClick={handleNavItemClick}>
                     <span>Account Selection</span>
                   </Link>
                 </DropdownMenuItem>
@@ -58,7 +58,7 @@ export function UserProfileActions({ handleNavItemClick }: UserProfileActionsPro
       )}
       
       <DropdownMenuItem asChild>
-        <Link to="/settings" onClick={handleNavItemClick}>
+        <Link to="/app/settings" onClick={handleNavItemClick}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </Link>
