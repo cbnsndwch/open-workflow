@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { WorkflowProvider } from "./contexts/WorkflowContext";
 import { initMsw, isMswReady } from "./mocks/browser";
-import { router } from "./routes";
+import { router } from "./routes"; // Import the named export
 import { RouterProvider } from "react-router-dom";
 import { useEffect, useState } from "react";
 

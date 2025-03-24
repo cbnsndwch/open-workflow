@@ -22,3 +22,5 @@ export function AppLayout() {
     </SidebarProvider>
   );
 }
+
+// No default export, only named export
