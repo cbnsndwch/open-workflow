@@ -1,6 +1,6 @@
 
 import { WorkflowGraph } from '../types';
-import { NodeExecutionStatus } from './types';
+import { NodeExecutionStatus, StagedNodeInfo } from './types';
 
 /**
  * Creates an initial execution state for nodes in a workflow.
@@ -51,4 +51,16 @@ export function isNodeReady(
   }
 
   return true;
+}
+
+/**
+ * Process nodes that are staged for execution.
+ * This is a placeholder function that would be implemented with actual logic.
+ */
+export function processStagedNodes(
+  stagedNodes: StagedNodeInfo[],
+  workflow: WorkflowGraph,
+  nodeStates: Record<string, NodeExecutionStatus>
+): void {
+  // Implementation would go here
 }

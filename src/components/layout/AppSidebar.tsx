@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, GitBranch, Settings, CircleHelp, User, LogOut } from 'lucide-react';
+import { Home, GitBranch, CircleHelp, User, LogOut, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Sidebar,
@@ -28,7 +28,7 @@ import { Button } from '@/components/ui/button';
 export function AppSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
   
-  // Navigation items for the sidebar (removed Settings from here)
+  // Navigation items for the sidebar (removed Help from here)
   const mainNavItems = [
     {
       title: "Home",
@@ -39,11 +39,6 @@ export function AppSidebar() {
       title: "Workflows",
       icon: GitBranch,
       to: "/workflows",
-    },
-    {
-      title: "Help",
-      icon: CircleHelp,
-      to: "/help",
     },
   ];
 
@@ -83,8 +78,21 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* User menu added at the bottom */}
-      <SidebarFooter className="p-2 border-t border-sidebar-border">
+      {/* Footer with Help and User menu */}
+      <SidebarFooter className="p-2 border-t border-sidebar-border flex flex-col gap-2">
+        {/* Help menu item added to the footer */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Help">
+              <Link to="/help" onClick={handleNavItemClick}>
+                <CircleHelp />
+                <span>Help</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        
+        {/* User dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="w-full justify-start px-2">

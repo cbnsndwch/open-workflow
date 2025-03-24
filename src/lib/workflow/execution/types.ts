@@ -17,3 +17,8 @@ export interface WorkflowExecutionContext {
   nodeStates: Record<string, NodeExecutionStatus>;
   nodeExecutors: Record<string, NodeExecutorFn>;
 }
+
+export interface StagedNodeInfo {
+  id: string;
+  inputs: Record<string, any>;
+}
