@@ -1,4 +1,3 @@
-
 import { WorkflowGraph, Node } from '../types';
 import { NodeExecutionStatus, StagedNodeInfo } from './types';
 
@@ -7,18 +6,18 @@ import { NodeExecutionStatus, StagedNodeInfo } from './types';
  * Sets all nodes to 'pending' status with empty outputs.
  */
 export function createInitialNodeExecutionState(
-  workflow: WorkflowGraph
+    workflow: WorkflowGraph
 ): Record<string, NodeExecutionStatus> {
-  const nodeStates: Record<string, NodeExecutionStatus> = {};
+    const nodeStates: Record<string, NodeExecutionStatus> = {};
 
-  for (const node of workflow.nodes) {
-    nodeStates[node.id] = {
-      status: 'pending',
-      outputs: {},
-    };
-  }
+    for (const node of workflow.nodes) {
+        nodeStates[node.id] = {
+            status: 'pending',
+            outputs: {}
+        };
+    }
 
-  return nodeStates;
+    return nodeStates;
 }
 
 /**
@@ -26,37 +25,37 @@ export function createInitialNodeExecutionState(
  * have completed execution.
  */
 export function isNodeReady(
-  nodeId: string,
-  workflow: WorkflowGraph,
-  nodeStates: Record<string, NodeExecutionStatus>
+    nodeId: string,
+    workflow: WorkflowGraph,
+    nodeStates: Record<string, NodeExecutionStatus>
 ): boolean {
-  const node = workflow.nodes.find(n => n.id === nodeId);
-  
-  if (!node) {
-    return false;
-  }
+    const node = workflow.nodes.find(n => n.id === nodeId);
 
-  // A node with no incoming edges is always ready
-  const incomingEdges = Object.keys(workflow.edges).filter(sourceId => {
-    const sourceEdges = workflow.edges[sourceId];
-    return Object.keys(sourceEdges).some(outputPort => {
-      return sourceEdges[outputPort].some(conn => conn.node === nodeId);
-    });
-  });
-  
-  if (incomingEdges.length === 0) {
-    return true;
-  }
-
-  // Check that all dependencies are complete
-  for (const sourceId of incomingEdges) {
-    const sourceNodeState = nodeStates[sourceId];
-    if (!sourceNodeState || sourceNodeState.status !== 'completed') {
-      return false;
+    if (!node) {
+        return false;
     }
-  }
 
-  return true;
+    // A node with no incoming edges is always ready
+    const incomingEdges = Object.keys(workflow.edges).filter(sourceId => {
+        const sourceEdges = workflow.edges[sourceId];
+        return Object.keys(sourceEdges).some(outputPort => {
+            return sourceEdges[outputPort].some(conn => conn.node === nodeId);
+        });
+    });
+
+    if (incomingEdges.length === 0) {
+        return true;
+    }
+
+    // Check that all dependencies are complete
+    for (const sourceId of incomingEdges) {
+        const sourceNodeState = nodeStates[sourceId];
+        if (!sourceNodeState || sourceNodeState.status !== 'completed') {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -64,9 +63,9 @@ export function isNodeReady(
  * This is a placeholder function that would be implemented with actual logic.
  */
 export function processStagedNodes(
-  stagedNodes: StagedNodeInfo[],
-  workflow: WorkflowGraph,
-  nodeStates: Record<string, NodeExecutionStatus>
+    stagedNodes: StagedNodeInfo[],
+    workflow: WorkflowGraph,
+    nodeStates: Record<string, NodeExecutionStatus>
 ): void {
-  // Implementation would go here
+    // Implementation would go here
 }

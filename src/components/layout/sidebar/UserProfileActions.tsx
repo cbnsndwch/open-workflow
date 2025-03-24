@@ -1,73 +1,84 @@
-
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Building, Check, Settings, LogOut } from 'lucide-react';
 import {
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-  DropdownMenuPortal,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent,
+    DropdownMenuPortal,
+    DropdownMenuItem,
+    DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/auth';
 
 interface UserProfileActionsProps {
-  handleNavItemClick: () => void;
+    handleNavItemClick: () => void;
 }
 
-export function UserProfileActions({ handleNavItemClick }: UserProfileActionsProps) {
-  const { accounts, currentAccount, setCurrentAccount, logout } = useAuth();
-  const { accountId } = useParams<{ accountId: string }>();
-  
-  return (
-    <>
-      {accounts.length > 0 && (
+export function UserProfileActions({
+    handleNavItemClick
+}: UserProfileActionsProps) {
+    const { accounts, currentAccount, setCurrentAccount, logout } = useAuth();
+    const { accountId } = useParams<{ accountId: string }>();
+
+    return (
         <>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <Building className="mr-2 h-4 w-4" />
-              <span>Switch Account</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent className="min-w-[220px]">
-                {accounts.map((account) => (
-                  <DropdownMenuItem 
-                    key={account.id}
-                    onClick={() => {
-                      setCurrentAccount(account);
-                      handleNavItemClick();
-                    }}
-                    className="flex items-center justify-between"
-                  >
-                    <span className="truncate">{account.name}</span>
-                    {currentAccount?.id === account.id && <Check className="h-4 w-4 text-primary" />}
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/accounts" onClick={handleNavItemClick}>
-                    <span>Account Selection</span>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuSeparator />
+            {accounts.length > 0 && (
+                <>
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                            <Building className="mr-2 h-4 w-4" />
+                            <span>Switch Account</span>
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                            <DropdownMenuSubContent className="min-w-[220px]">
+                                {accounts.map(account => (
+                                    <DropdownMenuItem
+                                        key={account.id}
+                                        onClick={() => {
+                                            setCurrentAccount(account);
+                                            handleNavItemClick();
+                                        }}
+                                        className="flex items-center justify-between"
+                                    >
+                                        <span className="truncate">
+                                            {account.name}
+                                        </span>
+                                        {currentAccount?.id === account.id && (
+                                            <Check className="h-4 w-4 text-primary" />
+                                        )}
+                                    </DropdownMenuItem>
+                                ))}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        to="/accounts"
+                                        onClick={handleNavItemClick}
+                                    >
+                                        <span>Account Selection</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                            </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                    <DropdownMenuSeparator />
+                </>
+            )}
+
+            <DropdownMenuItem asChild>
+                <Link
+                    to={`/${accountId}/settings`}
+                    onClick={handleNavItemClick}
+                >
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+            </DropdownMenuItem>
         </>
-      )}
-      
-      <DropdownMenuItem asChild>
-        <Link to={`/${accountId}/settings`} onClick={handleNavItemClick}>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem onClick={logout}>
-        <LogOut className="mr-2 h-4 w-4" />
-        <span>Log out</span>
-      </DropdownMenuItem>
-    </>
-  );
+    );
 }

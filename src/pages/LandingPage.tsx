@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Hero from '@/components/landing/Hero';
 import Features from '@/components/landing/Features';
@@ -8,16 +7,16 @@ import FAQ from '@/components/landing/FAQ';
 import Footer from '@/components/landing/Footer';
 
 const LandingPage = () => {
-  return (
-    <div className="flex flex-col min-h-screen bg-white text-gray-900">
-      <Hero />
-      <Features />
-      <UseCasesCarousel />
-      <CallToAction />
-      <FAQ />
-      <Footer />
-    </div>
-  );
+    return (
+        <div className="flex flex-col min-h-screen bg-white text-gray-900">
+            <Hero />
+            <Features />
+            <UseCasesCarousel />
+            <CallToAction />
+            <FAQ />
+            <Footer />
+        </div>
+    );
 };
 
 export default LandingPage;

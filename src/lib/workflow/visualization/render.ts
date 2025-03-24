@@ -1,4 +1,3 @@
-
 import { WorkflowGraph } from '../types';
 import { calculateLayout } from './layout';
 
@@ -6,11 +5,11 @@ import { calculateLayout } from './layout';
  * Create an HTML representation of a workflow
  */
 export function createHtmlRepresentation(workflow: WorkflowGraph): string {
-  const layout = calculateLayout(workflow);
-  
-  // Create SVG content
-  const svgContent = `
-    <svg width="${layout.width}" height="${layout.height}" viewBox="${-layout.width/2} 0 ${layout.width} ${layout.height}" xmlns="http://www.w3.org/2000/svg">
+    const layout = calculateLayout(workflow);
+
+    // Create SVG content
+    const svgContent = `
+    <svg width="${layout.width}" height="${layout.height}" viewBox="${-layout.width / 2} 0 ${layout.width} ${layout.height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="7" refY="3.5" orient="auto">
           <polygon points="0 0, 10 3.5, 0 7" fill="#d1d5db" />
@@ -18,33 +17,41 @@ export function createHtmlRepresentation(workflow: WorkflowGraph): string {
       </defs>
       
       <g>
-        ${layout.edges.map(edge => `
+        ${layout.edges
+            .map(
+                edge => `
           <path d="${edge.path}" class="workflow-edge" />
-        `).join('')}
+        `
+            )
+            .join('')}
         
-        ${layout.nodes.map(node => `
-          <g transform="translate(${node.x - node.width/2}, ${node.y - node.height/2})">
+        ${layout.nodes
+            .map(
+                node => `
+          <g transform="translate(${node.x - node.width / 2}, ${node.y - node.height / 2})">
             <rect x="0" y="0" width="${node.width}" height="${node.height}" rx="8" 
               class="workflow-node ${node.isStart ? 'workflow-node-start' : ''} ${node.isTerminal ? 'workflow-node-terminal' : ''}" />
-            <text x="${node.width/2}" y="${node.height/2}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-title">${node.name}</text>
-            <text x="${node.width/2}" y="${node.height/2 + 16}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-kind">${node.kind}</text>
+            <text x="${node.width / 2}" y="${node.height / 2}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-title">${node.name}</text>
+            <text x="${node.width / 2}" y="${node.height / 2 + 16}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-kind">${node.kind}</text>
           </g>
-        `).join('')}
+        `
+            )
+            .join('')}
       </g>
     </svg>
   `;
-  
-  return svgContent;
+
+    return svgContent;
 }
 
 /**
  * Export workflow as SVG
  */
 export function exportWorkflowAsSvg(workflow: WorkflowGraph): string {
-  const layout = calculateLayout(workflow);
-  
-  return `
-    <svg width="${layout.width}" height="${layout.height}" viewBox="${-layout.width/2} 0 ${layout.width} ${layout.height}" 
+    const layout = calculateLayout(workflow);
+
+    return `
+    <svg width="${layout.width}" height="${layout.height}" viewBox="${-layout.width / 2} 0 ${layout.width} ${layout.height}" 
         xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="7" refY="3.5" orient="auto">
@@ -86,18 +93,26 @@ export function exportWorkflowAsSvg(workflow: WorkflowGraph): string {
       </defs>
       
       <g>
-        ${layout.edges.map(edge => `
+        ${layout.edges
+            .map(
+                edge => `
           <path d="${edge.path}" class="workflow-edge" />
-        `).join('')}
+        `
+            )
+            .join('')}
         
-        ${layout.nodes.map(node => `
-          <g transform="translate(${node.x - node.width/2}, ${node.y - node.height/2})">
+        ${layout.nodes
+            .map(
+                node => `
+          <g transform="translate(${node.x - node.width / 2}, ${node.y - node.height / 2})">
             <rect x="0" y="0" width="${node.width}" height="${node.height}" rx="8" 
               class="workflow-node ${node.isStart ? 'workflow-node-start' : ''} ${node.isTerminal ? 'workflow-node-terminal' : ''}" />
-            <text x="${node.width/2}" y="${node.height/2}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-title">${node.name}</text>
-            <text x="${node.width/2}" y="${node.height/2 + 16}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-kind">${node.kind}</text>
+            <text x="${node.width / 2}" y="${node.height / 2}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-title">${node.name}</text>
+            <text x="${node.width / 2}" y="${node.height / 2 + 16}" text-anchor="middle" dominant-baseline="middle" class="workflow-node-kind">${node.kind}</text>
           </g>
-        `).join('')}
+        `
+            )
+            .join('')}
       </g>
     </svg>
   `;

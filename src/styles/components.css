@@ -1,43 +1,42 @@
-
 .glass-card {
-  @apply bg-white bg-opacity-70 backdrop-blur-lg rounded-xl border border-[rgba(0,0,0,0.05)] p-6 shadow-sm;
+    @apply bg-white bg-opacity-70 backdrop-blur-lg rounded-xl border border-[rgba(0,0,0,0.05)] p-6 shadow-sm;
 }
 
 .node-animate-in {
-  animation: nodeAnimateIn 0.5s ease forwards;
-  opacity: 0;
-  transform: scale(0.8) translateY(10px);
+    animation: nodeAnimateIn 0.5s ease forwards;
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
 }
 
 @keyframes nodeAnimateIn {
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .edge-animate-in {
-  animation: edgeAnimateIn 0.5s ease forwards;
-  opacity: 0;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
+    animation: edgeAnimateIn 0.5s ease forwards;
+    opacity: 0;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
 }
 
 @keyframes edgeAnimateIn {
-  to {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
+    to {
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
 }
 
 .heading-gradient {
-  @apply font-bold leading-tight;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(90deg, #1a202c, #4a5568);
+    @apply font-bold leading-tight;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(90deg, #1a202c, #4a5568);
 }
 
 .subheading {
-  @apply text-lg text-[#6b7280] mt-2 mb-8 max-w-2xl;
+    @apply text-lg text-[#6b7280] mt-2 mb-8 max-w-2xl;
 }
