@@ -3,7 +3,6 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
-import { WorkflowSelector } from '@/components/workflow/WorkflowSelector';
 
 interface PageHeaderProps {
   title?: string;
@@ -24,7 +23,6 @@ export function PageHeader({ title }: PageHeaderProps) {
         </div>
         
         <div className="flex items-center gap-3">
-          <WorkflowSelector />
           <ThemeToggle />
         </div>
       </div>
@@ -36,7 +34,6 @@ export function PageHeader({ title }: PageHeaderProps) {
 function getPageTitle(pathname: string): string {
   switch (pathname) {
     case '/':
-      return 'Home';
     case '/workflows':
       return 'Workflows';
     case '/settings':

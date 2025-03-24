@@ -5,29 +5,47 @@ import { simpleWorkflow, complexWorkflow } from '@/data/sampleWorkflows';
 import { useWorkflowExecution } from '@/hooks/useWorkflowExecution';
 
 interface WorkflowContextType {
-  selectedWorkflow: string;
-  setSelectedWorkflow: (workflow: string) => void;
-  activeWorkflow: WorkflowGraph;
-  setActiveWorkflow: (workflow: WorkflowGraph) => void;
-  editMode: boolean;
-  setEditMode: (mode: boolean) => void;
-  fullscreenEdit: boolean;
-  setFullscreenEdit: (mode: boolean) => void;
+  workflows: WorkflowWithMeta[];
+  getWorkflowById: (id: string) => WorkflowGraph | undefined;
+  updateWorkflow: (id: string, workflow: WorkflowGraph) => void;
+  executeWorkflow: (id: string) => void;
   isExecuting: boolean;
   executionStatus: string;
   executionNodes: Record<string, { status: string, result?: Record<string, any>, error?: string }>;
   executionNodeIds: string[];
-  executeActiveWorkflow: () => void;
-  handleWorkflowChange: (workflow: WorkflowGraph) => void;
+}
+
+export interface WorkflowWithMeta extends WorkflowGraph {
+  id: string;
+  name: string;
+  type: string;
 }
 
 const WorkflowContext = createContext<WorkflowContextType | undefined>(undefined);
 
+// Add metadata to sample workflows
+const sampleWorkflows: WorkflowWithMeta[] = [
+  {
+    ...simpleWorkflow,
+    id: 'simple',
+    name: 'Simple Workflow',
+    type: 'Standard',
+  },
+  {
+    ...complexWorkflow,
+    id: 'complex',
+    name: 'Complex Workflow',
+    type: 'Advanced',
+  }
+];
+
 export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeWorkflow, setActiveWorkflow] = useState<WorkflowGraph>(simpleWorkflow);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string>('simple');
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [fullscreenEdit, setFullscreenEdit] = useState<boolean>(false);
+  const [workflows, setWorkflows] = useState<WorkflowWithMeta[]>(sampleWorkflows);
+  const [activeWorkflowId, setActiveWorkflowId] = useState<string | null>(null);
+  
+  const activeWorkflow = activeWorkflowId 
+    ? workflows.find(w => w.id === activeWorkflowId) 
+    : workflows[0];
   
   const {
     isExecuting,
@@ -35,37 +53,41 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     executionNodes,
     executionNodeIds,
     executeActiveWorkflow
-  } = useWorkflowExecution(activeWorkflow);
+  } = useWorkflowExecution(activeWorkflow || workflows[0]);
   
-  useEffect(() => {
-    if (selectedWorkflow === 'simple') {
-      setActiveWorkflow(simpleWorkflow);
-    } else {
-      setActiveWorkflow(complexWorkflow);
-    }
-  }, [selectedWorkflow]);
+  const getWorkflowById = (id: string): WorkflowGraph | undefined => {
+    return workflows.find(w => w.id === id);
+  };
   
-  const handleWorkflowChange = (workflow: WorkflowGraph) => {
-    setActiveWorkflow(workflow);
+  const updateWorkflow = (id: string, updatedWorkflow: WorkflowGraph) => {
+    setWorkflows(prevWorkflows => 
+      prevWorkflows.map(w => 
+        w.id === id 
+          ? { ...w, ...updatedWorkflow, id, name: w.name, type: w.type } 
+          : w
+      )
+    );
+  };
+  
+  const executeWorkflow = (id: string) => {
+    setActiveWorkflowId(id);
+    // We need to wait for activeWorkflow to be updated before executing
+    setTimeout(() => {
+      executeActiveWorkflow();
+    }, 0);
   };
 
   return (
     <WorkflowContext.Provider
       value={{
-        selectedWorkflow,
-        setSelectedWorkflow,
-        activeWorkflow,
-        setActiveWorkflow,
-        editMode,
-        setEditMode,
-        fullscreenEdit,
-        setFullscreenEdit,
+        workflows,
+        getWorkflowById,
+        updateWorkflow,
+        executeWorkflow,
         isExecuting,
         executionStatus,
         executionNodes,
-        executionNodeIds,
-        executeActiveWorkflow,
-        handleWorkflowChange
+        executionNodeIds
       }}
     >
       {children}
