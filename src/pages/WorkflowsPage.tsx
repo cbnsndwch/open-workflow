@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+
 import { useWorkflowContext } from '@/contexts/workflow';
 import { useAuth } from '@/contexts/auth';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,9 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 
-const WorkflowCard = ({ workflow }) => {
+function WorkflowCard({ workflow }) {
+  const { accountId } = useParams();
+  
   const date = new Date(workflow.lastModified);
   const formattedDate = date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -38,7 +41,7 @@ const WorkflowCard = ({ workflow }) => {
       <CardFooter className="flex justify-between pt-2">
         <span className="text-xs text-muted-foreground">Last modified: {formattedDate}</span>
         <Button asChild size="sm">
-          <Link to={`/workflow/${workflow.id}`}>Open</Link>
+          <Link to={`${accountId}/workflow/${workflow.id}`}>Open</Link>
         </Button>
       </CardFooter>
     </Card>
