@@ -16,6 +16,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface OnboardingWizardProps {
   open: boolean;
@@ -34,6 +35,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
     // Prevent multiple clicks
     if (isAdding) return;
     
+    console.log("handleAddSampleWorkflow function triggered");
     setIsAdding(true);
     try {
       console.log("Adding sample workflow...");
@@ -76,48 +78,52 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
 
         <ScrollArea className="flex-1 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-            <Card 
-              className={`cursor-pointer border-2 border-muted hover:border-primary transition-all ${
+            <div 
+              className={`cursor-pointer ${
                 isAdding ? 'opacity-70 pointer-events-none' : ''
               }`}
               onClick={handleAddSampleWorkflow}
             >
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center">
-                  <BookOpen className="w-5 h-5 mr-2" />
-                  Sample Workflow
-                </CardTitle>
-                <CardDescription>Start with a pre-built workflow</CardDescription>
-              </CardHeader>
-              <CardContent className="text-sm">
-                Begin with a simple, ready-to-use workflow to explore the platform's capabilities.
-              </CardContent>
-              <CardFooter className="pt-2 justify-between">
-                <span className="text-xs text-muted-foreground">{isAdding ? 'Setting up...' : 'Click to add'}</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </CardFooter>
-            </Card>
+              <Card className="h-full border-2 border-muted hover:border-primary transition-all">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center">
+                    <BookOpen className="w-5 h-5 mr-2" />
+                    Sample Workflow
+                  </CardTitle>
+                  <CardDescription>Start with a pre-built workflow</CardDescription>
+                </CardHeader>
+                <CardContent className="text-sm">
+                  Begin with a simple, ready-to-use workflow to explore the platform's capabilities.
+                </CardContent>
+                <CardFooter className="pt-2 justify-between">
+                  <span className="text-xs text-muted-foreground">{isAdding ? 'Setting up...' : 'Click to add'}</span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </CardFooter>
+              </Card>
+            </div>
 
-            <Card 
-              className="cursor-pointer border-2 border-muted hover:border-primary transition-all"
+            <div 
+              className="cursor-pointer"
               onClick={handleGuidedSetup}
             >
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center">
-                  <ArrowRight className="w-5 h-5 mr-2" />
-                  Guided Setup
-                  <Badge variant="secondary" className="ml-2 text-xs">soon</Badge>
-                </CardTitle>
-                <CardDescription>Answer a few questions to create your workflow</CardDescription>
-              </CardHeader>
-              <CardContent className="text-sm">
-                We'll guide you through creating a custom workflow based on your specific needs.
-              </CardContent>
-              <CardFooter className="pt-2 justify-between">
-                <span className="text-xs text-muted-foreground">Click to preview</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </CardFooter>
-            </Card>
+              <Card className="h-full border-2 border-muted hover:border-primary transition-all">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center">
+                    <ArrowRight className="w-5 h-5 mr-2" />
+                    Guided Setup
+                    <Badge variant="secondary" className="ml-2 text-xs">soon</Badge>
+                  </CardTitle>
+                  <CardDescription>Answer a few questions to create your workflow</CardDescription>
+                </CardHeader>
+                <CardContent className="text-sm">
+                  We'll guide you through creating a custom workflow based on your specific needs.
+                </CardContent>
+                <CardFooter className="pt-2 justify-between">
+                  <span className="text-xs text-muted-foreground">Click to preview</span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </CardFooter>
+              </Card>
+            </div>
           </div>
         </ScrollArea>
       </DialogContent>
