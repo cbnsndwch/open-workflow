@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FileCode, Server, Bot, Database, Workflow, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -82,8 +81,8 @@ const UseCasesCarousel: React.FC = () => {
               ))}
             </CarouselContent>
             <div className="flex justify-center mt-8 space-x-4">
-              <CarouselPrevious className="relative static left-0 right-0 translate-y-0 h-10 w-10 border-gray-200 text-gray-700 hover:bg-gray-50" />
-              <CarouselNext className="relative static left-0 right-0 translate-y-0 h-10 w-10 border-gray-200 text-gray-700 hover:bg-gray-50" />
+              <CarouselPrevious className="static h-10 w-10 border border-gray-200 text-gray-700 bg-white hover:bg-gray-50" />
+              <CarouselNext className="static h-10 w-10 border border-gray-200 text-gray-700 bg-white hover:bg-gray-50" />
             </div>
           </Carousel>
         </div>
