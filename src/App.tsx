@@ -4,13 +4,19 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { WorkflowProvider } from "./contexts/WorkflowContext";
 import { initMsw, isMswReady } from "./mocks/browser";
 import Routes from "./routes"; // Import the default export for the Routes component
 import { useEffect, useState } from "react";
 
-// Create QueryClient
-const queryClient = new QueryClient();
+// Create QueryClient with retry options
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false, // Don't retry failed queries to avoid overloading
+      refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    },
+  },
+});
 
 const App = () => {
   const [isMockReady, setIsMockReady] = useState(process.env.NODE_ENV === 'production');
@@ -23,6 +29,7 @@ const App = () => {
       
       initMsw().then((success) => {
         if (success) {
+          console.log("MSW initialization successful");
           setIsMockReady(true);
         } else {
           // If initialization fails, we'll still render the app

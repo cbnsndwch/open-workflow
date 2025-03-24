@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
@@ -14,7 +14,7 @@ const WorkflowPage = () => {
   
   const workflow = id ? getWorkflowById(id) : undefined;
   
-  // If no user is logged in, don't render anything (auth context will handle redirect)
+  // If no user is logged in, redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -28,7 +28,12 @@ const WorkflowPage = () => {
     <div className="h-full flex flex-col">
       <WorkflowHeader />
       <div className="flex-1 overflow-hidden bg-muted/20">
-        <WorkflowEditor initialWorkflow={workflow} />
+        <WorkflowEditor 
+          initialWorkflow={workflow} 
+          onChange={(updatedWorkflow) => {
+            console.log("Workflow updated:", updatedWorkflow);
+          }}
+        />
       </div>
       <WorkflowFooter />
     </div>
