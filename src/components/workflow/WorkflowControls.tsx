@@ -9,7 +9,8 @@ interface WorkflowControlsProps {
   editMode: boolean;
   isExecuting: boolean;
   executionStatus: string;
-  executionNodes: string[];
+  executionNodes: Record<string, { status: string, result?: Record<string, any>, error?: string }>;
+  executionNodeIds?: string[];
   onWorkflowSelect: (workflow: string) => void;
   onEditModeToggle: (editMode: boolean) => void;
   onFullscreenEdit: () => void;
@@ -22,6 +23,7 @@ const WorkflowControls: React.FC<WorkflowControlsProps> = ({
   isExecuting,
   executionStatus,
   executionNodes,
+  executionNodeIds = [],
   onWorkflowSelect,
   onEditModeToggle,
   onFullscreenEdit,
@@ -89,11 +91,11 @@ const WorkflowControls: React.FC<WorkflowControlsProps> = ({
         </Alert>
       )}
       
-      {executionNodes.length > 0 && (
+      {executionNodeIds.length > 0 && (
         <div className="mt-4">
           <h4 className="font-medium text-sm mb-2">Execution Path:</h4>
           <div className="bg-gray-50 p-3 rounded-md text-xs">
-            {executionNodes.join(' → ')}
+            {executionNodeIds.join(' → ')}
           </div>
         </div>
       )}

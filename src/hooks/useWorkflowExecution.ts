@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { WorkflowGraph, Node } from '@/lib/workflow/types';
-import { executeWorkflow, NodeExecutorFn } from '@/lib/workflow/executor';
+import { executeWorkflow, NodeExecutor } from '@/lib/workflow/executor';
 
 type ExecutionStatus = 'idle' | 'executing' | 'completed' | 'error';
 
@@ -17,7 +17,7 @@ export const useWorkflowExecution = (workflow: WorkflowGraph) => {
   const [executionNodes, setExecutionNodes] = useState<Record<string, NodeStatus>>({});
 
   // Custom executor functions
-  const nodeExecutors: Record<string, NodeExecutorFn> = {
+  const nodeExecutors: Record<string, NodeExecutor> = {
     // Define custom executors for specific node types
     // These should return promises with the execution result
     'core:http_request': async (node: Node): Promise<Record<string, any>> => {
@@ -86,10 +86,16 @@ export const useWorkflowExecution = (workflow: WorkflowGraph) => {
     }
   };
 
+  // Get an array of node IDs for rendering the execution path
+  const executionNodeIds = Object.entries(executionNodes)
+    .filter(([_, status]) => status.status === 'completed' || status.status === 'executing')
+    .map(([nodeId]) => nodeId);
+
   return {
     isExecuting,
     executionStatus,
     executionNodes,
+    executionNodeIds,
     executeActiveWorkflow
   };
 };

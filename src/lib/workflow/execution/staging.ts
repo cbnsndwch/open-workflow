@@ -1,5 +1,5 @@
 
-import { WorkflowGraph } from '../types';
+import { WorkflowGraph, Node } from '../types';
 import { NodeExecutionStatus, StagedNodeInfo } from './types';
 
 /**
@@ -37,14 +37,20 @@ export function isNodeReady(
   }
 
   // A node with no incoming edges is always ready
-  const incomingEdges = workflow.edges.filter(edge => edge.target === nodeId);
+  const incomingEdges = Object.keys(workflow.edges).filter(sourceId => {
+    const sourceEdges = workflow.edges[sourceId];
+    return Object.keys(sourceEdges).some(outputPort => {
+      return sourceEdges[outputPort].some(conn => conn.node === nodeId);
+    });
+  });
+  
   if (incomingEdges.length === 0) {
     return true;
   }
 
   // Check that all dependencies are complete
-  for (const edge of incomingEdges) {
-    const sourceNodeState = nodeStates[edge.source];
+  for (const sourceId of incomingEdges) {
+    const sourceNodeState = nodeStates[sourceId];
     if (!sourceNodeState || sourceNodeState.status !== 'completed') {
       return false;
     }

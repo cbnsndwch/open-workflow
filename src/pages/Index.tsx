@@ -19,6 +19,7 @@ const Index = () => {
     isExecuting,
     executionStatus,
     executionNodes,
+    executionNodeIds,
     executeActiveWorkflow
   } = useWorkflowExecution(activeWorkflow);
   
@@ -79,6 +80,7 @@ const Index = () => {
               isExecuting={isExecuting}
               executionStatus={executionStatus}
               executionNodes={executionNodes}
+              executionNodeIds={executionNodeIds}
               onWorkflowSelect={handleWorkflowSelect}
               onEditModeToggle={handleEditModeToggle}
               onFullscreenEdit={handleFullscreenEdit}
