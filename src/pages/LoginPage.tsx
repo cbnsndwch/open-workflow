@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -25,15 +26,25 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  console.log("Rendering LoginPage");
+  
+  // Safely get auth context values with null checks
   const auth = useAuth();
-  const { login, isLoading } = auth || {};
-  const user = auth?.user;
+  console.log("Auth context:", auth);
+  
+  // Safely destructure auth values with null checks and default values
+  const login = auth?.login;
+  const isLoading = auth?.isLoading || false;
+  const user = auth?.user || null;
   
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/workflows';
 
+  console.log("Login page state:", { user, isLoading, redirectTo });
+
   if (user && !isLoading) {
+    console.log("User already logged in, redirecting to:", redirectTo);
     return <Navigate to={redirectTo} replace />;
   }
 
@@ -46,12 +57,15 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
+    console.log("Attempting login with:", data.email);
     try {
-      if (login) {
+      if (typeof login === 'function') {
+        console.log("Login function exists, calling it");
         await login(data.email, data.password);
+        console.log("Login successful, navigating to:", redirectTo);
         navigate(redirectTo);
       } else {
-        console.error("Login function is not available");
+        console.error("Login function is not available:", login);
       }
     } catch (error) {
       console.error("Login submission error:", error);
