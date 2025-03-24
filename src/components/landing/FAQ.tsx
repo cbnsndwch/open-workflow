@@ -42,10 +42,10 @@ const FAQ: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center mb-8">
           <HelpCircle className="h-8 w-8 text-amber-500 mr-3" />
-          <h2 className="text-3xl font-bold text-center">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold text-center">Questions & Initial Insights</h2>
         </div>
         <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
-          Learn more about our open-source workflow automation platform and how you can get involved
+          We're figuring this out together, but here are some initial answers that might be helpful
         </p>
 
         <div className="max-w-3xl mx-auto">
