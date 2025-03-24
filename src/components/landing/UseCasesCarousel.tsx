@@ -71,8 +71,8 @@ const UseCasesCarousel: React.FC = () => {
                 <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
                   <Card className="border border-gray-200 dark:border-gray-800 h-full">
                     <CardContent className="flex flex-col items-start p-6">
-                      <div className="h-12 w-12 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center mb-4">
-                        <useCase.icon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                      <div className="h-12 w-12 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mb-4">
+                        <useCase.icon className="h-6 w-6 text-amber-500 dark:text-amber-500" />
                       </div>
                       <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
                       <p className="text-gray-600 dark:text-gray-300">{useCase.description}</p>

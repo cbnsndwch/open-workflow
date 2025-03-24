@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const CallToAction = () => {
   return (
-    <section className="py-20 bg-purple-100 dark:bg-purple-950/30">
+    <section className="py-20 bg-amber-100 dark:bg-amber-950/30">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl font-bold mb-6">Ready to transform your workflow automation?</h2>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
