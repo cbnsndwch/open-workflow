@@ -65,18 +65,6 @@ const WorkflowPage = () => {
           className="h-full"
         />
       </div>
-      
-      {executionStatus && (
-        <div className="p-4 bg-background border-t">
-          <div className="text-sm font-medium mb-2">Execution Status: {executionStatus}</div>
-          
-          {executionNodeIds.length > 0 && (
-            <div className="text-xs text-muted-foreground">
-              Execution Path: {executionNodeIds.join(' → ')}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };
