@@ -36,11 +36,14 @@ export async function authLoader({ request }: LoaderFunctionArgs) {
   }
 }
 
+// Create a custom error component using ErrorBoundary
+const RouteErrorBoundary = () => <ErrorBoundary />;
+
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
-    errorElement: <ErrorBoundary />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         // Root path redirects to workflows
@@ -72,11 +75,11 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
-    errorElement: <ErrorBoundary />
+    errorElement: <RouteErrorBoundary />
   },
   {
     path: "*",
     element: <NotFound />,
-    errorElement: <ErrorBoundary />
+    errorElement: <RouteErrorBoundary />
   }
 ]);
