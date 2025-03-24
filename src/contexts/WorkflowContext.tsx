@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { WorkflowWithMeta } from './workflow/types';
@@ -58,7 +57,6 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       await updateWorkflowApi(id, workflow, accountId, useFallback);
       
-      // Update the local state
       setWorkflows(prevWorkflows => 
         prevWorkflows.map(w => 
           w.id === id ? { ...workflow, lastModified: new Date().toISOString() } : w
@@ -77,7 +75,6 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const newWorkflow = await createWorkflowApi(workflow, accountId, useFallback);
       
       if (newWorkflow) {
-        // Add to local state
         setWorkflows(prevWorkflows => [...prevWorkflows, newWorkflow]);
       }
     } catch (error) {
@@ -108,9 +105,5 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 };
 
 export const useWorkflowContext = () => {
-  const context = useContext(WorkflowContext);
-  if (!context) {
-    throw new Error('useWorkflowContext must be used within a WorkflowProvider');
-  }
-  return context;
+  throw new Error('This context is deprecated. Use useWorkflowContext from contexts/workflow/WorkflowProvider instead');
 };

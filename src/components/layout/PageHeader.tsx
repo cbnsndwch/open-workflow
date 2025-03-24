@@ -5,7 +5,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { useWorkflowContext } from '@/contexts/WorkflowContext';
+import { useWorkflowContext } from '@/contexts/workflow/WorkflowProvider';
 
 interface PageHeaderProps {
   title?: string;
@@ -18,7 +18,7 @@ export function PageHeader({ title }: PageHeaderProps) {
   const { getWorkflowById } = useWorkflowContext();
   
   // Check if we're on a workflow page
-  const isWorkflowPage = location.pathname.startsWith('/workflow/');
+  const isWorkflowPage = location.pathname.includes('/workflow/');
   
   // Get workflow name if on a workflow page
   const workflowName = isWorkflowPage && id ? getWorkflowById(id)?.name : '';
