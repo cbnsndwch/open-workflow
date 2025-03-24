@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Lock, Bot, Workflow, Zap, Code, Database } from 'lucide-react';
+import { Lock, Bot, Workflow, Zap, Code, Database, Link } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 
 const Features = () => {
@@ -24,6 +24,12 @@ const Features = () => {
       content: "Intuitive drag-and-drop interface makes it easy to create, test, and deploy sophisticated process automation."
     },
     // High Performance feature removed temporarily
+    {
+      icon: Link,
+      title: "API Bridge",
+      description: "Connect traditional APIs with AI agents",
+      content: "Seamlessly integrate existing API infrastructure with modern AI agents, creating powerful hybrid solutions without rewriting your systems."
+    },
     {
       icon: Code,
       title: "Open Source",
