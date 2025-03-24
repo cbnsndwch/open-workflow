@@ -1,53 +1,55 @@
 
-import { WorkflowGraph, NodeExecutionStatus, WorkflowNode } from '../types';
-import { areAllRequiredInputsAvailable } from './inputs';
-import { getIncomingConnections } from './dependencies';
+import { WorkflowGraph } from '../types';
+import { NodeExecutionStatus, WorkflowNode } from './types';
+import { findNode } from '../traversal';
 
-// Define a type for the staged node information
-export interface StagedNodeInfo {
-  node: WorkflowNode;
-  status: NodeExecutionStatus;
+/**
+ * Creates an initial execution state for nodes in a workflow.
+ * Sets all nodes to 'pending' status with empty outputs.
+ */
+export function createInitialNodeExecutionState(
+  workflow: WorkflowGraph
+): Record<string, NodeExecutionStatus> {
+  const nodeStates: Record<string, NodeExecutionStatus> = {};
+
+  for (const node of workflow.nodes) {
+    nodeStates[node.id] = {
+      status: 'pending',
+      outputs: {},
+    };
+  }
+
+  return nodeStates;
 }
 
 /**
- * Process workflow nodes to determine which can be executed next
- * @param workflow The workflow graph containing nodes and connections
- * @param executedNodes Map of node IDs to their execution status
- * @returns Array of nodes that are ready to be executed
+ * Checks if a node is ready to be executed by ensuring all its dependencies
+ * have completed execution.
  */
-export function processStagedNodes(
+export function isNodeReady(
+  nodeId: string,
   workflow: WorkflowGraph,
-  executedNodes: Map<string, NodeExecutionStatus>
-): StagedNodeInfo[] {
-  const stagedNodes: StagedNodeInfo[] = [];
-  const { nodes, connections } = workflow;
+  nodeStates: Record<string, NodeExecutionStatus>
+): boolean {
+  const node = findNode(workflow, nodeId);
+  
+  if (!node) {
+    return false;
+  }
 
-  for (const node of nodes) {
-    // Skip nodes that have already been executed or are currently executing
-    if (executedNodes.has(node.id)) {
-      const status = executedNodes.get(node.id)!;
-      if (status !== 'pending') {
-        continue;
-      }
-    }
+  // A node with no incoming edges is always ready
+  const incomingEdges = workflow.edges.filter(edge => edge.target === nodeId);
+  if (incomingEdges.length === 0) {
+    return true;
+  }
 
-    // Get incoming connections for this node
-    const incomingConnections = getIncomingConnections(node.id, connections);
-    
-    // Check if all required inputs have upstream nodes that completed successfully
-    const allInputsAvailable = areAllRequiredInputsAvailable(
-      node,
-      incomingConnections,
-      executedNodes
-    );
-
-    if (allInputsAvailable) {
-      stagedNodes.push({
-        node,
-        status: 'pending',
-      });
+  // Check that all dependencies are complete
+  for (const edge of incomingEdges) {
+    const sourceNodeState = nodeStates[edge.source];
+    if (!sourceNodeState || sourceNodeState.status !== 'completed') {
+      return false;
     }
   }
 
-  return stagedNodes;
+  return true;
 }

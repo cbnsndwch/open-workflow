@@ -12,9 +12,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar
 } from '@/components/ui/sidebar';
 
 export function AppSidebar() {
+  const { isMobile, setOpenMobile } = useSidebar();
+  
   // Navigation items for the sidebar
   const mainNavItems = [
     {
@@ -39,6 +42,13 @@ export function AppSidebar() {
     },
   ];
 
+  // Handle navigation item click by closing the mobile sidebar
+  const handleNavItemClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
   return (
     <Sidebar variant="inset">
       <SidebarHeader className="px-2 py-4">
@@ -56,7 +66,7 @@ export function AppSidebar() {
               {mainNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link to={item.to}>
+                    <Link to={item.to} onClick={handleNavItemClick}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
