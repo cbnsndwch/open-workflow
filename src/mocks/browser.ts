@@ -43,6 +43,6 @@ export async function initMsw(): Promise<boolean> {
  * Check if MSW is ready
  */
 export const isMswReady = (): boolean => {
-  // Use the worker's state to determine if MSW is active
-  return worker.status === 'active';
+  // Use the window property to determine if MSW is active
+  return Boolean(window.__MSW_INITIALIZED);
 };
