@@ -1,6 +1,7 @@
 
 import { http, HttpResponse } from 'msw';
 import { getWorkflowsForAccount, findWorkflowById, addWorkflowToAccount } from '../data/workflows';
+import { WorkflowWithMeta } from '@/contexts/WorkflowContext';
 
 export const workflowHandlers = [
   // Get workflows for an account
@@ -40,9 +41,10 @@ export const workflowHandlers = [
     console.log("MSW: Create workflow request intercepted");
     
     try {
-      const workflow = await request.json();
+      const requestData = await request.json();
       
-      if (!workflow.accountId) {
+      // Ensure the data has the required accountId property
+      if (!requestData || typeof requestData !== 'object' || !('accountId' in requestData)) {
         return new HttpResponse(
           JSON.stringify({ error: 'Account ID is required' }),
           { 
@@ -53,6 +55,17 @@ export const workflowHandlers = [
           }
         );
       }
+      
+      // Create a properly typed WorkflowWithMeta object
+      const workflow: WorkflowWithMeta = {
+        id: requestData.id || `workflow-${Date.now()}`,
+        name: requestData.name || 'New Workflow',
+        type: requestData.type || 'Standard',
+        accountId: requestData.accountId,
+        lastModified: new Date().toISOString(),
+        nodes: requestData.nodes || [],
+        edges: requestData.edges || {}
+      };
       
       // Add the workflow to the account
       const newWorkflow = addWorkflowToAccount(workflow);
@@ -131,9 +144,6 @@ export const workflowHandlers = [
       }
       
       const updatedData = await request.json();
-      
-      // In a real implementation, this would update the stored data
-      // For this mock, we'll just return success
       
       // Make sure updatedData is treated as an object when spreading
       const updatedWorkflow = {
