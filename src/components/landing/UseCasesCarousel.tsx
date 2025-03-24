@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FileCode, Server, Bot, Database, Workflow, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -54,7 +55,7 @@ const UseCasesCarousel: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Use Cases</h2>
         <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
-          Discover how organizations are using our workflow automation platform to solve real-world challenges
+          Exploring the innovative possibilities and future directions for our workflow automation platform
         </p>
 
         <div className="px-10 md:px-16 lg:px-20">
