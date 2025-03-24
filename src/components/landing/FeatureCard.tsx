@@ -12,13 +12,13 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ icon: Icon, title, description, content }: FeatureCardProps) => {
   return (
-    <Card>
+    <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow bg-white">
       <CardHeader>
-        <div className="h-12 w-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4">
+        <div className="h-12 w-12 rounded-lg bg-amber-50 flex items-center justify-center mb-4">
           <Icon className="h-6 w-6 text-amber-500" />
         </div>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardTitle className="text-gray-900">{title}</CardTitle>
+        <CardDescription className="text-gray-500">{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-gray-600">
