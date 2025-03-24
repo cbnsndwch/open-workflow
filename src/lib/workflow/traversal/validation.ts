@@ -1,6 +1,6 @@
 
 import { WorkflowGraph } from '../types';
-import { findStartNodes } from './node-finders';
+import { findStartNodes } from '../validator/node-finders';
 
 /**
  * Detect cycles in the workflow graph
