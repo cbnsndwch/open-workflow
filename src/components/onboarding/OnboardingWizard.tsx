@@ -108,7 +108,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-muted-foreground">
                   <ArrowRight className="w-5 h-5 mr-2" />
-                  Guided Setup (Coming Soon)
+                  Guided Setup (Soon)
                 </CardTitle>
                 <CardDescription>Answer a few questions to create your workflow</CardDescription>
               </CardHeader>
