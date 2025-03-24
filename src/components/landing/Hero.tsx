@@ -18,7 +18,7 @@ const Hero = () => {
               Self-hosted workflow execution with direct integration to AI and language models through the model context protocol.
             </p>
             <div className="flex gap-4 pt-4 justify-center">
-              <Button size="lg" asChild>
+              <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-medium shadow-lg hover:shadow-xl transform transition-all duration-200 hover:-translate-y-1" asChild>
                 <Link to="/login">
                   Get Started <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
