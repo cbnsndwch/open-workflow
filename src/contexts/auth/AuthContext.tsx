@@ -1,23 +1,34 @@
 
 import React, { createContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { isMswReady } from '../../mocks/browser';
-import { AuthContextType, AuthData, Organization } from './types';
+import { AuthContextType, AuthData, Account } from './types';
 import { checkExistingSession, loginUser, logoutUser } from './authService';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [authData, setAuthData] = useState<AuthData>({ user: null, organizations: [] });
-  const [currentOrganization, setCurrentOrganization] = useState<Organization | null>(null);
+  const [authData, setAuthData] = useState<AuthData>({ user: null, accounts: [] });
+  const [currentAccount, setCurrentAccount] = useState<Account | null>(null);
   const [useFallbackMode, setUseFallbackMode] = useState(false);
 
-  // Set current organization when auth changes
+  const hasMultipleAccounts = authData.accounts.length > 1;
+
+  // Set current account when auth changes
   useEffect(() => {
-    if (authData.organizations.length > 0 && !currentOrganization) {
-      setCurrentOrganization(authData.organizations[0]);
+    if (authData.accounts.length > 0 && !currentAccount) {
+      // If user has multiple accounts and no current account is set, navigate to account selection
+      if (authData.accounts.length > 1) {
+        navigate('/account-select');
+      } else {
+        // Single account - set it and navigate to workflows
+        setCurrentAccount(authData.accounts[0]);
+        navigate('/workflows');
+      }
     }
-  }, [authData.organizations, currentOrganization]);
+  }, [authData.accounts, currentAccount, navigate]);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -35,6 +46,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const sessionData = await checkExistingSession(useFallbackMode);
         if (sessionData) {
           setAuthData(sessionData);
+          
+          // If user has a single account, set it automatically
+          if (sessionData.accounts.length === 1) {
+            setCurrentAccount(sessionData.accounts[0]);
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -52,6 +68,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const data = await loginUser(identifier, password, useFallbackMode);
       setAuthData(data);
+      
+      // After successful login, redirect based on number of accounts
+      if (data.accounts.length > 1) {
+        navigate('/account-select');
+      } else if (data.accounts.length === 1) {
+        setCurrentAccount(data.accounts[0]);
+        navigate('/workflows');
+      }
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -64,8 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await logoutUser(useFallbackMode);
-      setAuthData({ user: null, organizations: [] });
-      setCurrentOrganization(null);
+      setAuthData({ user: null, accounts: [] });
+      setCurrentAccount(null);
+      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -76,11 +101,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     isLoading,
     user: authData.user,
-    organizations: authData.organizations,
-    currentOrganization,
+    accounts: authData.accounts,
+    currentAccount,
+    hasMultipleAccounts,
     login,
     logout,
-    setCurrentOrganization,
+    setCurrentAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

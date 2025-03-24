@@ -10,7 +10,7 @@ export const checkExistingSession = async (useFallbackMode: boolean): Promise<Au
       const parsedData = JSON.parse(storedAuth);
       return {
         user: parsedData.user || null,
-        organizations: parsedData.organizations || []
+        accounts: parsedData.accounts || []
       };
     } catch (e) {
       console.error("Error parsing stored auth data:", e);
@@ -43,7 +43,7 @@ export const checkExistingSession = async (useFallbackMode: boolean): Promise<Au
       if (data) {
         const formattedData = {
           user: data.user || null,
-          organizations: data.organizations || []
+          accounts: data.accounts || []
         };
         localStorage.setItem('auth', JSON.stringify(formattedData));
         return formattedData;
@@ -160,7 +160,7 @@ export const loginUser = async (
   // Ensure consistent data structure
   const formattedData = {
     user: data.user || null,
-    organizations: data.organizations || []
+    accounts: data.accounts || []
   };
   
   // Store in localStorage for persistence and for the loader to use

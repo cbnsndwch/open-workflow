@@ -1,10 +1,11 @@
 
-import { createBrowserRouter, Navigate, Outlet, LoaderFunctionArgs, redirect } from "react-router-dom";
+import { createBrowserRouter, Navigate, LoaderFunctionArgs, redirect } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import WorkflowsPage from "./pages/WorkflowsPage";
 import WorkflowPage from "./pages/WorkflowPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
+import AccountSelectPage from "./pages/AccountSelectPage";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Auth check loader function
@@ -27,7 +28,7 @@ export async function authLoader({ request }: LoaderFunctionArgs) {
     const parsedData = JSON.parse(authData);
     return { 
       user: parsedData.user || null,
-      organizations: parsedData.organizations || []
+      accounts: parsedData.accounts || []
     };
   } catch (error) {
     console.error("Error parsing auth data:", error);
@@ -75,6 +76,12 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+    errorElement: <RouteErrorBoundary />
+  },
+  {
+    path: "/account-select",
+    element: <AccountSelectPage />,
+    loader: authLoader,
     errorElement: <RouteErrorBoundary />
   },
   {

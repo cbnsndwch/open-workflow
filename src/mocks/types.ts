@@ -14,7 +14,7 @@ export interface User {
   lastLogin?: string;
 }
 
-export interface Organization {
+export interface Account {
   id: string;
   name: string;
   slug: string;
@@ -24,6 +24,6 @@ export interface Organization {
 export interface Membership {
   id: string;
   userId: string;
-  organizationId: string;
+  accountId: string;
   role: string;
 }

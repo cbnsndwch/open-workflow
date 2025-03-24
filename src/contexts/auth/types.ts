@@ -1,3 +1,4 @@
+
 export type User = {
   id: string;
   email: string;
@@ -7,7 +8,7 @@ export type User = {
   lastLogin?: string;
 };
 
-export type Organization = {
+export type Account = {
   id: string;
   name: string;
   slug: string;
@@ -17,17 +18,18 @@ export type Organization = {
 
 export type AuthData = {
   user: User | null;
-  organizations: Organization[];
+  accounts: Account[];
 };
 
 export interface AuthContextType {
   isLoading: boolean;
   user: User | null;
-  organizations: Organization[];
-  currentOrganization: Organization | null;
+  accounts: Account[];
+  currentAccount: Account | null;
   login: (identifier: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  setCurrentOrganization: (org: Organization) => void;
+  setCurrentAccount: (org: Account) => void;
+  hasMultipleAccounts: boolean;
 }
 
 export const DEMO_AUTH_DATA = {
@@ -39,7 +41,7 @@ export const DEMO_AUTH_DATA = {
     username: 'admin',
     lastLogin: new Date().toISOString()
   },
-  organizations: [
+  accounts: [
     { id: '1', name: 'Acme Corp', slug: 'acme-corp', ownerId: '1', role: 'owner' },
     { id: '2', name: 'Widgets Inc', slug: 'widgets-inc', ownerId: '1', role: 'owner' }
   ]

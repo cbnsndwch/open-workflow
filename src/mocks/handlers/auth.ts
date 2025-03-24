@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { users, organizations, memberships } from '../data';
+import { users, accounts, memberships } from '../data';
 import { LoginRequest } from '../types';
 
 // Auth-related handlers
@@ -46,11 +46,11 @@ export const authHandlers = [
       // Update lastLogin timestamp
       user.lastLogin = new Date().toISOString();
       
-      // Get user's organizations
+      // Get user's accounts
       const userMemberships = memberships.filter(m => m.userId === user.id);
-      const userOrgs = userMemberships.map(membership => {
-        const org = organizations.find(o => o.id === membership.organizationId);
-        return { ...org, role: membership.role };
+      const userAccounts = userMemberships.map(membership => {
+        const account = accounts.find(o => o.id === membership.accountId);
+        return { ...account, role: membership.role };
       });
       
       return new HttpResponse(
@@ -63,7 +63,7 @@ export const authHandlers = [
             username: user.username,
             lastLogin: user.lastLogin
           },
-          organizations: userOrgs,
+          accounts: userAccounts,
         }),
         { 
           status: 200,
@@ -128,11 +128,11 @@ export const authHandlers = [
       // Update lastLogin timestamp
       user.lastLogin = new Date().toISOString();
       
-      // Get user's organizations
+      // Get user's accounts
       const userMemberships = memberships.filter(m => m.userId === user.id);
-      const userOrgs = userMemberships.map(membership => {
-        const org = organizations.find(o => o.id === membership.organizationId);
-        return { ...org, role: membership.role };
+      const userAccounts = userMemberships.map(membership => {
+        const account = accounts.find(o => o.id === membership.accountId);
+        return { ...account, role: membership.role };
       });
       
       return new HttpResponse(
@@ -145,7 +145,7 @@ export const authHandlers = [
             username: user.username,
             lastLogin: user.lastLogin
           },
-          organizations: userOrgs,
+          accounts: userAccounts,
         }),
         { 
           status: 200,

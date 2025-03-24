@@ -1,9 +1,5 @@
 
 import { authHandlers } from './auth';
-import { organizationHandlers } from './organizations';
+import { accountHandlers } from './organizations';
 
-// Combine all handlers
-export const handlers = [
-  ...authHandlers,
-  ...organizationHandlers,
-];
+export const handlers = [...authHandlers, ...accountHandlers];
