@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 import { Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,26 +8,18 @@ import { LastLoginInfo } from '@/components/auth/LastLoginInfo';
 
 const AccountSelectPage = () => {
   const { accounts, setCurrentAccount, user } = useAuth();
-  const navigate = useNavigate();
 
   const handleAccountSelect = (accountId: string) => {
     const selectedAccount = accounts.find(acc => acc.id === accountId);
     if (selectedAccount) {
       setCurrentAccount(selectedAccount);
-      navigate('/workflows');
+      // Navigation is handled in the setCurrentAccount function
     }
   };
 
-  // If user has only one account, redirect to workflows
-  React.useEffect(() => {
-    if (accounts.length === 1) {
-      setCurrentAccount(accounts[0]);
-      navigate('/workflows');
-    }
-  }, [accounts, navigate, setCurrentAccount]);
-
+  // If user is not logged in or has only one account, this component shouldn't render
+  // The AuthContext will handle redirecting to the appropriate page
   if (!user) {
-    navigate('/login');
     return null;
   }
 

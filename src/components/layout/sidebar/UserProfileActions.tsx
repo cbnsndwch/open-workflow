@@ -34,7 +34,10 @@ export function UserProfileActions({ handleNavItemClick }: UserProfileActionsPro
                 {accounts.map((account) => (
                   <DropdownMenuItem 
                     key={account.id}
-                    onClick={() => setCurrentAccount(account)}
+                    onClick={() => {
+                      setCurrentAccount(account);
+                      handleNavItemClick();
+                    }}
                     className="flex items-center justify-between"
                   >
                     <span className="truncate">{account.name}</span>

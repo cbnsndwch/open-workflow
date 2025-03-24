@@ -18,16 +18,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const hasMultipleAccounts = authData.accounts.length > 1;
 
-  // Set current account when auth changes
+  // Set the current account in localStorage
+  const updateCurrentAccount = (account: Account | null) => {
+    setCurrentAccount(account);
+    if (account) {
+      localStorage.setItem('currentAccount', JSON.stringify(account));
+      // Navigate to workflows after setting account
+      navigate('/workflows');
+    } else {
+      localStorage.removeItem('currentAccount');
+    }
+  };
+
+  // Retrieve saved account and auth data on mount
   useEffect(() => {
     if (authData.accounts.length > 0 && !currentAccount) {
-      // If user has multiple accounts and no current account is set, navigate to account selection
+      // Check for saved account in localStorage
+      const savedAccount = localStorage.getItem('currentAccount');
+      
+      if (savedAccount) {
+        try {
+          const parsedAccount = JSON.parse(savedAccount);
+          // Verify that the saved account exists in the current accounts array
+          const accountExists = authData.accounts.some(acc => acc.id === parsedAccount.id);
+          
+          if (accountExists) {
+            // Find the full account details from the current accounts array
+            const matchingAccount = authData.accounts.find(acc => acc.id === parsedAccount.id);
+            setCurrentAccount(matchingAccount || null);
+            return;
+          }
+        } catch (e) {
+          console.error('Error parsing saved account', e);
+          localStorage.removeItem('currentAccount');
+        }
+      }
+      
+      // If no valid saved account, handle based on number of accounts
       if (authData.accounts.length > 1) {
         navigate('/account-select');
-      } else {
-        // Single account - set it and navigate to workflows
-        setCurrentAccount(authData.accounts[0]);
-        navigate('/workflows');
+      } else if (authData.accounts.length === 1) {
+        updateCurrentAccount(authData.accounts[0]);
       }
     }
   }, [authData.accounts, currentAccount, navigate]);
@@ -49,10 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (sessionData) {
           setAuthData(sessionData);
           
-          // If user has a single account, set it automatically
-          if (sessionData.accounts.length === 1) {
-            setCurrentAccount(sessionData.accounts[0]);
-          }
+          // Don't set current account here - let the other useEffect handle it
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -75,8 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.accounts.length > 1) {
         navigate('/account-select');
       } else if (data.accounts.length === 1) {
-        setCurrentAccount(data.accounts[0]);
-        navigate('/workflows');
+        updateCurrentAccount(data.accounts[0]);
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -92,6 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await logoutUser(useFallbackMode);
       setAuthData({ user: null, accounts: [] });
       setCurrentAccount(null);
+      localStorage.removeItem('currentAccount');
       navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
@@ -108,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     hasMultipleAccounts,
     login,
     logout,
-    setCurrentAccount,
+    setCurrentAccount: updateCurrentAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
