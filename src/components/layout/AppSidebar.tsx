@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, GitBranch, CircleHelp, User, LogOut, Settings, Building } from 'lucide-react';
+import { Home, GitBranch, CircleHelp, User, LogOut, Settings, Building, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Sidebar,
@@ -23,6 +23,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/auth';
@@ -89,9 +93,10 @@ export function AppSidebar() {
                     <DropdownMenuItem 
                       key={account.id}
                       onClick={() => setCurrentAccount(account)}
-                      className={currentAccount.id === account.id ? "bg-accent" : ""}
+                      className="flex items-center justify-between"
                     >
-                      {account.name}
+                      <span className="truncate">{account.name}</span>
+                      {currentAccount.id === account.id && <Check className="h-4 w-4 text-primary" />}
                     </DropdownMenuItem>
                   ))}
                   <DropdownMenuSeparator />
@@ -157,6 +162,39 @@ export function AppSidebar() {
               <DropdownMenuContent align="start" className="w-56">
                 <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                
+                {accounts.length > 0 && (
+                  <>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        <Building className="mr-2 h-4 w-4" />
+                        <span>Switch Account</span>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent className="min-w-[220px]">
+                          {accounts.map((account) => (
+                            <DropdownMenuItem 
+                              key={account.id}
+                              onClick={() => setCurrentAccount(account)}
+                              className="flex items-center justify-between"
+                            >
+                              <span className="truncate">{account.name}</span>
+                              {currentAccount?.id === account.id && <Check className="h-4 w-4 text-primary" />}
+                            </DropdownMenuItem>
+                          ))}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link to="/account-select" onClick={handleNavItemClick}>
+                              <span>Account Selection</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                
                 <DropdownMenuItem asChild>
                   <Link to="/settings" onClick={handleNavItemClick}>
                     <Settings className="mr-2 h-4 w-4" />
