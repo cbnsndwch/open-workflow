@@ -13,7 +13,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-  useSidebar
+  useSidebar,
+  SidebarSeparator
 } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -91,6 +92,9 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        
+        {/* Add separator between Help and User menu */}
+        <SidebarSeparator />
         
         {/* User dropdown */}
         <DropdownMenu>
