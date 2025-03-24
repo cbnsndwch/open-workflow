@@ -2,7 +2,7 @@
 import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth/AuthContext';
-import { WorkflowProvider } from './contexts/WorkflowContext';
+import { WorkflowProvider } from './contexts/workflow/WorkflowProvider';
 import { useMsw } from './contexts/msw/MswContext';
 
 import { AppLayout } from './components/layout/AppLayout';

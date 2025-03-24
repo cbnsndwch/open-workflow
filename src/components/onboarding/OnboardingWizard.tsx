@@ -2,7 +2,7 @@
 import React from 'react';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
-import { useWorkflowContext } from '@/contexts/WorkflowContext';
+import { useWorkflowContext } from '@/contexts/workflow/WorkflowProvider';
 import { simpleWorkflow } from '@/data/sampleWorkflows';
 import { useAuth } from '@/contexts/auth';
 import {
