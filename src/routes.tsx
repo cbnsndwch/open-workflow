@@ -5,6 +5,7 @@ import WorkflowsPage from "./pages/WorkflowsPage";
 import WorkflowPage from "./pages/WorkflowPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Auth check loader function
 export async function authLoader({ request }: LoaderFunctionArgs) {
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
+    errorElement: <ErrorBoundary />,
     children: [
       {
         // Root path redirects to workflows
@@ -69,10 +71,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />
+    element: <LoginPage />,
+    errorElement: <ErrorBoundary />
   },
   {
     path: "*",
-    element: <NotFound />
+    element: <NotFound />,
+    errorElement: <ErrorBoundary />
   }
 ]);
