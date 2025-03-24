@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Workflow, Github, BookOpen, Mail } from 'lucide-react';
+import { GitBranch, Github, BookOpen, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center mb-4">
-              <Workflow className="h-8 w-8 text-purple-600 dark:text-purple-400 mr-2" />
+              <GitBranch className="h-8 w-8 text-purple-600 dark:text-purple-400 mr-2" />
               <span className="text-xl font-bold">OpenWorkflow</span>
             </div>
           </div>
