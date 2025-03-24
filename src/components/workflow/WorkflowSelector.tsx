@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -10,16 +9,13 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Layout, ChevronDown, Play } from 'lucide-react';
+import { Layout, ChevronDown } from 'lucide-react';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
 
 export function WorkflowSelector() {
   const { 
     selectedWorkflow, 
-    setSelectedWorkflow, 
-    executeActiveWorkflow,
-    isExecuting,
-    editMode
+    setSelectedWorkflow
   } = useWorkflowContext();
 
   const handleSelectWorkflow = (workflow: string) => {
@@ -53,16 +49,6 @@ export function WorkflowSelector() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <Button 
-        variant="outline" 
-        size="icon" 
-        onClick={executeActiveWorkflow}
-        disabled={isExecuting || editMode}
-        title="Execute Workflow"
-      >
-        <Play className="h-4 w-4" />
-      </Button>
     </div>
   );
 }
