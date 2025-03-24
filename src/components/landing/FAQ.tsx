@@ -16,28 +16,28 @@ interface FAQItem {
 const FAQ: React.FC = () => {
   const faqItems: FAQItem[] = [
     {
-      question: "What is a workflow automation platform?",
-      answer: "A workflow automation platform allows you to create, manage, and execute automated processes that connect different tools, applications, and data sources. Our platform specifically focuses on AI-enabled workflows that can handle complex tasks with minimal human intervention."
+      question: "What is this open-source workflow automation platform aiming to do?",
+      answer: "We're building an open-source workflow automation platform that enables creating, managing, and executing automated processes with powerful AI capabilities. Our goal is to make it a drop-in addition to any application, allowing developers to integrate workflow automation with minimal effort."
     },
     {
-      question: "Do I need to know how to code to use the platform?",
-      answer: "No, our platform features a visual workflow builder that allows non-technical users to create workflows using a drag-and-drop interface. More advanced users can also utilize code nodes for custom functionality when needed."
+      question: "When will the platform be available for use?",
+      answer: "We're currently in the early stages of development and gathering interest from the community. By signing up for updates, you'll be the first to know about our progress, access to early previews, and opportunities to contribute to the open-source project."
     },
     {
-      question: "How can I integrate the platform with my existing tools?",
-      answer: "We offer a wide range of pre-built connectors for popular applications and services. Additionally, our platform supports custom API integration, allowing you to connect virtually any system with accessible APIs."
+      question: "How will the platform integrate with existing applications?",
+      answer: "As an open-source solution, our platform is being designed to be a drop-in addition to any application. We're focusing on creating flexible APIs and integration points that will allow developers to easily incorporate workflow automation capabilities into their existing tech stack."
     },
     {
-      question: "Is there a free trial available?",
-      answer: "Yes, we offer a 14-day free trial with full access to all features. No credit card is required to start your trial, and you can upgrade to a paid plan at any time."
+      question: "Will there be a chance to contribute to the project?",
+      answer: "Absolutely! As an open-source initiative, we welcome contributions from developers, designers, and others interested in advancing workflow automation. Once we launch our repository, you'll be able to contribute code, documentation, or ideas to help shape the platform."
     },
     {
-      question: "How secure is the platform?",
-      answer: "Security is our top priority. We employ industry-standard encryption for all data, both at rest and in transit. Our platform is SOC 2 compliant and undergoes regular security audits to ensure your data remains protected."
+      question: "What sets this platform apart from other workflow tools?",
+      answer: "Our platform distinguishes itself by being fully open-source and designed as a drop-in solution for any application. We're specifically focusing on AI-enabled workflows through our model context protocol, which will allow seamless integration of language models and AI capabilities into automated processes."
     },
     {
-      question: "Can I run workflows on a schedule?",
-      answer: "Absolutely! Our platform supports various trigger methods, including scheduled execution. You can set workflows to run at specific times, on recurring schedules, or in response to events from integrated systems."
+      question: "How can I stay updated on the project's progress?",
+      answer: "The best way to stay informed is to sign up for our updates using the form on this page. We'll share development milestones, opportunities for early access, and ways to get involved with the community as the project evolves."
     }
   ];
 
@@ -49,7 +49,7 @@ const FAQ: React.FC = () => {
           <h2 className="text-3xl font-bold text-center">Frequently Asked Questions</h2>
         </div>
         <p className="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-12">
-          Get answers to the most common questions about our workflow automation platform
+          Learn more about our open-source workflow automation platform and how you can get involved
         </p>
 
         <div className="max-w-3xl mx-auto">
