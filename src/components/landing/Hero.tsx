@@ -3,22 +3,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LandingPageFlow from './LandingPageFlow';
 
 const Hero = () => {
   return (
     <header className="bg-gradient-to-r from-purple-100 to-blue-100 py-20">
       <div className="container mx-auto px-6 md:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="flex-1 space-y-6">
+        <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto gap-8">
+          <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
               Open Source Workflow Automation<br />
               <span className="text-amber-500">Powered by AI</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-lg">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Self-hosted workflow execution with direct integration to AI and language models through the model context protocol.
             </p>
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4 pt-4 justify-center">
               <Button size="lg" asChild>
                 <Link to="/login">
                   Get Started <ArrowRight className="ml-2 h-5 w-5" />
@@ -30,9 +29,6 @@ const Hero = () => {
                 </Link>
               </Button>
             </div>
-          </div>
-          <div className="flex-1 h-[300px] w-full md:h-[400px] bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <LandingPageFlow />
           </div>
         </div>
       </div>
