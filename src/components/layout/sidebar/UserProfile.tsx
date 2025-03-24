@@ -43,7 +43,6 @@ export function UserProfile() {
           <div className="flex items-center gap-2">
             <UserAvatar user={user} className="h-8 w-8" />
             <div className="flex flex-col truncate">
-              <span className="text-xs">Logged in as</span>
               <span className="truncate text-xs font-medium">{user.email}</span>
             </div>
           </div>
