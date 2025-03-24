@@ -3,7 +3,7 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth/AuthContext';
 
-import { AppLayout } from './components/layout/AppLayout'; // Changed from default to named import
+import { AppLayout } from './components/layout/AppLayout'; // Use named import
 import LoginPage from './pages/LoginPage';
 import WorkflowsPage from './pages/WorkflowsPage';
 import WorkflowPage from './pages/WorkflowPage';
@@ -11,17 +11,20 @@ import AccountSelectPage from './pages/AccountSelectPage';
 import NotFound from './pages/NotFound';
 import SettingsPage from './pages/SettingsPage';
 
-// Export the router so it can be imported in App.tsx
+// Wrap each route element with AuthProvider
+const wrapWithAuth = (element: React.ReactNode) => (
+  <AuthProvider>{element}</AuthProvider>
+);
+
+// Create and export the router
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: <LoginPage />,
+    element: wrapWithAuth(<LoginPage />),
   },
   {
     path: '/',
-    element: (
-      <AppLayout />
-    ),
+    element: wrapWithAuth(<AppLayout />),
     children: [
       {
         path: '/',
@@ -51,10 +54,7 @@ export const router = createBrowserRouter([
   },
 ]);
 
+// Export the Routes component as default
 export default function Routes() {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
