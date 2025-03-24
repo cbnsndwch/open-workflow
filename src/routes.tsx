@@ -1,26 +1,29 @@
 
-import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, LoaderFunctionArgs, redirect } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import WorkflowsPage from "./pages/WorkflowsPage";
 import WorkflowPage from "./pages/WorkflowPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
-import { useAuth } from "./contexts/AuthContext";
 
-// Protected route component
-const ProtectedRoute = () => {
-  const { user, isLoading } = useAuth();
+// Auth check loader function
+export async function authLoader({ request }: LoaderFunctionArgs) {
+  // Check if user is authenticated
+  const authData = localStorage.getItem('auth');
   
-  if (isLoading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+  // If no auth data is found, redirect to login
+  if (!authData) {
+    // Get the current path to redirect back after login
+    const url = new URL(request.url);
+    const path = url.pathname;
+    
+    // Return a redirect with the current path as a search param
+    return redirect(`/login?redirectTo=${path}`);
   }
   
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <Outlet />;
-};
+  // User is authenticated, return the parsed auth data
+  return JSON.parse(authData);
+}
 
 export const router = createBrowserRouter([
   {
@@ -28,25 +31,25 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="/workflows" replace />
-          },
-          {
-            path: "workflows",
-            element: <WorkflowsPage />
-          },
-          {
-            path: "workflow/:id",
-            element: <WorkflowPage />
-          },
-          {
-            path: "settings",
-            element: <div className="p-6">Settings page coming soon</div>
-          },
-        ]
+        // Root path redirects to workflows
+        index: true,
+        loader: authLoader,
+        element: <Navigate to="/workflows" replace />
+      },
+      {
+        path: "workflows",
+        loader: authLoader,
+        element: <WorkflowsPage />
+      },
+      {
+        path: "workflow/:id",
+        loader: authLoader,
+        element: <WorkflowPage />
+      },
+      {
+        path: "settings",
+        loader: authLoader,
+        element: <div className="p-6">Settings page coming soon</div>
       },
       {
         path: "help",

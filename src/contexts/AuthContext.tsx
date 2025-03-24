@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 type User = {
@@ -39,7 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [authData, setAuthData] = useState<AuthData>({ user: null, organizations: [] });
   const [currentOrganization, setCurrentOrganization] = useState<Organization | null>(null);
-  const navigate = useNavigate();
 
   // Set current organization when auth changes
   useEffect(() => {
@@ -84,11 +82,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       setAuthData(data);
       
-      // Store in localStorage for persistence
+      // Store in localStorage for persistence and for the loader to use
       localStorage.setItem('auth', JSON.stringify(data));
       
       toast.success('Logged in successfully');
-      navigate('/workflows');
     } catch (error) {
       console.error('Login error:', error);
       toast.error(error instanceof Error ? error.message : 'Login failed');
@@ -106,7 +103,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setCurrentOrganization(null);
       localStorage.removeItem('auth');
       toast.success('Logged out successfully');
-      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Logout failed');

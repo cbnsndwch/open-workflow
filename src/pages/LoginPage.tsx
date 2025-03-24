@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,10 +27,13 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const { login, user, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirectTo') || '/workflows';
 
   // Redirect if already logged in
   if (user && !isLoading) {
-    return <Navigate to="/workflows" replace />;
+    return <Navigate to={redirectTo} replace />;
   }
 
   const form = useForm<LoginFormValues>({
@@ -44,6 +47,8 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       await login(data.email, data.password);
+      // After successful login, navigate to the redirectTo path
+      navigate(redirectTo);
     } catch (error) {
       // Error is already handled in the login function
     }
