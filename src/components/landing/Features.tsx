@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Lock, Bot, Workflow, Zap, Code, Database } from 'lucide-react';
 import FeatureCard from './FeatureCard';
@@ -22,12 +23,7 @@ const Features = () => {
       description: "Design complex workflows without code",
       content: "Intuitive drag-and-drop interface makes it easy to create, test, and deploy sophisticated process automation."
     },
-    {
-      icon: Zap,
-      title: "High Performance",
-      description: "Execute workflows at scale",
-      content: "Efficiently process thousands of workflow executions with minimal resources, optimized for speed and reliability."
-    },
+    // High Performance feature removed temporarily
     {
       icon: Code,
       title: "Open Source",
