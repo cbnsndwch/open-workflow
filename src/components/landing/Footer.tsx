@@ -13,9 +13,6 @@ const Footer = () => {
               <Workflow className="h-8 w-8 text-purple-600 dark:text-purple-400 mr-2" />
               <span className="text-xl font-bold">OpenWorkflow</span>
             </div>
-            <p className="text-gray-600 dark:text-gray-300 text-center md:text-left">
-              Building the future of workflow automation with AI integration.
-            </p>
           </div>
           
           <div className="flex flex-col items-center md:items-start space-y-4">
