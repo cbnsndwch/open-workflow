@@ -31,8 +31,12 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
   const handleAddSampleWorkflow = async () => {
     if (!currentAccount) return;
     
+    // Prevent multiple clicks
+    if (isAdding) return;
+    
     setIsAdding(true);
     try {
+      console.log("Adding sample workflow...");
       // Create a new workflow based on the sample
       const newWorkflow = {
         ...simpleWorkflow,
