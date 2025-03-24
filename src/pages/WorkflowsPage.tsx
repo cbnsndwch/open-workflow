@@ -41,7 +41,7 @@ function WorkflowCard({ workflow }) {
       <CardFooter className="flex justify-between pt-2">
         <span className="text-xs text-muted-foreground">Last modified: {formattedDate}</span>
         <Button asChild size="sm">
-          <Link to={`${accountId}/workflow/${workflow.id}`}>Open</Link>
+          <Link to={`/${accountId}/workflow/${workflow.id}`}>Open</Link>
         </Button>
       </CardFooter>
     </Card>
