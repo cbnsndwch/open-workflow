@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import AccountSelectPage from "./pages/AccountSelectPage";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { AuthProvider } from "./contexts/auth";
 
 // Auth check loader function
 export async function authLoader({ request }: LoaderFunctionArgs) {
@@ -40,10 +41,15 @@ export async function authLoader({ request }: LoaderFunctionArgs) {
 // Create a custom error component using ErrorBoundary
 const RouteErrorBoundary = () => <ErrorBoundary />;
 
+// Wrap each route with the AuthProvider
+const AuthRoute = ({ children }: { children: React.ReactNode }) => (
+  <AuthProvider>{children}</AuthProvider>
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
+    element: <AuthRoute><AppLayout /></AuthRoute>,
     errorElement: <RouteErrorBoundary />,
     children: [
       {
@@ -75,12 +81,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: <AuthRoute><LoginPage /></AuthRoute>,
     errorElement: <RouteErrorBoundary />
   },
   {
     path: "/account-select",
-    element: <AccountSelectPage />,
+    element: <AuthRoute><AccountSelectPage /></AuthRoute>,
     loader: authLoader,
     errorElement: <RouteErrorBoundary />
   },
