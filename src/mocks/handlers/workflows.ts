@@ -1,3 +1,4 @@
+
 import { http, HttpResponse } from 'msw';
 import { getWorkflowsForAccount, findWorkflowById, addWorkflowToAccount } from '../data/workflows';
 import { WorkflowWithMeta } from '@/contexts/workflow/types';
@@ -126,7 +127,6 @@ export const workflowHandlers = [
       // Make sure updatedData is treated as an object when spreading
       const updatedWorkflow = {
         ...workflow,
-        // Make sure updatedData is treated as an object when spreading
         ...(typeof updatedData === 'object' && updatedData !== null ? updatedData : {}),
         id: workflow.id,
         lastModified: new Date().toISOString()
