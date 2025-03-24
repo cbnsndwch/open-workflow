@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
 import { useAuth } from '@/contexts/auth';
@@ -47,9 +47,19 @@ const WorkflowCard = ({ workflow }) => {
 
 const WorkflowsPage = () => {
   const { workflows, isLoading } = useWorkflowContext();
-  const { currentAccount } = useAuth();
+  const { currentAccount, user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkedForWorkflows, setCheckedForWorkflows] = useState(false);
+  
+  // If no user is logged in, don't render anything (auth context will handle redirect)
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  // If user is logged in but no account is selected, redirect to account selection
+  if (user && !currentAccount) {
+    return <Navigate to="/account-select" replace />;
+  }
   
   // Check if the user has no workflows and show the onboarding wizard
   useEffect(() => {

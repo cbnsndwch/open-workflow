@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth/AuthContext';
 import { WorkflowProvider } from './contexts/WorkflowContext';
 
-import { AppLayout } from './components/layout/AppLayout'; // Use named import
+import { AppLayout } from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
 import WorkflowsPage from './pages/WorkflowsPage';
 import WorkflowPage from './pages/WorkflowPage';
