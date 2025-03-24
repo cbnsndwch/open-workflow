@@ -53,7 +53,7 @@ export function AppSidebar() {
       <SidebarHeader className="px-2 py-4">
         <div className="flex items-center gap-2 px-2">
           <GitBranch className="h-6 w-6 text-primary" />
-          <span className="font-semibold text-lg">Workflow SDK</span>
+          <span className="font-semibold text-lg">OpenWorkflow</span>
         </div>
       </SidebarHeader>
       
