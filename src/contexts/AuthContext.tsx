@@ -68,16 +68,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        // Then check API
-        const response = await fetch('/api/auth/me');
-        if (response.ok) {
-          const data = await response.json();
-          const formattedData = {
-            user: data.user || null,
-            organizations: data.organizations || []
-          };
-          setAuthData(formattedData);
-          localStorage.setItem('auth', JSON.stringify(formattedData));
+        // Then check API - using the mock service worker API
+        try {
+          const response = await fetch('/api/auth/me');
+          
+          // Check if response is JSON before attempting to parse
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            if (response.ok) {
+              const data = await response.json();
+              const formattedData = {
+                user: data.user || null,
+                organizations: data.organizations || []
+              };
+              setAuthData(formattedData);
+              localStorage.setItem('auth', JSON.stringify(formattedData));
+            }
+          } else {
+            console.log('Not a JSON response from auth check, skipping');
+          }
+        } catch (error) {
+          console.error('API auth check failed:', error);
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -92,18 +103,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     try {
+      // Using the mock service worker API
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, password }),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Login failed');
+      // Check if response is JSON before attempting to parse
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('Expected JSON response but got:', contentType);
+        throw new Error('Server error: unexpected response format');
       }
-
+      
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
       
       // Ensure consistent data structure
       const formattedData = {

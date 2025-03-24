@@ -42,40 +42,48 @@ export const memberships = [
 ];
 
 export const handlers = [
-  // Login handler - updated to handle either username or email
+  // Login handler - properly handle username or email
   http.post('/api/auth/login', async ({ request }) => {
-    // Type the request body correctly
-    const { identifier, password } = await request.json() as LoginRequest;
-    
-    // Find user by email or username
-    const user = users.find(
-      (u) => (u.email === identifier || u.username === identifier) && u.password === password
-    );
-    
-    if (!user) {
-      return new HttpResponse(
-        JSON.stringify({ error: 'Invalid credentials' }), 
-        { status: 401 }
+    try {
+      // Type the request body correctly
+      const { identifier, password } = await request.json() as LoginRequest;
+      
+      // Find user by email or username
+      const user = users.find(
+        (u) => (u.email === identifier || u.username === identifier) && u.password === password
+      );
+      
+      if (!user) {
+        return HttpResponse.json(
+          { error: 'Invalid credentials' }, 
+          { status: 401 }
+        );
+      }
+      
+      // Get user's organizations
+      const userMemberships = memberships.filter(m => m.userId === user.id);
+      const userOrgs = userMemberships.map(membership => {
+        const org = organizations.find(o => o.id === membership.organizationId);
+        return { ...org, role: membership.role };
+      });
+      
+      return HttpResponse.json({
+        user: { 
+          id: user.id, 
+          email: user.email, 
+          name: user.name, 
+          role: user.role,
+          username: user.username 
+        },
+        organizations: userOrgs,
+      });
+    } catch (error) {
+      console.error('Error in login handler:', error);
+      return HttpResponse.json(
+        { error: 'Server error' },
+        { status: 500 }
       );
     }
-    
-    // Get user's organizations
-    const userMemberships = memberships.filter(m => m.userId === user.id);
-    const userOrgs = userMemberships.map(membership => {
-      const org = organizations.find(o => o.id === membership.organizationId);
-      return { ...org, role: membership.role };
-    });
-    
-    return HttpResponse.json({
-      user: { 
-        id: user.id, 
-        email: user.email, 
-        name: user.name, 
-        role: user.role,
-        username: user.username 
-      },
-      organizations: userOrgs,
-    });
   }),
   
   // Get current user
@@ -83,30 +91,46 @@ export const handlers = [
     const authData = localStorage.getItem('auth');
     
     if (!authData) {
-      return new HttpResponse(null, { status: 401 });
+      return HttpResponse.json(null, { status: 401 });
     }
     
-    return HttpResponse.json(JSON.parse(authData));
+    try {
+      return HttpResponse.json(JSON.parse(authData));
+    } catch (error) {
+      console.error('Error parsing auth data in /me endpoint:', error);
+      return HttpResponse.json(
+        { error: 'Invalid auth data' },
+        { status: 500 }
+      );
+    }
   }),
   
   http.post('/api/auth/logout', () => {
-    return new HttpResponse(null, { status: 200 });
+    return HttpResponse.json({ success: true }, { status: 200 });
   }),
   
   http.get('/api/organizations', () => {
     const authData = localStorage.getItem('auth');
     
     if (!authData) {
-      return new HttpResponse(null, { status: 401 });
+      return HttpResponse.json(null, { status: 401 });
     }
     
-    const { user } = JSON.parse(authData);
-    const userMemberships = memberships.filter(m => m.userId === user.id);
-    const userOrgs = userMemberships.map(membership => {
-      const org = organizations.find(o => o.id === membership.organizationId);
-      return { ...org, role: membership.role };
-    });
-    
-    return HttpResponse.json(userOrgs);
+    try {
+      const { user } = JSON.parse(authData);
+      const userMemberships = memberships.filter(m => m.userId === user.id);
+      const userOrgs = userMemberships.map(membership => {
+        const org = organizations.find(o => o.id === membership.organizationId);
+        return { ...org, role: membership.role };
+      });
+      
+      return HttpResponse.json(userOrgs);
+    } catch (error) {
+      console.error('Error in organizations endpoint:', error);
+      return HttpResponse.json(
+        { error: 'Server error' },
+        { status: 500 }
+      );
+    }
   }),
 ];
