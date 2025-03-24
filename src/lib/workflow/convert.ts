@@ -8,6 +8,8 @@ import { applyDagreLayout } from './layout';
  */
 export function workflowToReactFlow(workflow: WorkflowGraph): { nodes: Node[], edges: Edge[] } {
   if (!workflow) return { nodes: [], edges: [] };
+  
+  console.log("Starting workflow conversion with", workflow.nodes.length, "nodes");
 
   // Create nodes
   const flowNodes: Node[] = workflow.nodes.map((node) => ({
@@ -26,6 +28,8 @@ export function workflowToReactFlow(workflow: WorkflowGraph): { nodes: Node[], e
 
   // Apply layout
   const layoutNodes = applyDagreLayout(flowNodes, workflow);
+  
+  console.log("After layout applied:", layoutNodes.length, "nodes with positions");
 
   // Create edges from workflow connections
   const flowEdges: Edge[] = [];
@@ -61,6 +65,7 @@ export function workflowToReactFlow(workflow: WorkflowGraph): { nodes: Node[], e
     });
   });
 
+  console.log("Finished conversion:", layoutNodes.length, "nodes,", flowEdges.length, "edges");
   return { nodes: layoutNodes, edges: flowEdges };
 }
 

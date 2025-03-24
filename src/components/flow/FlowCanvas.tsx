@@ -30,6 +30,8 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
     onConnect,
   } = useFlowContext();
 
+  console.log('FlowCanvas rendering with:', nodes.length, 'nodes and', edges.length, 'edges');
+
   return (
     <ReactFlow
       nodes={nodes}

@@ -32,8 +32,6 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
 }) => {
   const [initialNodes, setInitialNodes] = useState([]);
   const [initialEdges, setInitialEdges] = useState([]);
-  const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<string | null>(null);
-  const [showNodePalette, setShowNodePalette] = useState(false);
 
   useEffect(() => {
     if (!workflow) return;
@@ -58,6 +56,9 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
     setInitialNodes(nodesWithHandlers);
     setInitialEdges(edges);
   }, [workflow]);
+
+  const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<string | null>(null);
+  const [showNodePalette, setShowNodePalette] = useState(false);
 
   const handleConnect = (params) => {
     if (readOnly || !onWorkflowChange) return;
