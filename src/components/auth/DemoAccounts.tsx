@@ -41,12 +41,12 @@ export const DemoAccounts: React.FC = () => {
           variant="outline" 
           size="sm" 
           className="flex justify-start gap-2 h-auto py-2"
-          onClick={() => handleQuickLogin("user@example.com", "password")}
+          onClick={() => handleQuickLogin("user", "password")}
         >
           <LogIn className="h-3.5 w-3.5" />
           <div className="flex flex-col items-start text-xs">
             <span className="font-medium">User</span>
-            <span className="text-muted-foreground text-[10px]">user@example.com</span>
+            <span className="text-muted-foreground text-[10px]">user / password</span>
           </div>
         </Button>
       </div>
