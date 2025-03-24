@@ -69,6 +69,9 @@ export default {
 					3: 'hsl(var(--chart-3))',
 					4: 'hsl(var(--chart-4))',
 					5: 'hsl(var(--chart-5))',
+				},
+				orange: {
+					DEFAULT: '#F97316', // The orange color from the screenshot
 				}
 			},
 			borderRadius: {
