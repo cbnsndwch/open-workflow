@@ -3,14 +3,28 @@ import { http, HttpResponse } from 'msw';
 
 // Define the login request type
 interface LoginRequest {
-  email: string;
+  identifier: string;
   password: string;
 }
 
-// Mock user data
+// Mock user data with usernames
 export const users = [
-  { id: '1', email: 'admin@example.com', password: 'password', name: 'Admin User', role: 'admin' },
-  { id: '2', email: 'user@example.com', password: 'password', name: 'Regular User', role: 'user' },
+  { 
+    id: '1', 
+    email: 'admin@example.com', 
+    username: 'admin', 
+    password: 'password', 
+    name: 'Admin User', 
+    role: 'admin' 
+  },
+  { 
+    id: '2', 
+    email: 'user@example.com', 
+    username: 'user', 
+    password: 'password', 
+    name: 'Regular User', 
+    role: 'user' 
+  },
 ];
 
 // Mock organizations data
@@ -28,13 +42,14 @@ export const memberships = [
 ];
 
 export const handlers = [
-  // Login handler
+  // Login handler - updated to handle either username or email
   http.post('/api/auth/login', async ({ request }) => {
     // Type the request body correctly
-    const { email, password } = await request.json() as LoginRequest;
+    const { identifier, password } = await request.json() as LoginRequest;
     
+    // Find user by email or username
     const user = users.find(
-      (u) => u.email === email && u.password === password
+      (u) => (u.email === identifier || u.username === identifier) && u.password === password
     );
     
     if (!user) {
@@ -52,7 +67,13 @@ export const handlers = [
     });
     
     return HttpResponse.json({
-      user: { id: user.id, email: user.email, name: user.name, role: user.role },
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        name: user.name, 
+        role: user.role,
+        username: user.username 
+      },
       organizations: userOrgs,
     });
   }),
@@ -68,12 +89,10 @@ export const handlers = [
     return HttpResponse.json(JSON.parse(authData));
   }),
   
-  // Logout handler
   http.post('/api/auth/logout', () => {
     return new HttpResponse(null, { status: 200 });
   }),
   
-  // Get organizations
   http.get('/api/organizations', () => {
     const authData = localStorage.getItem('auth');
     

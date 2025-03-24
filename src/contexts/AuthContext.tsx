@@ -7,6 +7,7 @@ type User = {
   email: string;
   name: string;
   role: string;
+  username?: string;
 };
 
 type Organization = {
@@ -27,7 +28,7 @@ interface AuthContextType {
   user: User | null;
   organizations: Organization[];
   currentOrganization: Organization | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setCurrentOrganization: (org: Organization) => void;
 }
@@ -88,13 +89,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       if (!response.ok) {

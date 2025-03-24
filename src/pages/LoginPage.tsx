@@ -23,10 +23,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { GitBranch, Mail, Lock, EyeOff, Eye } from 'lucide-react';
+import { GitBranch, Mail, Lock, EyeOff, Eye, User } from 'lucide-react';
 
+// Updated schema to accept either email or username
 const loginSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address' }),
+  identifier: z.string().min(2, { message: 'Please enter your username or email' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
 });
 
@@ -55,7 +56,7 @@ export default function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      identifier: '',
       password: '',
     },
   });
@@ -63,7 +64,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       if (typeof login === 'function') {
-        await login(data.email, data.password);
+        await login(data.identifier, data.password);
         navigate(redirectTo);
       }
     } catch (error) {
@@ -103,15 +104,15 @@ export default function LoginPage() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="identifier"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground/80">Email</FormLabel>
+                      <FormLabel className="text-foreground/80">Username or Email</FormLabel>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                         <FormControl>
                           <Input 
-                            placeholder="email@example.com" 
+                            placeholder="username or email" 
                             className="pl-10 bg-background/50 border-input/50 focus-visible:ring-primary/50" 
                             {...field} 
                           />
@@ -183,7 +184,7 @@ export default function LoginPage() {
               <div className="grid grid-cols-2 gap-x-2 text-muted-foreground">
                 <div className="flex flex-col space-y-1">
                   <span>🧑‍💼 Admin:</span>
-                  <code className="rounded bg-muted/30 px-1 py-0.5 text-[10px]">admin@example.com</code>
+                  <code className="rounded bg-muted/30 px-1 py-0.5 text-[10px]">admin</code>
                   <code className="rounded bg-muted/30 px-1 py-0.5 text-[10px]">password</code>
                 </div>
                 <div className="flex flex-col space-y-1">
