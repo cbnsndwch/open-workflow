@@ -2,8 +2,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { MoonStar, Sun } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 interface PageHeaderProps {
   title?: string;
@@ -24,11 +23,7 @@ export function PageHeader({ title }: PageHeaderProps) {
         </div>
         
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="h-9 w-9">
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <MoonStar className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
+          <ThemeToggle />
         </div>
       </div>
     </header>

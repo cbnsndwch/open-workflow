@@ -1,71 +1,91 @@
 
 import { useState } from 'react';
-import { WorkflowGraph } from '@/lib/workflow/types';
-import { executeWorkflow } from '@/lib/workflow/executor';
-import { toast } from 'sonner';
+import { WorkflowGraph, Node } from '@/lib/workflow/types';
+import { executeWorkflow, NodeExecutorFn } from '@/lib/workflow/executor';
+
+type ExecutionStatus = 'idle' | 'executing' | 'completed' | 'error';
+
+interface NodeStatus {
+  status: 'pending' | 'executing' | 'completed' | 'error';
+  result?: Record<string, any>;
+  error?: string;
+}
 
 export const useWorkflowExecution = (workflow: WorkflowGraph) => {
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [executionStatus, setExecutionStatus] = useState<string>('');
-  const [executionNodes, setExecutionNodes] = useState<string[]>([]);
-  
+  const [executionStatus, setExecutionStatus] = useState<ExecutionStatus>('idle');
+  const [executionNodes, setExecutionNodes] = useState<Record<string, NodeStatus>>({});
+
+  // Custom executor functions
+  const nodeExecutors: Record<string, NodeExecutorFn> = {
+    // Define custom executors for specific node types
+    // These should return promises with the execution result
+    'core:http_request': async (node: Node): Promise<Record<string, any>> => {
+      // Simulate HTTP request
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ status: 200, body: { success: true, data: 'Sample response data' } });
+        }, 1500);
+      });
+    }
+  };
+
+  // Handlers for workflow execution
+  const handleNodeStart = async (nodeId: string): Promise<Record<string, any>> => {
+    setExecutionNodes((prev) => ({
+      ...prev,
+      [nodeId]: { status: 'executing' }
+    }));
+    return {}; // Return empty object to satisfy the type
+  };
+
+  const handleNodeSuccess = async (nodeId: string, result: Record<string, any>): Promise<Record<string, any>> => {
+    setExecutionNodes((prev) => ({
+      ...prev,
+      [nodeId]: { status: 'completed', result }
+    }));
+    return result;
+  };
+
+  const handleNodeError = async (nodeId: string, error: any): Promise<Record<string, any>> => {
+    setExecutionNodes((prev) => ({
+      ...prev,
+      [nodeId]: { status: 'error', error: error.message || String(error) }
+    }));
+    return { error: error.message || String(error) };
+  };
+
   const executeActiveWorkflow = async () => {
-    setIsExecuting(true);
-    setExecutionStatus('Executing workflow...');
-    setExecutionNodes([]);
+    if (isExecuting) return;
     
-    const visitedNodes: string[] = [];
+    setIsExecuting(true);
+    setExecutionStatus('executing');
+    setExecutionNodes({});
+    
+    // Reset nodes to pending state
+    const initialNodes: Record<string, NodeStatus> = {};
+    workflow.nodes.forEach(node => {
+      initialNodes[node.id] = { status: 'pending' };
+    });
+    setExecutionNodes(initialNodes);
     
     try {
-      const result = await executeWorkflow(workflow, {
-        nodeExecutors: {
-          'core:http_request': async (node, inputs, context) => {
-            console.log(`Executing HTTP request node: ${node.name}`);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            return {
-              outputs: {
-                main: { status: 200, data: { message: 'Success' } }
-              }
-            };
-          }
-        },
-        onNodeStart: (nodeId) => {
-          const node = workflow.nodes.find(n => n.id === nodeId);
-          if (node) {
-            visitedNodes.push(node.name);
-            setExecutionNodes([...visitedNodes]);
-            setExecutionStatus(`Executing node: ${node.name}`);
-          }
-        },
-        onNodeComplete: (nodeId, result) => {
-          const node = workflow.nodes.find(n => n.id === nodeId);
-          if (node) {
-            setExecutionStatus(`Completed node: ${node.name}`);
-          }
-        },
-        onNodeError: (nodeId, error) => {
-          const node = workflow.nodes.find(n => n.id === nodeId);
-          if (node) {
-            setExecutionStatus(`Error executing node: ${node.name} - ${error.message}`);
-          }
-        }
+      await executeWorkflow(workflow, {
+        nodeExecutors,
+        onNodeStart: handleNodeStart,
+        onNodeSuccess: handleNodeSuccess,
+        onNodeError: handleNodeError
       });
       
-      if (result.successful) {
-        setExecutionStatus('Workflow execution completed successfully');
-        toast.success('Workflow executed successfully');
-      } else {
-        setExecutionStatus(`Workflow execution completed with errors: ${Object.keys(result.errors).length} errors`);
-        toast.error('Workflow execution failed');
-      }
+      setExecutionStatus('completed');
     } catch (error) {
-      setExecutionStatus(`Workflow execution failed: ${(error as Error).message}`);
-      toast.error(`Execution failed: ${(error as Error).message}`);
+      console.error('Workflow execution failed:', error);
+      setExecutionStatus('error');
     } finally {
       setIsExecuting(false);
     }
   };
-  
+
   return {
     isExecuting,
     executionStatus,
