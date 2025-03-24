@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 import { useWorkflowContext } from '@/contexts/workflow';
 import WorkflowEditor from '@/components/WorkflowEditor';
-import { Settings } from 'lucide-react';
+import { Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const WorkflowPage = () => {
