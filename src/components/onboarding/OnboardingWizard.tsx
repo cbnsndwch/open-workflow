@@ -110,7 +110,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
                 <CardTitle className="flex items-center">
                   <ArrowRight className="w-5 h-5 mr-2" />
                   Guided Setup
-                  <Badge variant="secondary" className="ml-2 text-xs">Soon</Badge>
+                  <Badge variant="secondary" className="ml-2 text-xs">coming soon</Badge>
                 </CardTitle>
                 <CardDescription>Answer a few questions to create your workflow</CardDescription>
               </CardHeader>
