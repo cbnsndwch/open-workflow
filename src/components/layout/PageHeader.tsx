@@ -1,8 +1,11 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { useWorkflowContext } from '@/contexts/WorkflowContext';
 
 interface PageHeaderProps {
   title?: string;
@@ -10,16 +13,37 @@ interface PageHeaderProps {
 
 export function PageHeader({ title }: PageHeaderProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { getWorkflowById } = useWorkflowContext();
+  
+  // Check if we're on a workflow page
+  const isWorkflowPage = location.pathname.startsWith('/workflow/');
+  
+  // Get workflow name if on a workflow page
+  const workflowName = isWorkflowPage && id ? getWorkflowById(id)?.name : '';
   
   // Determine title based on route if not provided
-  const pageTitle = title || getPageTitle(location.pathname);
+  const pageTitle = title || 
+    (isWorkflowPage && workflowName ? workflowName : getPageTitle(location.pathname));
   
   return (
     <header className="border-b border-border/30 bg-background px-6 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <SidebarTrigger />
-          <h1 className="text-xl font-semibold">{pageTitle}</h1>
+          {isWorkflowPage ? (
+            <>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/workflows')}>
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <h1 className="text-xl font-semibold">{pageTitle}</h1>
+            </>
+          ) : (
+            <>
+              <SidebarTrigger />
+              <h1 className="text-xl font-semibold">{pageTitle}</h1>
+            </>
+          )}
         </div>
         
         <div className="flex items-center gap-3">

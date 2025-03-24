@@ -4,8 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Play, Save } from 'lucide-react';
 
 const WorkflowPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,14 +11,13 @@ const WorkflowPage = () => {
   const {
     getWorkflowById,
     updateWorkflow,
-    executeWorkflow,
     isExecuting,
     executionStatus,
-    executionNodes,
-    executionNodeIds
+    executionNodeIds,
+    editMode,
+    setEditMode
   } = useWorkflowContext();
   
-  const [editMode, setEditMode] = useState(false);
   const [currentWorkflow, setCurrentWorkflow] = useState(getWorkflowById(id || ''));
   const [hasChanges, setHasChanges] = useState(false);
   
@@ -45,19 +42,11 @@ const WorkflowPage = () => {
   const handleWorkflowChange = (updatedWorkflow: any) => {
     setCurrentWorkflow(updatedWorkflow);
     setHasChanges(true);
-  };
-  
-  const handleSave = () => {
-    if (currentWorkflow && id) {
-      updateWorkflow(id, currentWorkflow);
+    
+    if (id) {
+      updateWorkflow(id, updatedWorkflow);
       setHasChanges(false);
       toast.success('Workflow saved successfully');
-    }
-  };
-  
-  const handleExecute = () => {
-    if (id) {
-      executeWorkflow(id);
     }
   };
   
@@ -67,48 +56,6 @@ const WorkflowPage = () => {
   
   return (
     <div className="flex flex-col h-full">
-      <div className="p-4 border-b flex items-center justify-between bg-background">
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/workflows')}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <h1 className="text-xl font-semibold">{currentWorkflow.name}</h1>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <Button 
-            variant={editMode ? "outline" : "default"} 
-            onClick={() => setEditMode(false)}
-            className={!editMode ? "bg-primary" : ""}
-          >
-            View
-          </Button>
-          <Button 
-            variant={editMode ? "default" : "outline"} 
-            onClick={() => setEditMode(true)}
-            className={editMode ? "bg-primary" : ""}
-          >
-            Edit
-          </Button>
-          
-          {hasChanges && (
-            <Button onClick={handleSave}>
-              <Save className="h-4 w-4 mr-1" />
-              Save
-            </Button>
-          )}
-          
-          <Button 
-            onClick={handleExecute} 
-            disabled={isExecuting || editMode}
-            variant="outline"
-          >
-            <Play className="h-4 w-4 mr-1" />
-            Execute
-          </Button>
-        </div>
-      </div>
-      
       <div className="flex-1 overflow-hidden">
         <WorkflowPanel
           workflow={currentWorkflow}
