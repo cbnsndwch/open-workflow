@@ -1,103 +1,123 @@
 
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Edit, Play } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/auth';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
+
+const WorkflowCard = ({ workflow }) => {
+  const date = new Date(workflow.lastModified);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+  
+  return (
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg">{workflow.name}</CardTitle>
+        <CardDescription>{workflow.type}</CardDescription>
+      </CardHeader>
+      <CardContent className="pb-2">
+        <div className="h-32 bg-muted/30 rounded-md flex items-center justify-center">
+          <span className="text-sm text-muted-foreground">Workflow Preview</span>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between pt-2">
+        <span className="text-xs text-muted-foreground">Last modified: {formattedDate}</span>
+        <Button asChild size="sm">
+          <Link to={`/workflow/${workflow.id}`}>Open</Link>
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
 
 const WorkflowsPage = () => {
-  const navigate = useNavigate();
   const { workflows, isLoading } = useWorkflowContext();
   const { currentAccount } = useAuth();
-
-  const handleViewWorkflow = (id: string) => {
-    navigate(`/workflow/${id}`);
-  };
-
-  if (!currentAccount) {
-    return (
-      <div className="container py-6">
-        <h1 className="text-2xl font-bold mb-6">Workflows</h1>
-        <p className="text-muted-foreground">Please select an account to view workflows.</p>
-      </div>
-    );
-  }
-
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [checkedForWorkflows, setCheckedForWorkflows] = useState(false);
+  
+  // Check if the user has no workflows and show the onboarding wizard
+  useEffect(() => {
+    if (!isLoading && workflows.length === 0 && !checkedForWorkflows && currentAccount) {
+      setShowOnboarding(true);
+      setCheckedForWorkflows(true);
+    } else if (workflows.length > 0 && !checkedForWorkflows) {
+      setCheckedForWorkflows(true);
+    }
+  }, [isLoading, workflows, currentAccount, checkedForWorkflows]);
+  
   return (
-    <div className="container py-6">
-      <h1 className="text-2xl font-bold mb-2">Workflows</h1>
-      <p className="text-muted-foreground mb-6">
-        Showing workflows for {currentAccount.name}
-      </p>
-      
-      <div className="rounded-md border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Nodes</TableHead>
-              <TableHead>Last Modified</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              // Loading skeletons
-              Array.from({ length: 3 }).map((_, index) => (
-                <TableRow key={`skeleton-${index}`}>
-                  <TableCell><Skeleton className="h-5 w-40" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-10" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                  <TableCell className="text-right">
-                    <Skeleton className="h-8 w-20 ml-auto" />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : workflows.length > 0 ? (
-              workflows.map((workflow) => (
-                <TableRow key={workflow.id}>
-                  <TableCell className="font-medium">{workflow.name}</TableCell>
-                  <TableCell>{workflow.type}</TableCell>
-                  <TableCell>{workflow.nodes.length}</TableCell>
-                  <TableCell>
-                    {new Date(workflow.lastModified).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleViewWorkflow(workflow.id)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                  No workflows found for this account
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+    <div className="container py-8">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Workflows</h1>
+          <p className="text-muted-foreground">
+            {currentAccount ? `Manage your workflows in ${currentAccount.name}` : 'Manage your workflows'}
+          </p>
+        </div>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" /> New Workflow
+        </Button>
       </div>
+      
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-1/2 mt-2" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-32 w-full" />
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-9 w-20" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : workflows.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {workflows.map((workflow) => (
+            <WorkflowCard key={workflow.id} workflow={workflow} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold">No workflows found</h2>
+          <p className="text-muted-foreground mt-2">
+            Create a new workflow or use the onboarding wizard to get started.
+          </p>
+          <Button 
+            className="mt-4" 
+            onClick={() => setShowOnboarding(true)}
+          >
+            Get Started
+          </Button>
+        </div>
+      )}
+      
+      <OnboardingWizard 
+        open={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
     </div>
   );
 };

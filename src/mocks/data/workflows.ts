@@ -52,6 +52,26 @@ export const getWorkflowsForAccount = (accountId: string): WorkflowWithMeta[] =>
   return accountWorkflows[accountId] || [];
 };
 
+// Add a workflow to an account
+export const addWorkflowToAccount = (workflow: WorkflowWithMeta): WorkflowWithMeta => {
+  const { accountId } = workflow;
+  
+  // Ensure the account exists in our storage
+  if (!accountWorkflows[accountId]) {
+    accountWorkflows[accountId] = [];
+  }
+  
+  // Ensure workflow has an ID
+  if (!workflow.id) {
+    workflow.id = `workflow-${Date.now()}`;
+  }
+  
+  // Add the workflow to the account
+  accountWorkflows[accountId].push(workflow);
+  
+  return workflow;
+};
+
 // Get all workflows (for admin purposes)
 export const getAllWorkflows = (): WorkflowWithMeta[] => {
   return Object.values(accountWorkflows).flat();

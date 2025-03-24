@@ -1,6 +1,6 @@
 
 import { http, HttpResponse } from 'msw';
-import { getWorkflowsForAccount, findWorkflowById } from '../data/workflows';
+import { getWorkflowsForAccount, findWorkflowById, addWorkflowToAccount } from '../data/workflows';
 
 export const workflowHandlers = [
   // Get workflows for an account
@@ -33,6 +33,51 @@ export const workflowHandlers = [
         }
       }
     );
+  }),
+  
+  // Create a new workflow
+  http.post('/api/workflows', async ({ request }) => {
+    console.log("MSW: Create workflow request intercepted");
+    
+    try {
+      const workflow = await request.json();
+      
+      if (!workflow.accountId) {
+        return new HttpResponse(
+          JSON.stringify({ error: 'Account ID is required' }),
+          { 
+            status: 400,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+      }
+      
+      // Add the workflow to the account
+      const newWorkflow = addWorkflowToAccount(workflow);
+      
+      return new HttpResponse(
+        JSON.stringify(newWorkflow),
+        { 
+          status: 201,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error in workflow create handler:', error);
+      return new HttpResponse(
+        JSON.stringify({ error: 'Invalid request' }),
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
   }),
   
   // Get a specific workflow by ID
@@ -90,8 +135,7 @@ export const workflowHandlers = [
       // In a real implementation, this would update the stored data
       // For this mock, we'll just return success
       
-      // The issue is here - we're trying to spread something that might not be an object
-      // Let's ensure we're spreading objects properly
+      // Make sure updatedData is treated as an object when spreading
       const updatedWorkflow = {
         ...workflow,
         // Make sure updatedData is treated as an object when spreading

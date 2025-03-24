@@ -8,6 +8,7 @@ interface WorkflowContextType {
   workflows: WorkflowWithMeta[];
   getWorkflowById: (id: string) => WorkflowWithMeta | undefined;
   updateWorkflow: (id: string, workflow: WorkflowGraph) => void;
+  addWorkflow: (workflow: WorkflowWithMeta) => Promise<void>;
   executeWorkflow: (id: string) => void;
   executeActiveWorkflow: () => void;
   isExecuting: boolean;
@@ -131,6 +132,36 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
   
+  const addWorkflow = async (workflow: WorkflowWithMeta): Promise<void> => {
+    if (!currentAccount) throw new Error("No active account");
+    
+    try {
+      // Add the workflow to the API
+      const response = await fetch('/api/workflows', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...workflow,
+          accountId: currentAccount.id,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to add workflow: ${response.statusText}`);
+      }
+      
+      const newWorkflow = await response.json();
+      
+      // Update the local state with the new workflow
+      setWorkflows(prevWorkflows => [...prevWorkflows, newWorkflow]);
+    } catch (error) {
+      console.error('Error adding workflow:', error);
+      throw error;
+    }
+  };
+  
   const executeWorkflow = (id: string) => {
     setActiveWorkflowId(id);
     // We need to wait for activeWorkflow to be updated before executing
@@ -151,6 +182,7 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         workflows,
         getWorkflowById,
         updateWorkflow,
+        addWorkflow,
         executeWorkflow,
         executeActiveWorkflow,
         isExecuting,
