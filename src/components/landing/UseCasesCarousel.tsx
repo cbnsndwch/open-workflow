@@ -69,12 +69,12 @@ const UseCasesCarousel: React.FC = () => {
             <CarouselContent className="-ml-2 md:-ml-4">
               {useCases.map((useCase, index) => (
                 <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                  <Card className="border border-gray-200 h-full">
+                  <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow bg-white h-full">
                     <CardContent className="flex flex-col items-start p-6">
-                      <div className="h-12 w-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4">
+                      <div className="h-12 w-12 rounded-lg bg-amber-50 flex items-center justify-center mb-4">
                         <useCase.icon className="h-6 w-6 text-amber-500" />
                       </div>
-                      <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
+                      <h3 className="text-xl font-semibold mb-2 text-gray-900">{useCase.title}</h3>
                       <p className="text-gray-600">{useCase.description}</p>
                     </CardContent>
                   </Card>
@@ -82,8 +82,8 @@ const UseCasesCarousel: React.FC = () => {
               ))}
             </CarouselContent>
             <div className="flex justify-center mt-8 space-x-4">
-              <CarouselPrevious className="relative static left-0 right-0 translate-y-0 h-10 w-10" />
-              <CarouselNext className="relative static left-0 right-0 translate-y-0 h-10 w-10" />
+              <CarouselPrevious className="relative static left-0 right-0 translate-y-0 h-10 w-10 border-gray-200 text-gray-700 hover:bg-gray-50" />
+              <CarouselNext className="relative static left-0 right-0 translate-y-0 h-10 w-10 border-gray-200 text-gray-700 hover:bg-gray-50" />
             </div>
           </Carousel>
         </div>
