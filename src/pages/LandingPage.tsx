@@ -254,7 +254,7 @@ const workflow = {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400">
-            <p>© 2023 OpenWorkflow. All rights reserved.</p>
+            <p>© 2025 OpenWorkflow. All rights reserved.</p>
           </div>
         </div>
       </footer>
