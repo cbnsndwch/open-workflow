@@ -3,6 +3,7 @@ import {
   WorkflowGraph,
   ExecutionContext
 } from '../types';
+import { getIncomingConnections } from './dependencies';
 
 /**
  * Check if all required inputs for a node are available in the context state
@@ -82,33 +83,4 @@ export function collectNodeInputs(
   inputs._state = context.state;
   
   return inputs;
-}
-
-/**
- * Get all incoming connections to a node
- */
-export function getIncomingConnections(
-  workflow: WorkflowGraph,
-  nodeName: string
-): Array<{ source: string; outputPort: string; targetPort: string }> {
-  const connections: Array<{ source: string; outputPort: string; targetPort: string }> = [];
-  
-  // Find all incoming connections to this node
-  for (const sourceName of Object.keys(workflow.edges)) {
-    const outputPorts = workflow.edges[sourceName];
-    for (const outputPort of Object.keys(outputPorts)) {
-      const nodeConnections = outputPorts[outputPort];
-      for (const connection of nodeConnections) {
-        if (connection.node === nodeName) {
-          connections.push({
-            source: sourceName,
-            outputPort: outputPort,
-            targetPort: connection.port
-          });
-        }
-      }
-    }
-  }
-  
-  return connections;
 }
