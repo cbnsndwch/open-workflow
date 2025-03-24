@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { EdgeProps, getBezierPath, MarkerType } from '@xyflow/react';
+import { useTheme } from '@/components/theme/theme-provider';
 
 const CustomEdge: React.FC<EdgeProps> = ({
     id,
@@ -13,15 +15,22 @@ const CustomEdge: React.FC<EdgeProps> = ({
     markerEnd,
     data
 }) => {
+    const { theme } = useTheme();
+    const isDarkTheme = theme === 'dark' || 
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
     // getBezierPath returns an array with [path, labelX, labelY, offsetX, offsetY]
     const [edgePath, labelX, labelY] = getBezierPath({
         sourceX,
         sourceY,
         sourcePosition,
+        targetPosition,
         targetX,
-        targetY,
-        targetPosition
+        targetY
     });
+
+    const edgeColor = isDarkTheme ? '#6b7280' : '#b1b1b7';
+    const textColor = isDarkTheme ? 'fill-gray-400' : 'fill-gray-500';
 
     return (
         <>
@@ -30,7 +39,7 @@ const CustomEdge: React.FC<EdgeProps> = ({
                 style={{
                     ...style,
                     strokeWidth: 2,
-                    stroke: '#b1b1b7'
+                    stroke: edgeColor
                 }}
                 className="react-flow__edge-path"
                 d={edgePath}
@@ -44,7 +53,7 @@ const CustomEdge: React.FC<EdgeProps> = ({
                         startOffset="50%"
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        className="text-[10px] fill-gray-500"
+                        className={`text-[10px] ${textColor}`}
                     >
                         {data.label as string}
                     </textPath>
