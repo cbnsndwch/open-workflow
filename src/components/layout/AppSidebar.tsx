@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, GitBranch, Settings, CircleHelp } from 'lucide-react';
+import { Home, GitBranch, Settings, CircleHelp, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Sidebar,
@@ -12,13 +12,23 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
   useSidebar
 } from '@/components/ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 export function AppSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
   
-  // Navigation items for the sidebar
+  // Navigation items for the sidebar (removed Settings from here)
   const mainNavItems = [
     {
       title: "Home",
@@ -29,11 +39,6 @@ export function AppSidebar() {
       title: "Workflows",
       icon: GitBranch,
       to: "/workflows",
-    },
-    {
-      title: "Settings",
-      icon: Settings,
-      to: "/settings",
     },
     {
       title: "Help",
@@ -77,6 +82,40 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* User menu added at the bottom */}
+      <SidebarFooter className="p-2 border-t border-sidebar-border">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="w-full justify-start px-2">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background">
+                  <User className="h-4 w-4" />
+                </div>
+                <div className="flex flex-col truncate">
+                  <span className="text-xs">Logged in as</span>
+                  <span className="truncate text-xs font-medium">user@example.com</span>
+                </div>
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/settings" onClick={handleNavItemClick}>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }

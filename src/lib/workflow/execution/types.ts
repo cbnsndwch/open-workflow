@@ -1,5 +1,5 @@
 
-import { WorkflowGraph, WorkflowNode } from '../types';
+import { WorkflowGraph } from '../types';
 
 export interface NodeExecutionStatus {
   status: 'pending' | 'running' | 'completed' | 'error';
@@ -8,7 +8,7 @@ export interface NodeExecutionStatus {
 }
 
 export type NodeExecutorFn = (
-  node: WorkflowNode,
+  node: any, // Using any for now to resolve the type issues
   inputs: Record<string, any>
 ) => Promise<Record<string, any>>;
 

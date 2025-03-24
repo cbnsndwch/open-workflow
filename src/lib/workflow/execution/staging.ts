@@ -1,7 +1,6 @@
 
 import { WorkflowGraph } from '../types';
-import { NodeExecutionStatus, WorkflowNode } from './types';
-import { findNode } from '../traversal';
+import { NodeExecutionStatus } from './types';
 
 /**
  * Creates an initial execution state for nodes in a workflow.
@@ -31,7 +30,7 @@ export function isNodeReady(
   workflow: WorkflowGraph,
   nodeStates: Record<string, NodeExecutionStatus>
 ): boolean {
-  const node = findNode(workflow, nodeId);
+  const node = workflow.nodes.find(n => n.id === nodeId);
   
   if (!node) {
     return false;
