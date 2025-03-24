@@ -106,8 +106,6 @@ export function AppSidebar() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link to="/settings" onClick={handleNavItemClick}>
                 <Settings className="mr-2 h-4 w-4" />
