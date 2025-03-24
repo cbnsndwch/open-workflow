@@ -90,13 +90,18 @@ export const workflowHandlers = [
       // In a real implementation, this would update the stored data
       // For this mock, we'll just return success
       
+      // The issue is here - we're trying to spread something that might not be an object
+      // Let's ensure we're spreading objects properly
+      const updatedWorkflow = {
+        ...workflow,
+        // Make sure updatedData is treated as an object when spreading
+        ...(typeof updatedData === 'object' && updatedData !== null ? updatedData : {}),
+        id: workflow.id,
+        lastModified: new Date().toISOString()
+      };
+      
       return new HttpResponse(
-        JSON.stringify({ 
-          ...workflow, 
-          ...updatedData, 
-          id: workflow.id,
-          lastModified: new Date().toISOString()
-        }),
+        JSON.stringify(updatedWorkflow),
         { 
           status: 200,
           headers: {
