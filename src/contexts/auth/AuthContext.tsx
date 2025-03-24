@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { isMswReady } from '../../mocks/browser';
 import { AuthContextType, AuthData, Account } from './types';
 import { checkExistingSession, loginUser, logoutUser } from './authService';
@@ -8,7 +8,10 @@ import { checkExistingSession, loginUser, logoutUser } from './authService';
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  // Get the current location and navigate function
+  const location = useLocation();
   const navigate = useNavigate();
+  
   const [isLoading, setIsLoading] = useState(true);
   const [authData, setAuthData] = useState<AuthData>({ user: null, accounts: [] });
   const [currentAccount, setCurrentAccount] = useState<Account | null>(null);
