@@ -78,13 +78,15 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
 
         <ScrollArea className="flex-1 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-            <div 
-              className={`cursor-pointer ${
+            <Button
+              variant="ghost"
+              className={`p-0 h-auto w-full text-left ${
                 isAdding ? 'opacity-70 pointer-events-none' : ''
               }`}
               onClick={handleAddSampleWorkflow}
+              disabled={isAdding}
             >
-              <Card className="h-full border-2 border-muted hover:border-primary transition-all">
+              <Card className="h-full w-full border-2 border-muted hover:border-primary transition-all">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center">
                     <BookOpen className="w-5 h-5 mr-2" />
@@ -100,13 +102,14 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </CardFooter>
               </Card>
-            </div>
+            </Button>
 
-            <div 
-              className="cursor-pointer"
+            <Button
+              variant="ghost"
+              className="p-0 h-auto w-full text-left"
               onClick={handleGuidedSetup}
             >
-              <Card className="h-full border-2 border-muted hover:border-primary transition-all">
+              <Card className="h-full w-full border-2 border-muted hover:border-primary transition-all">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center">
                     <ArrowRight className="w-5 h-5 mr-2" />
@@ -123,7 +126,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </CardFooter>
               </Card>
-            </div>
+            </Button>
           </div>
         </ScrollArea>
       </DialogContent>
