@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState } from 'react';
-import { Node, Edge, Connection, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
+import { Node, Edge, Connection, useNodesState, useEdgesState, addEdge, MarkerType } from '@xyflow/react';
 import { WorkflowGraph } from '@/lib/workflow/types';
 
 interface FlowContextType {
@@ -50,7 +50,7 @@ export const FlowProvider: React.FC<FlowProviderProps> = ({
       setEdges((eds) => addEdge({
         ...params,
         type: 'custom',
-        markerEnd: { type: 'arrowclosed' },
+        markerEnd: { type: MarkerType.ArrowClosed },
         data: {
           label: `${params.sourceHandle} → ${params.targetHandle}`,
         },
