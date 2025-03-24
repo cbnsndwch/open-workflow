@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { GitBranch, Github, BookOpen, Mail } from 'lucide-react';
+import { GitBranch, BookOpen, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -20,9 +20,6 @@ const Footer = () => {
             <Link to="/subscribe" className="flex items-center text-gray-600 dark:text-gray-300 hover:text-amber-500 dark:hover:text-amber-400">
               <Mail className="h-4 w-4 mr-2" /> Updates
             </Link>
-            <a href="https://github.com" className="flex items-center text-gray-600 dark:text-gray-300 hover:text-amber-500 dark:hover:text-amber-400">
-              <Github className="h-4 w-4 mr-2" /> GitHub
-            </a>
             <Link to="/docs" className="flex items-center text-gray-600 dark:text-gray-300 hover:text-amber-500 dark:hover:text-amber-400">
               <BookOpen className="h-4 w-4 mr-2" /> Documentation
             </Link>
