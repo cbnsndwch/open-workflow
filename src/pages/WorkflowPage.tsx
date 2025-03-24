@@ -75,7 +75,7 @@ const WorkflowPage = () => {
           <h1 className="text-xl font-semibold">{currentWorkflow.name}</h1>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button 
             variant={editMode ? "outline" : "default"} 
             onClick={() => setEditMode(false)}
