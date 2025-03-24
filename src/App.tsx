@@ -6,8 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { WorkflowProvider } from "./contexts/WorkflowContext";
 import { initMsw, isMswReady } from "./mocks/browser";
-import { router } from "./routes"; // Import the named export
-import { RouterProvider } from "react-router-dom";
+import Routes from "./routes"; // Import the default export for the Routes component
 import { useEffect, useState } from "react";
 
 // Create QueryClient
@@ -78,7 +77,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <WorkflowProvider>
-            <RouterProvider router={router} />
+            <Routes />
           </WorkflowProvider>
         </TooltipProvider>
       </ThemeProvider>

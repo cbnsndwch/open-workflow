@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import WorkflowControls from '@/components/workflow/WorkflowControls';
 import { toast } from 'sonner';
 
 const WorkflowPage = () => {
@@ -56,14 +57,19 @@ const WorkflowPage = () => {
   
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-hidden">
-        <WorkflowPanel
-          workflow={currentWorkflow}
-          editMode={editMode}
-          onNodeClick={handleNodeClick}
-          onWorkflowChange={handleWorkflowChange}
-          className="h-full"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-4 h-full">
+        <div className="col-span-1 p-4 border-r">
+          <WorkflowControls />
+        </div>
+        <div className="col-span-3 flex-1 overflow-hidden">
+          <WorkflowPanel
+            workflow={currentWorkflow}
+            editMode={editMode}
+            onNodeClick={handleNodeClick}
+            onWorkflowChange={handleWorkflowChange}
+            className="h-full"
+          />
+        </div>
       </div>
     </div>
   );

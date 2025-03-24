@@ -23,4 +23,4 @@ export function AppLayout() {
   );
 }
 
-// No default export, only named export
+// Only named export, no default export
