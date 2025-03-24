@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Lock, Bot, Workflow, Zap, Code, Database } from 'lucide-react';
 import FeatureCard from './FeatureCard';
@@ -15,7 +14,7 @@ const Features = () => {
       icon: Bot,
       title: "AI Integration",
       description: "Connect with any AI or language model",
-      content: "Seamless integration with language models through our model context protocol, enabling powerful AI-driven automation."
+      content: "Seamless integration with LLMs via all the MCP servers you're already using"
     },
     {
       icon: Workflow,
