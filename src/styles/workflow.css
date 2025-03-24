@@ -117,16 +117,6 @@
     @apply text-gray-400;
 }
 
-.workflow-editor {
-    @apply bg-white rounded-xl p-6 border border-[rgba(0,0,0,0.05)];
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-}
-
-.dark .workflow-editor {
-    @apply bg-card border-border;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
 .workflow-editor-header {
     @apply mb-4 pb-3 border-b border-[rgba(0,0,0,0.05)];
 }

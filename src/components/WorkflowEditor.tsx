@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { WorkflowGraph } from '@/lib/workflow/types';
-import {
-    parseJsonWorkflow,
-    serializeWorkflowToJson,
-    validateWorkflow
-} from '@/lib/workflow';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+
+import { WorkflowGraph } from '@/lib/workflow/types';
+import { validateWorkflow } from '@/lib/workflow';
+
 import WorkflowVisualizer from './WorkflowVisualizer';
 
 interface WorkflowEditorProps {
@@ -15,12 +13,12 @@ interface WorkflowEditorProps {
     fullscreen?: boolean;
 }
 
-const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
+export default function WorkflowEditor({
     initialWorkflow,
     onChange,
     className,
     fullscreen = false
-}) => {
+}: WorkflowEditorProps) {
     const [activeWorkflow, setActiveWorkflow] = useState<
         WorkflowGraph | undefined
     >(initialWorkflow);
@@ -54,18 +52,16 @@ const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
 
     return (
         <div
-            className={`workflow-editor h-full ${fullscreen ? 'fixed inset-0 z-50 bg-background' : ''} ${className || ''}`}
+            className={`h-full bg-card ${fullscreen ? 'fixed inset-0 z-50 bg-background' : ''} ${className || ''}`}
         >
-            {activeWorkflow && (
+            {activeWorkflow ? (
                 <WorkflowVisualizer
                     workflow={activeWorkflow}
                     onWorkflowChange={handleWorkflowChange}
                     readOnly={false}
                     className="h-full w-full"
                 />
-            )}
+            ) : null}
         </div>
     );
-};
-
-export default WorkflowEditor;
+}
