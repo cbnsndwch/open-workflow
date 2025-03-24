@@ -24,7 +24,8 @@ const WorkflowPage = () => {
     <div className="h-full flex flex-col">
       <WorkflowHeader workflowId={id} />
       <div className="flex-1 overflow-hidden bg-muted/20">
-        <WorkflowEditor workflowId={id} />
+        {/* Pass only the props that the WorkflowEditor component accepts */}
+        <WorkflowEditor />
       </div>
       <WorkflowFooter workflowId={id} />
     </div>
