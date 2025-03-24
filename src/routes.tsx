@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth/AuthContext';
 import { WorkflowProvider } from './contexts/WorkflowContext';
+import { useMsw } from './contexts/msw/MswContext';
 
 import { AppLayout } from './components/layout/AppLayout';
 import LandingPage from './pages/LandingPage';
@@ -15,7 +16,18 @@ import SettingsPage from './pages/SettingsPage';
 import SubscribePage from './pages/SubscribePage';
 import Documentation from './pages/Documentation';
 
-// Create and export the router
+function LoadingScreen() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <h2 className="text-xl font-medium">Initializing app...</h2>
+        <p className="text-muted-foreground mt-2">Setting up mock API services</p>
+      </div>
+    </div>
+  );
+}
+
+// Create the router
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -80,7 +92,13 @@ export const router = createBrowserRouter([
   },
 ]);
 
-// Export the Routes component as default
+// Export the Routes component with MSW loading state
 export default function Routes() {
+  const { isMswLoading } = useMsw();
+  
+  if (isMswLoading && process.env.NODE_ENV !== 'production') {
+    return <LoadingScreen />;
+  }
+  
   return <RouterProvider router={router} />;
 }

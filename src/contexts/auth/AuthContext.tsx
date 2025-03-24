@@ -3,31 +3,19 @@ import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContextType, AuthData, Account } from './types';
 import { checkExistingSession, loginUser, logoutUser } from './authService';
+import { useMsw } from '../msw/MswContext';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Helper function to check if MSW is ready
-const isMswReady = () => {
-  return Boolean(window.__MSW_REGISTRATION || window.__MSW_INITIALIZED);
-};
-
-// Add type declarations for the window object
-declare global {
-  interface Window {
-    __MSW_REGISTRATION?: any;
-    __MSW_INITIALIZED?: boolean;
-  }
-}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Get the navigate function
   const navigate = useNavigate();
   const { accountId } = useParams<{ accountId?: string }>();
+  const { useFallback } = useMsw();
   
   const [isLoading, setIsLoading] = useState(true);
   const [authData, setAuthData] = useState<AuthData>({ user: null, accounts: [] });
   const [currentAccount, setCurrentAccount] = useState<Account | null>(null);
-  const [useFallbackMode, setUseFallbackMode] = useState(false);
 
   const hasMultipleAccounts = authData.accounts.length > 1;
 
@@ -63,16 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Check if MSW is ready
-        const mswActive = isMswReady();
-        
-        if (!mswActive) {
-          console.log("MSW not active, using fallback mode");
-          setUseFallbackMode(true);
-        }
-
         // Check for existing session
-        const sessionData = await checkExistingSession(useFallbackMode);
+        const sessionData = await checkExistingSession(useFallback);
         if (sessionData) {
           setAuthData(sessionData);
           
@@ -80,20 +60,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        setUseFallbackMode(true);
       } finally {
         setIsLoading(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [useFallback]);
 
   // Handle user login
   const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     try {
-      const data = await loginUser(identifier, password, useFallbackMode);
+      const data = await loginUser(identifier, password, useFallback);
       setAuthData(data);
       
       // After successful login, redirect based on number of accounts
@@ -114,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await logoutUser(useFallbackMode);
+      await logoutUser(useFallback);
       setAuthData({ user: null, accounts: [] });
       setCurrentAccount(null);
       localStorage.removeItem('currentAccount');
