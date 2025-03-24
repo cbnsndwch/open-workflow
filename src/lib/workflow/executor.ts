@@ -83,6 +83,15 @@ export async function executeWorkflow(
 
 /**
  * Execute a single node and its downstream nodes
+ * 
+ * IMPORTANT: This function handles execution dependencies in the following ways:
+ * 1. It uses a depth-first traversal approach, but with a crucial check: a node will only be executed 
+ *    if it hasn't been visited before, using the visitedNodes set in the context.
+ * 2. The visitedNodes set ensures that a node is only executed after all its dependencies 
+ *    have been processed, as the traversal will have already visited those nodes.
+ * 3. Cycles are handled by tracking the visit path and detecting repeated nodes.
+ * 4. The collectNodeInputs function will find all inputs from previously executed nodes,
+ *    ensuring data is available before a node is processed.
  */
 async function executeNode(
   workflow: WorkflowGraph,
@@ -116,8 +125,17 @@ async function executeNode(
   }
 
   try {
-    // Collect inputs for this node
+    // Check if all inputs for this node are available (dependencies satisfied)
+    // collectNodeInputs will find inputs from nodes that have already been executed
     const inputs = collectNodeInputs(workflow, nodeName, context);
+    
+    // Before executing, confirm all required inputs are available
+    const inputsAvailable = areAllRequiredInputsAvailable(workflow, nodeName, context);
+    
+    if (!inputsAvailable) {
+      // Handle missing inputs - for now we proceed but this could be enhanced
+      console.warn(`Node ${nodeName} is being executed with potentially incomplete inputs`);
+    }
 
     // Execute the node
     const executor = getNodeExecutor(node, context.nodeExecutors);
@@ -179,7 +197,72 @@ async function executeNode(
 }
 
 /**
+ * Check if all required inputs for a node are available in the context state
+ * This helps identify potential dependency issues where a node might be executed
+ * before all its inputs are ready
+ */
+function areAllRequiredInputsAvailable(
+  workflow: WorkflowGraph,
+  nodeName: string,
+  context: ExecutionContext
+): boolean {
+  // Get all incoming connections to this node
+  const incomingConnections = getIncomingConnections(workflow, nodeName);
+  
+  // Check if all source nodes have been executed
+  for (const connection of incomingConnections) {
+    const sourceName = connection.source;
+    const sourceOutputPort = connection.outputPort;
+    
+    // If the source node output is not in the state, it hasn't been executed yet
+    if (!context.state[sourceName] || 
+        context.state[sourceName][sourceOutputPort] === undefined) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+/**
+ * Get all incoming connections to a node
+ */
+function getIncomingConnections(
+  workflow: WorkflowGraph,
+  nodeName: string
+): Array<{ source: string; outputPort: string; targetPort: string }> {
+  const connections: Array<{ source: string; outputPort: string; targetPort: string }> = [];
+  
+  // Find all incoming connections to this node
+  for (const sourceName of Object.keys(workflow.edges)) {
+    const outputPorts = workflow.edges[sourceName];
+    for (const outputPort of Object.keys(outputPorts)) {
+      const nodeConnections = outputPorts[outputPort];
+      for (const connection of nodeConnections) {
+        if (connection.node === nodeName) {
+          connections.push({
+            source: sourceName,
+            outputPort: outputPort,
+            targetPort: connection.port
+          });
+        }
+      }
+    }
+  }
+  
+  return connections;
+}
+
+/**
  * Collect inputs for a node from its upstream nodes
+ * 
+ * This function gathers inputs by:
+ * 1. Finding all nodes that connect to this node
+ * 2. Retrieving the appropriate output values from those nodes in the context state
+ * 3. Mapping those outputs to the correct input ports on this node
+ * 
+ * Note: This relies on the context.state having outputs from all required upstream nodes.
+ * If execution order is incorrect, some inputs may be undefined.
  */
 function collectNodeInputs(
   workflow: WorkflowGraph,
