@@ -1,9 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WorkflowGraph, ValidationResult } from '@/lib/workflow/types';
 import { validateWorkflow } from '@/lib/workflow/validator';
 import ReactFlowWorkflow from './ReactFlowWorkflow';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface WorkflowVisualizerProps {
   workflow: WorkflowGraph;
@@ -22,7 +21,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
 }) => {
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   
-  React.useEffect(() => {
+  useEffect(() => {
     // Validate the workflow
     const validationResult = validateWorkflow(workflow);
     setValidation(validationResult);
