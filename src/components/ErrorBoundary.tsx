@@ -9,6 +9,9 @@ export function ErrorBoundary() {
   useEffect(() => {
     // Log the error to console for debugging
     console.error('Application error:', error);
+    
+    // Intentionally throw an error to test our error boundary
+    throw new Error("This is an intentional error to test the error boundary");
   }, [error]);
 
   // Determine what type of error we're dealing with
