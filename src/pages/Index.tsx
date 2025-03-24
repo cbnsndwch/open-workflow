@@ -1,13 +1,13 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { WorkflowProvider, useWorkflowContext } from '@/contexts/WorkflowContext';
+import { useWorkflowContext } from '@/contexts/WorkflowContext';
 import WorkflowControls from '@/components/workflow/WorkflowControls';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import FullscreenEditorWrapper from '@/components/workflow/FullscreenEditorWrapper';
 
-const WorkflowContent = () => {
+const Index = () => {
   const {
     activeWorkflow,
     editMode,
@@ -54,14 +54,6 @@ const WorkflowContent = () => {
         <WorkflowControls />
       </div>
     </div>
-  );
-};
-
-const Index = () => {
-  return (
-    <WorkflowProvider>
-      <WorkflowContent />
-    </WorkflowProvider>
   );
 };
 
