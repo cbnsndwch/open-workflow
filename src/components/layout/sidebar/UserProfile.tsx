@@ -40,9 +40,9 @@ export function UserProfile() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="w-full justify-start px-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full">
             <UserAvatar user={user} className="h-8 w-8" />
-            <div className="flex flex-col truncate">
+            <div className="flex flex-col truncate text-left">
               <span className="truncate text-xs font-medium">{user.email}</span>
             </div>
           </div>

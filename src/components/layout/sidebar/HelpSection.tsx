@@ -21,7 +21,7 @@ export function HelpSection() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild tooltip="Help">
+        <SidebarMenuButton asChild tooltip="Help" className="justify-start px-2">
           <Link to="/help" onClick={handleNavItemClick}>
             <CircleHelp />
             <span>Help</span>

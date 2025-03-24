@@ -45,7 +45,7 @@ export function MainNavigation() {
         <SidebarMenu>
           {mainNavItems.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton asChild tooltip={item.title} className="justify-start px-2">
                 <Link to={item.to} onClick={handleNavItemClick}>
                   <item.icon />
                   <span>{item.title}</span>
