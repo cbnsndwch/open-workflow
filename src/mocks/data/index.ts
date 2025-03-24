@@ -34,3 +34,6 @@ export const memberships = [
   { id: '2', userId: '1', accountId: '2', role: 'owner' },
   { id: '3', userId: '2', accountId: '3', role: 'owner' },
 ];
+
+// Export workflow data
+export { accountWorkflows } from './workflows';
