@@ -19,13 +19,8 @@ const Hero = () => {
             </p>
             <div className="flex gap-4 pt-4 justify-center">
               <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-medium shadow-lg hover:shadow-xl transform transition-all duration-200 hover:-translate-y-1" asChild>
-                <Link to="/login">
-                  Get Started <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
                 <Link to="/subscribe">
-                  Sign Up for Updates
+                  Sign Up for Updates <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
