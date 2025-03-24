@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -26,12 +25,14 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const { login, user, isLoading } = useAuth();
+  const auth = useAuth();
+  const { login, isLoading } = auth || {};
+  const user = auth?.user;
+  
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/workflows';
 
-  // Redirect if already logged in
   if (user && !isLoading) {
     return <Navigate to={redirectTo} replace />;
   }
@@ -46,11 +47,13 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      await login(data.email, data.password);
-      // After successful login, navigate to the redirectTo path
-      navigate(redirectTo);
+      if (login) {
+        await login(data.email, data.password);
+        navigate(redirectTo);
+      } else {
+        console.error("Login function is not available");
+      }
     } catch (error) {
-      // Error is already handled in the login function
       console.error("Login submission error:", error);
     }
   };

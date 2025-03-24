@@ -28,7 +28,19 @@ export function ErrorBoundary() {
     errorMessage = error;
   } else if (error && typeof error === 'object') {
     // Try to extract meaningful info from unknown object errors
-    errorMessage = JSON.stringify(error);
+    try {
+      errorMessage = JSON.stringify(error);
+    } catch (e) {
+      errorMessage = 'Error could not be serialized';
+    }
+  }
+
+  // Add debugging information for destructuring errors
+  if (errorMessage.includes('destructured') || 
+      errorMessage.includes('assignment') || 
+      errorDetails.includes('destructured') ||
+      errorDetails.includes('assignment')) {
+    errorDetails += '\n\nThis might be a destructuring error where the code is trying to destructure a value that is null or undefined. Check for places where objects or arrays are being destructured without proper null checks.';
   }
 
   return (
