@@ -12,6 +12,9 @@ const workerPath = '/mockServiceWorker.js';
 export async function initMsw() {
   if (process.env.NODE_ENV !== 'production') {
     try {
+      // Log when we're starting MSW
+      console.log('Starting MSW...');
+      
       await worker.start({
         onUnhandledRequest: 'bypass',
         serviceWorker: {
@@ -22,6 +25,7 @@ export async function initMsw() {
           },
         },
       });
+      
       console.log('MSW initialized successfully');
       return true;
     } catch (error) {

@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
+import { useWorkflowContext } from '@/contexts/WorkflowContext';
 import WorkflowHeader from '@/components/workflow/WorkflowHeader';
 import WorkflowEditor from '@/components/WorkflowEditor';
 import WorkflowFooter from '@/components/workflow/WorkflowFooter';
@@ -9,6 +10,7 @@ import WorkflowFooter from '@/components/workflow/WorkflowFooter';
 const WorkflowPage = () => {
   const { id } = useParams();
   const { user, currentAccount } = useAuth();
+  const { getWorkflowById } = useWorkflowContext();
   
   // If no user is logged in, don't render anything (auth context will handle redirect)
   if (!user) {
@@ -24,7 +26,6 @@ const WorkflowPage = () => {
     <div className="h-full flex flex-col">
       <WorkflowHeader workflowId={id} />
       <div className="flex-1 overflow-hidden bg-muted/20">
-        {/* Pass only the props that the WorkflowEditor component accepts */}
         <WorkflowEditor />
       </div>
       <WorkflowFooter workflowId={id} />
