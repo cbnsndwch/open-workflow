@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/:accountId',
+    path: ':accountId',
     element: (
       <AuthProvider>
         <WorkflowProvider>
