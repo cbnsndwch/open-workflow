@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BookOpen, ArrowRight, Check } from 'lucide-react';
+import { BookOpen, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWorkflowContext } from '@/contexts/WorkflowContext';
 import { simpleWorkflow } from '@/data/sampleWorkflows';
@@ -11,9 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -63,7 +61,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={open} onOpenChange={(open) => !open && onClose()} modal={false}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl">Welcome to OpenWorkflow</DialogTitle>
@@ -118,12 +116,6 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
             </Card>
           </div>
         </ScrollArea>
-
-        <DialogFooter className={isMobile ? "flex-col space-y-2 mt-4" : ""}>
-          <Button variant="outline" onClick={onClose} className={isMobile ? "w-full" : ""}>
-            Cancel
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
