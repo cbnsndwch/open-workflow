@@ -41,30 +41,87 @@ const FormField = <
 }
 
 const useFormField = () => {
+  // Create a default ID that can be used if itemContext is undefined
+  const generatedId = React.useId()
+  
+  // Get contexts safely
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
   
-  // Add a guard clause to ensure form context exists
+  // Check if we're inside a form context
   const formContext = useFormContext()
   
   if (!formContext) {
-    throw new Error("useFormField should be used within a FormProvider")
+    console.warn("useFormField called outside of a FormProvider")
+    // Return safe default values instead of throwing
+    return {
+      id: generatedId,
+      name: "",
+      formItemId: `${generatedId}-form-item`,
+      formDescriptionId: `${generatedId}-form-item-description`,
+      formMessageId: `${generatedId}-form-item-message`,
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      error: undefined
+    }
   }
   
   if (!fieldContext) {
-    throw new Error("useFormField should be used within <FormField>")
+    console.warn("useFormField called outside of a FormField")
+    // Return safe default values instead of throwing
+    return {
+      id: generatedId,
+      name: "",
+      formItemId: `${generatedId}-form-item`,
+      formDescriptionId: `${generatedId}-form-item-description`,
+      formMessageId: `${generatedId}-form-item-message`,
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      error: undefined
+    }
   }
 
-  // Safely destructure with existence check
-  const { getFieldState, formState } = formContext
+  // Safely destructure formContext with existence checks
+  const getFieldState = formContext.getFieldState
+  const formState = formContext.formState
   
-  // Make sure we have a valid field name before getting state
-  const fieldState = fieldContext.name 
-    ? getFieldState(fieldContext.name, formState)
-    : { invalid: false, isDirty: false, isTouched: false, error: undefined }
+  // Check if getFieldState and formState exist
+  if (!getFieldState || !formState) {
+    console.warn("getFieldState or formState is undefined in formContext")
+    // Return safe default values
+    return {
+      id: itemContext?.id || generatedId,
+      name: fieldContext.name,
+      formItemId: `${itemContext?.id || generatedId}-form-item`,
+      formDescriptionId: `${itemContext?.id || generatedId}-form-item-description`,
+      formMessageId: `${itemContext?.id || generatedId}-form-item-message`,
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      error: undefined
+    }
+  }
+  
+  // Safe field state access
+  let fieldState = {
+    invalid: false,
+    isDirty: false,
+    isTouched: false,
+    error: undefined
+  }
+  
+  try {
+    if (fieldContext.name && typeof getFieldState === 'function') {
+      fieldState = getFieldState(fieldContext.name, formState)
+    }
+  } catch (error) {
+    console.error("Error getting field state:", error)
+  }
 
-  // Make sure itemContext exists before destructuring
-  const id = itemContext?.id || React.useId()
+  // Safe ID extraction
+  const id = itemContext?.id || generatedId
 
   return {
     id,
