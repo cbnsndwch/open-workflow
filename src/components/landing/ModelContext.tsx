@@ -3,8 +3,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ModelContext = () => {
+  const isMobile = useIsMobile();
+
+  // Don't render on mobile
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
@@ -42,19 +50,19 @@ const workflow = {
             </p>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
+                <Sparkles className="h-6 w-6 text-amber-500 dark:text-amber-400 mr-2 flex-shrink-0 mt-0.5" />
                 <span>Seamless context passing between workflow steps</span>
               </li>
               <li className="flex items-start">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
+                <Sparkles className="h-6 w-6 text-amber-500 dark:text-amber-400 mr-2 flex-shrink-0 mt-0.5" />
                 <span>Structured interactions with language models</span>
               </li>
               <li className="flex items-start">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
+                <Sparkles className="h-6 w-6 text-amber-500 dark:text-amber-400 mr-2 flex-shrink-0 mt-0.5" />
                 <span>Optimized prompts and responses for AI workloads</span>
               </li>
               <li className="flex items-start">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
+                <Sparkles className="h-6 w-6 text-amber-500 dark:text-amber-400 mr-2 flex-shrink-0 mt-0.5" />
                 <span>Versioned model compatibility across workflow changes</span>
               </li>
             </ul>
