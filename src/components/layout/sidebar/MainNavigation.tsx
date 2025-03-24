@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Home, GitBranch } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -14,24 +14,25 @@ import {
 type NavItem = {
   title: string;
   icon: React.ComponentType<any>;
-  to: string;
+  path: string;
 };
-
-const mainNavItems: NavItem[] = [
-  {
-    title: "Home",
-    icon: Home,
-    to: "/",
-  },
-  {
-    title: "Workflows",
-    icon: GitBranch,
-    to: "/workflows",
-  },
-];
 
 export function MainNavigation() {
   const { isMobile, setOpenMobile } = useSidebar();
+  const { accountId } = useParams<{ accountId: string }>();
+  
+  const mainNavItems: NavItem[] = [
+    {
+      title: "Home",
+      icon: Home,
+      path: `/${accountId}`,
+    },
+    {
+      title: "Workflows",
+      icon: GitBranch,
+      path: `/${accountId}/workflows`,
+    },
+  ];
   
   const handleNavItemClick = () => {
     if (isMobile) {
@@ -46,7 +47,7 @@ export function MainNavigation() {
           {mainNavItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild tooltip={item.title} className="justify-start px-2">
-                <Link to={item.to} onClick={handleNavItemClick}>
+                <Link to={item.path} onClick={handleNavItemClick}>
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>

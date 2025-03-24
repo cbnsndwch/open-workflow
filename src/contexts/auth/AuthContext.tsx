@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isMswReady } from '../../mocks/browser';
 import { AuthContextType, AuthData, Account } from './types';
 import { checkExistingSession, loginUser, logoutUser } from './authService';
@@ -10,6 +10,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Get the navigate function
   const navigate = useNavigate();
+  const { accountId } = useParams<{ accountId?: string }>();
   
   const [isLoading, setIsLoading] = useState(true);
   const [authData, setAuthData] = useState<AuthData>({ user: null, accounts: [] });
@@ -18,50 +19,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const hasMultipleAccounts = authData.accounts.length > 1;
 
-  // Set the current account in localStorage
+  // Set the current account based on accountId from URL or localStorage
+  useEffect(() => {
+    if (authData.accounts.length > 0 && !currentAccount && accountId) {
+      // If we have an accountId in the URL, try to match it with available accounts
+      const matchingAccount = authData.accounts.find(acc => acc.id === accountId);
+      
+      if (matchingAccount) {
+        setCurrentAccount(matchingAccount);
+        localStorage.setItem('currentAccount', JSON.stringify(matchingAccount));
+      } else {
+        // If the accountId doesn't match any account, redirect to account selection
+        navigate('/account-select');
+      }
+    }
+  }, [authData.accounts, currentAccount, accountId, navigate]);
+
+  // Update current account and redirect to the account-specific URL
   const updateCurrentAccount = (account: Account | null) => {
     setCurrentAccount(account);
     if (account) {
       localStorage.setItem('currentAccount', JSON.stringify(account));
-      // Navigate to workflows after setting account
-      navigate('/workflows');
+      // Navigate to the account-specific workflows page
+      navigate(`/${account.id}/workflows`);
     } else {
       localStorage.removeItem('currentAccount');
     }
   };
-
-  // Retrieve saved account and auth data on mount
-  useEffect(() => {
-    if (authData.accounts.length > 0 && !currentAccount) {
-      // Check for saved account in localStorage
-      const savedAccount = localStorage.getItem('currentAccount');
-      
-      if (savedAccount) {
-        try {
-          const parsedAccount = JSON.parse(savedAccount);
-          // Verify that the saved account exists in the current accounts array
-          const accountExists = authData.accounts.some(acc => acc.id === parsedAccount.id);
-          
-          if (accountExists) {
-            // Find the full account details from the current accounts array
-            const matchingAccount = authData.accounts.find(acc => acc.id === parsedAccount.id);
-            setCurrentAccount(matchingAccount || null);
-            return;
-          }
-        } catch (e) {
-          console.error('Error parsing saved account', e);
-          localStorage.removeItem('currentAccount');
-        }
-      }
-      
-      // If no valid saved account, handle based on number of accounts
-      if (authData.accounts.length > 1) {
-        navigate('/account-select');
-      } else if (authData.accounts.length === 1) {
-        updateCurrentAccount(authData.accounts[0]);
-      }
-    }
-  }, [authData.accounts, currentAccount, navigate]);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -93,6 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
+  // Handle user login
   const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     try {
@@ -113,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Handle user logout
   const logout = async () => {
     setIsLoading(true);
     try {

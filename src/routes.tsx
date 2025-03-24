@@ -34,7 +34,15 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/app',
+    path: '/account-select',
+    element: (
+      <AuthProvider>
+        <AccountSelectPage />
+      </AuthProvider>
+    ),
+  },
+  {
+    path: '/:accountId',
     element: (
       <AuthProvider>
         <WorkflowProvider>
@@ -45,7 +53,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Navigate to="/app/workflows" replace />,
+        element: <Navigate to="workflows" replace />,
       },
       {
         path: 'workflows',
@@ -54,10 +62,6 @@ export const router = createBrowserRouter([
       {
         path: 'workflow/:id',
         element: <WorkflowPage />,
-      },
-      {
-        path: 'account-select',
-        element: <AccountSelectPage />,
       },
       {
         path: 'settings',

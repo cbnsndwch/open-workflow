@@ -13,12 +13,11 @@ const AccountSelectPage = () => {
     const selectedAccount = accounts.find(acc => acc.id === accountId);
     if (selectedAccount) {
       setCurrentAccount(selectedAccount);
-      // Navigation is handled in the setCurrentAccount function
+      // Navigation to /:accountId is handled in the setCurrentAccount function
     }
   };
 
-  // If user is not logged in or has only one account, this component shouldn't render
-  // The AuthContext will handle redirecting to the appropriate page
+  // If user is not logged in, this component shouldn't render
   if (!user) {
     return null;
   }

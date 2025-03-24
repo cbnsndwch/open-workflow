@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Building, Check, Settings, LogOut } from 'lucide-react';
 import {
   DropdownMenuSub,
@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/auth';
-import { Account } from '@/contexts/auth/types';
 
 interface UserProfileActionsProps {
   handleNavItemClick: () => void;
@@ -19,6 +18,7 @@ interface UserProfileActionsProps {
 
 export function UserProfileActions({ handleNavItemClick }: UserProfileActionsProps) {
   const { accounts, currentAccount, setCurrentAccount, logout } = useAuth();
+  const { accountId } = useParams<{ accountId: string }>();
   
   return (
     <>
@@ -46,7 +46,7 @@ export function UserProfileActions({ handleNavItemClick }: UserProfileActionsPro
                 ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/app/account-select" onClick={handleNavItemClick}>
+                  <Link to="/account-select" onClick={handleNavItemClick}>
                     <span>Account Selection</span>
                   </Link>
                 </DropdownMenuItem>
@@ -58,7 +58,7 @@ export function UserProfileActions({ handleNavItemClick }: UserProfileActionsPro
       )}
       
       <DropdownMenuItem asChild>
-        <Link to="/app/settings" onClick={handleNavItemClick}>
+        <Link to={`/${accountId}/settings`} onClick={handleNavItemClick}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </Link>

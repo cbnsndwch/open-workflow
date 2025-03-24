@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { SidebarGroup } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/auth';
-import { Account } from '@/contexts/auth/types';
 
 export function AccountSwitcher() {
   const { currentAccount, accounts, setCurrentAccount } = useAuth();
