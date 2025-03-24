@@ -74,6 +74,7 @@ export interface ExecutionContext {
   state: Record<string, any>;
   nodeResults: Record<string, NodeExecutionResult>;
   visitedNodes: Set<string>;
+  stagedNodes: Map<string, any>; // Nodes waiting for their inputs to be ready
   nodeExecutors: Record<string, NodeExecutor>;
   onNodeStart?: (nodeId: string) => void;
   onNodeComplete?: (nodeId: string, result: NodeExecutionResult) => void;

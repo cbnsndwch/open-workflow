@@ -31,6 +31,7 @@ export async function executeWorkflow(
     state: { ...initialState },
     nodeResults: {},
     visitedNodes: new Set<string>(),
+    stagedNodes: new Map<string, StagedNodeInfo>(), // Track nodes waiting for inputs
     nodeExecutors,
     onNodeStart,
     onNodeComplete,
@@ -58,7 +59,11 @@ export async function executeWorkflow(
 
   // Execute the workflow starting from the start node
   try {
+    // Initialize the staged nodes queue
     await executeNode(workflow, startNodeName, context, errors);
+    
+    // Process staged nodes until none are left or no progress is made
+    await processStagedNodes(workflow, context, errors);
   } catch (error) {
     // Catch any uncaught errors
     console.error('Workflow execution failed with error:', error);
@@ -73,6 +78,12 @@ export async function executeWorkflow(
   // Determine if the workflow execution was successful
   const successful = Object.keys(errors).length === 0;
 
+  // Check if any nodes are still staged (inputs never satisfied)
+  if (context.stagedNodes.size > 0) {
+    console.warn(`Workflow execution completed with ${context.stagedNodes.size} nodes never executed due to unsatisfied inputs:`, 
+      Array.from(context.stagedNodes.keys()).join(', '));
+  }
+
   return {
     nodeResults: context.nodeResults,
     finalState: context.state,
@@ -82,16 +93,74 @@ export async function executeWorkflow(
 }
 
 /**
+ * Information about a staged node waiting for its inputs
+ */
+interface StagedNodeInfo {
+  nodeName: string;
+  missingInputs: string[];
+  visitPath: string[];
+}
+
+/**
+ * Process all staged nodes until none are left or no progress is made
+ */
+async function processStagedNodes(
+  workflow: WorkflowGraph, 
+  context: ExecutionContext,
+  errors: Record<string, Error>
+): Promise<void> {
+  let progress = true;
+  let iterations = 0;
+  const MAX_ITERATIONS = 1000; // Safety limit
+  
+  while (progress && context.stagedNodes.size > 0 && iterations < MAX_ITERATIONS) {
+    iterations++;
+    progress = false;
+    
+    // Get a snapshot of the current staged nodes to iterate over
+    const stagedEntries = Array.from(context.stagedNodes.entries());
+    
+    for (const [nodeId, info] of stagedEntries) {
+      // Check if all required inputs are now available
+      const allInputsAvailable = areAllRequiredInputsAvailable(workflow, info.nodeName, context);
+      
+      if (allInputsAvailable) {
+        // Remove from staged nodes
+        context.stagedNodes.delete(nodeId);
+        progress = true;
+        
+        // Now execute the node as its inputs are ready
+        const node = workflow.nodes.find(n => n.name === info.nodeName);
+        if (node) {
+          try {
+            // Execute the node now that inputs are available
+            await executeNode(workflow, info.nodeName, context, errors, info.visitPath);
+          } catch (error) {
+            console.error(`Error executing previously staged node ${info.nodeName}:`, error);
+            errors[node.id] = error instanceof Error ? error : new Error(String(error));
+            if (context.onNodeError) {
+              context.onNodeError(node.id, errors[node.id]);
+            }
+          }
+        }
+      }
+    }
+    
+    if (iterations === MAX_ITERATIONS) {
+      console.error('Reached maximum staged node processing iterations, likely due to a circular dependency');
+    }
+  }
+}
+
+/**
  * Execute a single node and its downstream nodes
  * 
  * IMPORTANT: This function handles execution dependencies in the following ways:
- * 1. It uses a depth-first traversal approach, but with a crucial check: a node will only be executed 
- *    if it hasn't been visited before, using the visitedNodes set in the context.
- * 2. The visitedNodes set ensures that a node is only executed after all its dependencies 
- *    have been processed, as the traversal will have already visited those nodes.
- * 3. Cycles are handled by tracking the visit path and detecting repeated nodes.
- * 4. The collectNodeInputs function will find all inputs from previously executed nodes,
- *    ensuring data is available before a node is processed.
+ * 1. Nodes with unsatisfied input dependencies are staged for later execution
+ * 2. The visitedNodes set ensures that a node is only executed once
+ * 3. Cycles are handled by tracking the visit path and detecting repeated nodes
+ * 4. The execution follows a dependency-aware approach where nodes are only
+ *    executed when their inputs are available
  */
 async function executeNode(
   workflow: WorkflowGraph,
@@ -115,85 +184,126 @@ async function executeNode(
     throw new Error(`Node "${nodeName}" not found in workflow`);
   }
 
-  // Mark node as visited
-  context.visitedNodes.add(nodeName);
-  visitPath.push(nodeName);
-
-  // Notify of node start
-  if (context.onNodeStart) {
-    context.onNodeStart(node.id);
-  }
-
-  try {
-    // Check if all inputs for this node are available (dependencies satisfied)
-    // collectNodeInputs will find inputs from nodes that have already been executed
-    const inputs = collectNodeInputs(workflow, nodeName, context);
+  // Check if all required inputs are available
+  const inputsAvailable = areAllRequiredInputsAvailable(workflow, nodeName, context);
+  
+  if (!inputsAvailable) {
+    // Stage this node for later execution when inputs are available
+    const missingInputs = getMissingInputs(workflow, nodeName, context);
     
-    // Before executing, confirm all required inputs are available
-    const inputsAvailable = areAllRequiredInputsAvailable(workflow, nodeName, context);
+    // Only add to staged nodes if not already visited
+    if (!context.visitedNodes.has(nodeName)) {
+      context.stagedNodes.set(node.id, {
+        nodeName,
+        missingInputs,
+        visitPath: [...visitPath, nodeName]
+      });
+      
+      console.log(`Node ${nodeName} staged for later execution; missing inputs: ${missingInputs.join(', ')}`);
+    }
     
-    if (!inputsAvailable) {
-      // Handle missing inputs - for now we proceed but this could be enhanced
-      console.warn(`Node ${nodeName} is being executed with potentially incomplete inputs`);
+    // Don't execute this node now, but continue with downstream nodes
+    // (they will also get staged if they depend on this one)
+  } else {
+    // Mark node as visited
+    context.visitedNodes.add(nodeName);
+    visitPath.push(nodeName);
+
+    // Notify of node start
+    if (context.onNodeStart) {
+      context.onNodeStart(node.id);
     }
 
-    // Execute the node
-    const executor = getNodeExecutor(node, context.nodeExecutors);
-    const result = await executor(node, inputs, context);
+    try {
+      // Collect inputs for this node - they should all be available now
+      const inputs = collectNodeInputs(workflow, nodeName, context);
+      
+      // Execute the node
+      const executor = getNodeExecutor(node, context.nodeExecutors);
+      const result = await executor(node, inputs, context);
 
-    // Store the result
-    context.nodeResults[node.id] = result;
+      // Store the result
+      context.nodeResults[node.id] = result;
 
-    // Update state with node outputs
-    if (result.outputs) {
-      context.state[node.name] = result.outputs;
-    }
+      // Update state with node outputs
+      if (result.outputs) {
+        context.state[node.name] = result.outputs;
+      }
 
-    // Notify of node completion
-    if (context.onNodeComplete) {
-      context.onNodeComplete(node.id, result);
-    }
+      // Notify of node completion
+      if (context.onNodeComplete) {
+        context.onNodeComplete(node.id, result);
+      }
 
-    // Check for error
-    if (result.error) {
-      errors[node.id] = result.error;
+      // Check for error
+      if (result.error) {
+        errors[node.id] = result.error;
+        if (context.onNodeError) {
+          context.onNodeError(node.id, result.error);
+        }
+      }
+    } catch (error) {
+      // Handle node execution error
+      const nodeError = error instanceof Error ? error : new Error(String(error));
+      errors[node.id] = nodeError;
+      
+      // Notify of node error
       if (context.onNodeError) {
-        context.onNodeError(node.id, result.error);
+        context.onNodeError(node.id, nodeError);
       }
-    }
-
-    // Execute downstream nodes
-    const nodeConnections = workflow.edges[nodeName] || {};
-    for (const outputPort of Object.keys(nodeConnections)) {
-      const connections = nodeConnections[outputPort];
       
-      // Sort connections by order
-      const sortedConnections = [...connections].sort((a, b) => a.order - b.order);
-      
-      // Execute each connected node
-      for (const connection of sortedConnections) {
-        await executeNode(
-          workflow,
-          connection.node,
-          context,
-          errors,
-          [...visitPath]
-        );
-      }
+      // Log the error
+      console.error(`Error executing node ${nodeName}:`, nodeError);
     }
-  } catch (error) {
-    // Handle node execution error
-    const nodeError = error instanceof Error ? error : new Error(String(error));
-    errors[node.id] = nodeError;
-    
-    // Notify of node error
-    if (context.onNodeError) {
-      context.onNodeError(node.id, nodeError);
-    }
-    
-    // Log the error
-    console.error(`Error executing node ${nodeName}:`, nodeError);
   }
+
+  // Execute downstream nodes regardless - they'll be staged if their inputs aren't ready
+  const nodeConnections = workflow.edges[nodeName] || {};
+  for (const outputPort of Object.keys(nodeConnections)) {
+    const connections = nodeConnections[outputPort];
+    
+    // Sort connections by order
+    const sortedConnections = [...connections].sort((a, b) => a.order - b.order);
+    
+    // Execute each connected node
+    for (const connection of sortedConnections) {
+      await executeNode(
+        workflow,
+        connection.node,
+        context,
+        errors,
+        [...visitPath]
+      );
+    }
+  }
+}
+
+/**
+ * Get a list of missing input sources for a node
+ */
+function getMissingInputs(
+  workflow: WorkflowGraph,
+  nodeName: string,
+  context: ExecutionContext
+): string[] {
+  const missingInputs: string[] = [];
+  
+  // Get all incoming connections to this node
+  const incomingConnections = getIncomingConnections(workflow, nodeName);
+  
+  // Check which source nodes haven't been executed yet
+  for (const connection of incomingConnections) {
+    const sourceName = connection.source;
+    const sourceOutputPort = connection.outputPort;
+    
+    // If the source node output is not in the state, it hasn't been executed yet
+    if (!context.state[sourceName] || 
+        context.state[sourceName][sourceOutputPort] === undefined) {
+      missingInputs.push(`${sourceName}.${sourceOutputPort}`);
+    }
+  }
+  
+  return missingInputs;
 }
 
 /**
@@ -208,6 +318,11 @@ function areAllRequiredInputsAvailable(
 ): boolean {
   // Get all incoming connections to this node
   const incomingConnections = getIncomingConnections(workflow, nodeName);
+  
+  // If there are no incoming connections, all inputs are available by default
+  if (incomingConnections.length === 0) {
+    return true;
+  }
   
   // Check if all source nodes have been executed
   for (const connection of incomingConnections) {
