@@ -12,15 +12,7 @@ export const workflowHandlers = [
     const accountId = url.searchParams.get('accountId');
     
     if (!accountId) {
-      return new HttpResponse(
-        JSON.stringify({ error: 'Account ID is required' }),
-        { 
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      return HttpResponse.json({ error: 'Account ID is required' }, { status: 400 });
     }
     
     const workflows = getWorkflowsForAccount(accountId);
