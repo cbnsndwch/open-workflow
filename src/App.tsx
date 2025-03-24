@@ -8,6 +8,14 @@ import { initMsw, isMswReady } from "./mocks/browser";
 import Routes from "./routes";
 import { useEffect, useState } from "react";
 
+// Add type declarations for the window object
+declare global {
+  interface Window {
+    __MSW_REGISTRATION?: any;
+    __MSW_INITIALIZED?: boolean;
+  }
+}
+
 // Create QueryClient with retry options
 const queryClient = new QueryClient({
   defaultOptions: {

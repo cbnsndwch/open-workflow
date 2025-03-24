@@ -46,7 +46,7 @@ export function AccountSwitcher() {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/account-select">
+              <Link to="/accounts">
                 <span>Account Selection</span>
               </Link>
             </DropdownMenuItem>

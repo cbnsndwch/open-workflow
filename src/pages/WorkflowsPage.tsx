@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
@@ -61,7 +60,7 @@ const WorkflowsPage = () => {
   
   // If user is logged in but no account is selected, redirect to account selection
   if (user && !currentAccount) {
-    return <Navigate to="/account-select" replace />;
+    return <Navigate to="/accounts" replace />;
   }
   
   // Check if the user has no workflows and show the onboarding wizard

@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/account-select',
+    path: '/accounts',
     element: (
       <AuthProvider>
         <AccountSelectPage />

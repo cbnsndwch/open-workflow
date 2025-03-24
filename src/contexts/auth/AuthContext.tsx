@@ -8,8 +8,16 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Helper function to check if MSW is ready
 const isMswReady = () => {
-  return Boolean(window.__MSW_REGISTRATION__ || window.__MSW_INITIALIZED__);
+  return Boolean(window.__MSW_REGISTRATION || window.__MSW_INITIALIZED);
 };
+
+// Add type declarations for the window object
+declare global {
+  interface Window {
+    __MSW_REGISTRATION?: any;
+    __MSW_INITIALIZED?: boolean;
+  }
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Get the navigate function
@@ -34,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('currentAccount', JSON.stringify(matchingAccount));
       } else {
         // If the accountId doesn't match any account, redirect to account selection
-        navigate('/account-select');
+        navigate('/accounts');
       }
     }
   }, [authData.accounts, currentAccount, accountId, navigate]);
@@ -90,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // After successful login, redirect based on number of accounts
       if (data.accounts.length > 1) {
-        navigate('/account-select');
+        navigate('/accounts');
       } else if (data.accounts.length === 1) {
         updateCurrentAccount(data.accounts[0]);
       }

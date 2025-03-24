@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
@@ -13,7 +12,7 @@ const SettingsPage = () => {
   
   // If user is logged in but no account is selected, redirect to account selection
   if (user && !currentAccount) {
-    return <Navigate to="/account-select" replace />;
+    return <Navigate to="/accounts" replace />;
   }
   
   return (

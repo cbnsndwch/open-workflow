@@ -2,6 +2,14 @@
 import { setupWorker } from 'msw/browser';
 import { handlers } from './handlers';
 
+// Add type declarations for the window object
+declare global {
+  interface Window {
+    __MSW_REGISTRATION?: any;
+    __MSW_INITIALIZED?: boolean;
+  }
+}
+
 // This configures a Service Worker with the given request handlers
 export const worker = setupWorker(...handlers);
 

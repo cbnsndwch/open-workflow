@@ -46,7 +46,7 @@ export function UserProfileActions({ handleNavItemClick }: UserProfileActionsPro
                 ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/account-select" onClick={handleNavItemClick}>
+                  <Link to="/accounts" onClick={handleNavItemClick}>
                     <span>Account Selection</span>
                   </Link>
                 </DropdownMenuItem>
