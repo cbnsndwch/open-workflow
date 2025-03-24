@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Expand } from 'lucide-react';
-import { useWorkflowContext } from '@/contexts/WorkflowContext';
+import { useWorkflowContext } from '@/contexts/workflow';
 
 const WorkflowControls: React.FC = () => {
   const {

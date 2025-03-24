@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
-import { useWorkflowContext } from '@/contexts/WorkflowContext';
+import { useWorkflowContext } from '@/contexts/workflow';
 import WorkflowHeader from '@/components/workflow/WorkflowHeader';
 import WorkflowEditor from '@/components/WorkflowEditor';
 import WorkflowFooter from '@/components/workflow/WorkflowFooter';

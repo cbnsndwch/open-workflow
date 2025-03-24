@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
-import { useWorkflowContext } from '@/contexts/WorkflowContext';
+import { useWorkflowContext } from '@/contexts/workflow';
 import { useAuth } from '@/contexts/auth';
 import { Button } from '@/components/ui/button';
 import {

@@ -1,5 +1,5 @@
 
-import { WorkflowWithMeta } from '@/contexts/WorkflowContext';
+import { WorkflowWithMeta } from '@/contexts/workflow/types';
 import { simpleWorkflow, complexWorkflow } from '@/data/sampleWorkflows';
 
 // Associate sample workflows with specific accounts

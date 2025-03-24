@@ -1,7 +1,6 @@
-
 import { http, HttpResponse } from 'msw';
 import { getWorkflowsForAccount, findWorkflowById, addWorkflowToAccount } from '../data/workflows';
-import { WorkflowWithMeta } from '@/contexts/WorkflowContext';
+import { WorkflowWithMeta } from '@/contexts/workflow/types';
 
 export const workflowHandlers = [
   // Get workflows for an account
