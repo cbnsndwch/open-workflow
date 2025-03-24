@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Home, GitBranch, CircleHelp, User, LogOut, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -29,7 +28,6 @@ import { Button } from '@/components/ui/button';
 export function AppSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
   
-  // Navigation items for the sidebar (removed Help from here)
   const mainNavItems = [
     {
       title: "Home",
@@ -43,7 +41,6 @@ export function AppSidebar() {
     },
   ];
 
-  // Handle navigation item click by closing the mobile sidebar
   const handleNavItemClick = () => {
     if (isMobile) {
       setOpenMobile(false);
@@ -79,24 +76,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer with Help and User menu */}
       <SidebarFooter className="p-2 border-t border-sidebar-border flex flex-col gap-2">
-        {/* Help menu item added to the footer */}
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Help">
-              <Link to="/help" onClick={handleNavItemClick}>
-                <CircleHelp />
-                <span>Help</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-        
-        {/* Add separator between Help and User menu */}
-        <SidebarSeparator />
-        
-        {/* User dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="w-full justify-start px-2">
@@ -127,6 +107,19 @@ export function AppSidebar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        
+        <SidebarSeparator />
+        
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Help">
+              <Link to="/help" onClick={handleNavItemClick}>
+                <CircleHelp />
+                <span>Help</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );
