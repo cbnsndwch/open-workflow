@@ -76,7 +76,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
               className={`cursor-pointer border-2 border-muted hover:border-primary transition-all ${
                 isAdding ? 'opacity-70 pointer-events-none' : ''
               }`}
-              onClick={isAdding ? undefined : handleAddSampleWorkflow}
+              onClick={handleAddSampleWorkflow}
             >
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
