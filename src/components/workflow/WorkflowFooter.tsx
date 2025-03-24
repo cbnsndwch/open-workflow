@@ -1,7 +1,11 @@
 
 import React from 'react';
 
-const WorkflowFooter: React.FC = () => {
+interface WorkflowFooterProps {
+  workflowId?: string;
+}
+
+const WorkflowFooter: React.FC<WorkflowFooterProps> = ({ workflowId }) => {
   return (
     <div className="text-center">
       <p className="text-gray-600 max-w-2xl mx-auto">

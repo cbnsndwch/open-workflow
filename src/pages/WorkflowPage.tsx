@@ -2,9 +2,9 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
-import { WorkflowHeader } from '@/components/workflow/WorkflowHeader';
-import { WorkflowEditor } from '@/components/WorkflowEditor';
-import { WorkflowFooter } from '@/components/workflow/WorkflowFooter';
+import WorkflowHeader from '@/components/workflow/WorkflowHeader';
+import WorkflowEditor from '@/components/WorkflowEditor';
+import WorkflowFooter from '@/components/workflow/WorkflowFooter';
 
 const WorkflowPage = () => {
   const { id } = useParams();
