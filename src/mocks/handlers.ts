@@ -1,6 +1,12 @@
 
 import { http, HttpResponse } from 'msw';
 
+// Define the login request type
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
 // Mock user data
 export const users = [
   { id: '1', email: 'admin@example.com', password: 'password', name: 'Admin User', role: 'admin' },
@@ -24,7 +30,8 @@ export const memberships = [
 export const handlers = [
   // Login handler
   http.post('/api/auth/login', async ({ request }) => {
-    const { email, password } = await request.json();
+    // Type the request body correctly
+    const { email, password } = await request.json() as LoginRequest;
     
     const user = users.find(
       (u) => u.email === email && u.password === password
