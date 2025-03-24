@@ -32,10 +32,6 @@ const FAQ: React.FC = () => {
       answer: "Absolutely! As an open-source initiative, we welcome contributions from developers, designers, and others interested in advancing workflow automation. Once we launch our repository, you'll be able to contribute code, documentation, or ideas to help shape the platform."
     },
     {
-      question: "What sets this platform apart from other workflow tools?",
-      answer: "Our platform distinguishes itself by being fully open-source and designed as a drop-in solution for any application. We're specifically focusing on AI-enabled workflows through our model context protocol, which will allow seamless integration of language models and AI capabilities into automated processes."
-    },
-    {
       question: "How can I stay updated on the project's progress?",
       answer: "The best way to stay informed is to sign up for our updates using the form on this page. We'll share development milestones, opportunities for early access, and ways to get involved with the community as the project evolves."
     }
