@@ -8,5 +8,7 @@ export {
   executeWorkflow,
   defaultNodeExecutor,
   createNodeExecutor,
-  type NodeExecutor,
 } from './execution';
+
+// Export NodeExecutorFn as NodeExecutor for backwards compatibility
+export type { NodeExecutorFn as NodeExecutor } from './execution/types';
