@@ -1,7 +1,7 @@
-
 import { toast } from 'sonner';
 import { AuthData, DEMO_AUTH_DATA } from '../types';
 import { addLoginRecord } from './loginHistoryService';
+import { users, accounts, memberships } from '@/mocks/data';
 
 export const loginUser = async (
   identifier: string, 
@@ -12,22 +12,71 @@ export const loginUser = async (
   if (useFallbackMode) {
     console.log('Using fallback mode for login');
     // Check if demo credentials match
-    if ((identifier === 'admin' && password === 'password') || 
-        (identifier === 'user' && password === 'password')) {
-      // Update lastLogin timestamp
-      const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
-      if (demoData.user) {
-        demoData.user.lastLogin = new Date().toISOString();
+    if (identifier === 'admin' && password === 'password') {
+      // Use admin demo data
+      const adminUser = users.find(u => u.username === 'admin');
+      if (adminUser) {
+        // Get admin's accounts
+        const userMemberships = memberships.filter(m => m.userId === adminUser.id);
+        const userAccounts = userMemberships.map(membership => {
+          const account = accounts.find(o => o.id === membership.accountId);
+          return { ...account, role: membership.role };
+        });
+        
+        // Create admin auth data
+        const adminAuthData: AuthData = {
+          user: { 
+            id: adminUser.id, 
+            email: adminUser.email, 
+            name: adminUser.name, 
+            role: adminUser.role,
+            username: adminUser.username,
+            lastLogin: new Date().toISOString()
+          },
+          accounts: userAccounts,
+        };
         
         // Add login record
-        addLoginRecord(demoData.user.id, demoData.user.email);
+        addLoginRecord(adminUser.id, adminUser.email);
+        
+        localStorage.setItem('auth', JSON.stringify(adminAuthData));
+        toast.success('Logged in as Admin');
+        return adminAuthData;
       }
-      localStorage.setItem('auth', JSON.stringify(demoData));
-      toast.success('Logged in with demo account');
-      return demoData;
-    } else {
-      throw new Error('Invalid credentials');
+    } else if (identifier === 'user' && password === 'password') {
+      // Use regular user demo data
+      const regularUser = users.find(u => u.username === 'user');
+      if (regularUser) {
+        // Get user's accounts
+        const userMemberships = memberships.filter(m => m.userId === regularUser.id);
+        const userAccounts = userMemberships.map(membership => {
+          const account = accounts.find(o => o.id === membership.accountId);
+          return { ...account, role: membership.role };
+        });
+        
+        // Create regular user auth data
+        const userAuthData: AuthData = {
+          user: { 
+            id: regularUser.id, 
+            email: regularUser.email, 
+            name: regularUser.name, 
+            role: regularUser.role,
+            username: regularUser.username,
+            lastLogin: new Date().toISOString()
+          },
+          accounts: userAccounts,
+        };
+        
+        // Add login record
+        addLoginRecord(regularUser.id, regularUser.email);
+        
+        localStorage.setItem('auth', JSON.stringify(userAuthData));
+        toast.success('Logged in as Regular User');
+        return userAuthData;
+      }
     }
+    
+    throw new Error('Invalid credentials');
   }
 
   // Using the mock service worker API with explicit content-type
@@ -46,22 +95,71 @@ export const loginUser = async (
     console.warn('Received HTML response, switching to fallback mode');
     
     // Retry with fallback mode credentials
-    if ((identifier === 'admin' && password === 'password') || 
-        (identifier === 'user' && password === 'password')) {
-      // Update lastLogin timestamp
-      const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
-      if (demoData.user) {
-        demoData.user.lastLogin = new Date().toISOString();
+    if (identifier === 'admin' && password === 'password') {
+      // Use admin demo data with proper account filtering
+      const adminUser = users.find(u => u.username === 'admin');
+      if (adminUser) {
+        // Get admin's accounts
+        const userMemberships = memberships.filter(m => m.userId === adminUser.id);
+        const userAccounts = userMemberships.map(membership => {
+          const account = accounts.find(o => o.id === membership.accountId);
+          return { ...account, role: membership.role };
+        });
+        
+        // Create admin auth data
+        const adminAuthData: AuthData = {
+          user: { 
+            id: adminUser.id, 
+            email: adminUser.email, 
+            name: adminUser.name, 
+            role: adminUser.role,
+            username: adminUser.username,
+            lastLogin: new Date().toISOString()
+          },
+          accounts: userAccounts,
+        };
         
         // Add login record
-        addLoginRecord(demoData.user.id, demoData.user.email);
+        addLoginRecord(adminUser.id, adminUser.email);
+        
+        localStorage.setItem('auth', JSON.stringify(adminAuthData));
+        toast.success('Logged in as Admin (fallback mode)');
+        return adminAuthData;
       }
-      localStorage.setItem('auth', JSON.stringify(demoData));
-      toast.success('Logged in with demo account (fallback mode)');
-      return demoData;
-    } else {
-      throw new Error('Invalid credentials');
+    } else if (identifier === 'user' && password === 'password') {
+      // Use regular user demo data with proper account filtering
+      const regularUser = users.find(u => u.username === 'user');
+      if (regularUser) {
+        // Get user's accounts
+        const userMemberships = memberships.filter(m => m.userId === regularUser.id);
+        const userAccounts = userMemberships.map(membership => {
+          const account = accounts.find(o => o.id === membership.accountId);
+          return { ...account, role: membership.role };
+        });
+        
+        // Create regular user auth data
+        const userAuthData: AuthData = {
+          user: { 
+            id: regularUser.id, 
+            email: regularUser.email, 
+            name: regularUser.name, 
+            role: regularUser.role,
+            username: regularUser.username,
+            lastLogin: new Date().toISOString()
+          },
+          accounts: userAccounts,
+        };
+        
+        // Add login record
+        addLoginRecord(regularUser.id, regularUser.email);
+        
+        localStorage.setItem('auth', JSON.stringify(userAuthData));
+        toast.success('Logged in as Regular User (fallback mode)');
+        return userAuthData;
+      }
     }
+    
+    throw new Error('Invalid credentials');
   }
 
   // First check if we got a successful response
@@ -94,22 +192,71 @@ export const loginUser = async (
     console.error('Error parsing login response as JSON', e);
     
     // Switch to fallback mode if JSON parsing fails
-    if ((identifier === 'admin' && password === 'password') || 
-        (identifier === 'user' && password === 'password')) {
-      // Update lastLogin timestamp
-      const demoData = JSON.parse(JSON.stringify(DEMO_AUTH_DATA)); // Deep clone to avoid reference issues
-      if (demoData.user) {
-        demoData.user.lastLogin = new Date().toISOString();
+    if (identifier === 'admin' && password === 'password') {
+      // Use admin demo data with proper account filtering
+      const adminUser = users.find(u => u.username === 'admin');
+      if (adminUser) {
+        // Get admin's accounts
+        const userMemberships = memberships.filter(m => m.userId === adminUser.id);
+        const userAccounts = userMemberships.map(membership => {
+          const account = accounts.find(o => o.id === membership.accountId);
+          return { ...account, role: membership.role };
+        });
+        
+        // Create admin auth data
+        const adminAuthData: AuthData = {
+          user: { 
+            id: adminUser.id, 
+            email: adminUser.email, 
+            name: adminUser.name, 
+            role: adminUser.role,
+            username: adminUser.username,
+            lastLogin: new Date().toISOString()
+          },
+          accounts: userAccounts,
+        };
         
         // Add login record
-        addLoginRecord(demoData.user.id, demoData.user.email);
+        addLoginRecord(adminUser.id, adminUser.email);
+        
+        localStorage.setItem('auth', JSON.stringify(adminAuthData));
+        toast.success('Logged in as Admin (JSON parsing failed)');
+        return adminAuthData;
       }
-      localStorage.setItem('auth', JSON.stringify(demoData));
-      toast.success('Logged in with demo account (JSON parsing failed)');
-      return demoData;
-    } else {
-      throw new Error('Invalid credentials');
+    } else if (identifier === 'user' && password === 'password') {
+      // Use regular user demo data with proper account filtering
+      const regularUser = users.find(u => u.username === 'user');
+      if (regularUser) {
+        // Get user's accounts
+        const userMemberships = memberships.filter(m => m.userId === regularUser.id);
+        const userAccounts = userMemberships.map(membership => {
+          const account = accounts.find(o => o.id === membership.accountId);
+          return { ...account, role: membership.role };
+        });
+        
+        // Create regular user auth data
+        const userAuthData: AuthData = {
+          user: { 
+            id: regularUser.id, 
+            email: regularUser.email, 
+            name: regularUser.name, 
+            role: regularUser.role,
+            username: regularUser.username,
+            lastLogin: new Date().toISOString()
+          },
+          accounts: userAccounts,
+        };
+        
+        // Add login record
+        addLoginRecord(regularUser.id, regularUser.email);
+        
+        localStorage.setItem('auth', JSON.stringify(userAuthData));
+        toast.success('Logged in as Regular User (JSON parsing failed)');
+        return userAuthData;
+      }
     }
+    
+    throw new Error('Invalid credentials');
   }
   
   // Ensure consistent data structure
