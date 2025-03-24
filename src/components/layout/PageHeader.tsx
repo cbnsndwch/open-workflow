@@ -4,8 +4,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { useWorkflowContext } from '@/contexts/workflow/WorkflowProvider';
+import { ArrowLeft, Play } from 'lucide-react';
+import { useWorkflowContext } from '@/contexts/workflow';
 
 interface PageHeaderProps {
   title?: string;
@@ -47,6 +47,15 @@ export function PageHeader({ title }: PageHeaderProps) {
         </div>
         
         <div className="flex items-center gap-3">
+          {isWorkflowPage && (
+            <Button 
+              className="flex items-center gap-2 bg-black text-white hover:bg-black/90"
+              onClick={() => console.log('Execute workflow')}
+            >
+              <Play className="h-4 w-4" />
+              Run Workflow
+            </Button>
+          )}
           <ThemeToggle />
         </div>
       </div>
