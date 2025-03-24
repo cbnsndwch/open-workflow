@@ -12,15 +12,10 @@ const CallToAction = () => {
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
           Join our growing community of developers and businesses building the next generation of AI-powered workflows.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" asChild>
-            <Link to="/login">
-              Get Started <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
+        <div className="flex justify-center">
+          <Button size="lg" variant="default" asChild>
             <Link to="/subscribe">
-              Sign Up for Updates
+              Sign Up for Updates <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
         </div>
