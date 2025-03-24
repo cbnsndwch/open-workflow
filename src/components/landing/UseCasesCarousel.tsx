@@ -51,10 +51,10 @@ const UseCasesCarousel: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-950">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Use Cases</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-12">
+        <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
           Discover how organizations are using our workflow automation platform to solve real-world challenges
         </p>
 
@@ -69,13 +69,13 @@ const UseCasesCarousel: React.FC = () => {
             <CarouselContent className="-ml-2 md:-ml-4">
               {useCases.map((useCase, index) => (
                 <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                  <Card className="border border-gray-200 dark:border-gray-800 h-full">
+                  <Card className="border border-gray-200 h-full">
                     <CardContent className="flex flex-col items-start p-6">
-                      <div className="h-12 w-12 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mb-4">
-                        <useCase.icon className="h-6 w-6 text-amber-500 dark:text-amber-500" />
+                      <div className="h-12 w-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4">
+                        <useCase.icon className="h-6 w-6 text-amber-500" />
                       </div>
                       <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-300">{useCase.description}</p>
+                      <p className="text-gray-600">{useCase.description}</p>
                     </CardContent>
                   </Card>
                 </CarouselItem>
