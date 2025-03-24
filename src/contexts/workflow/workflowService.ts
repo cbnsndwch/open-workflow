@@ -1,4 +1,3 @@
-
 import { WorkflowGraph } from '@/lib/workflow/types';
 import { WorkflowWithMeta } from './types';
 import { getWorkflowsForAccount } from '@/mocks/data/workflows';
@@ -7,7 +6,7 @@ import { getWorkflowsForAccount } from '@/mocks/data/workflows';
  * Helper function to check if MSW is ready
  */
 const isMswReady = () => {
-  return Boolean(window.__MSW_REGISTRATION__ || window.__MSW_INITIALIZED__);
+  return Boolean(window.__MSW_REGISTRATION || window.__MSW_INITIALIZED);
 };
 
 /**

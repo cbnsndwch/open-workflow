@@ -34,10 +34,10 @@ if (process.env.NODE_ENV !== 'production') {
     if (success) {
       console.log('MSW initialized successfully at startup');
       // Store MSW status in window for immediate access
-      window.__MSW_INITIALIZED__ = true;
+      window.__MSW_INITIALIZED = true;
     } else {
       console.warn('MSW failed to initialize at startup');
-      window.__MSW_INITIALIZED__ = false;
+      window.__MSW_INITIALIZED = false;
     }
   });
 }
@@ -52,14 +52,14 @@ const App = () => {
     }
     
     // Check if MSW is already initialized
-    if (window.__MSW_INITIALIZED__) {
+    if (window.__MSW_INITIALIZED) {
       setIsMockReady(true);
       return;
     }
     
     // Check MSW readiness until it's ready or times out
     const checkInterval = setInterval(() => {
-      if (isMswReady() || window.__MSW_INITIALIZED__) {
+      if (isMswReady() || window.__MSW_INITIALIZED) {
         console.log('MSW is now confirmed ready');
         setIsMockReady(true);
         clearInterval(checkInterval);

@@ -39,11 +39,11 @@ export async function initMsw() {
       console.log('MSW initialized successfully');
       
       // Set a flag for easier checking
-      window.__MSW_INITIALIZED__ = true;
+      window.__MSW_INITIALIZED = true;
       return true;
     } catch (error) {
       console.error('Failed to initialize MSW:', error);
-      window.__MSW_INITIALIZED__ = false;
+      window.__MSW_INITIALIZED = false;
       return false;
     }
   }
@@ -53,5 +53,5 @@ export async function initMsw() {
 // Export a function to check if MSW is active
 export const isMswReady = () => {
   // Check either the MSW registration or our custom flag
-  return Boolean(window.__MSW_REGISTRATION__ || window.__MSW_INITIALIZED__);
+  return Boolean(window.__MSW_REGISTRATION || window.__MSW_INITIALIZED);
 };
