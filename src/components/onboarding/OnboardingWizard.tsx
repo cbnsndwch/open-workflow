@@ -26,7 +26,6 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
   const { currentAccount } = useAuth();
-  const [selectedOption, setSelectedOption] = React.useState<'sample' | 'guided' | null>(null);
   const { addWorkflow } = useWorkflowContext();
   const [isAdding, setIsAdding] = React.useState(false);
   const isMobile = useIsMobile();
@@ -57,14 +56,10 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
     }
   };
 
-  const handleGetStarted = () => {
-    if (selectedOption === 'sample') {
-      handleAddSampleWorkflow();
-    } else if (selectedOption === 'guided') {
-      // This will be implemented later
-      toast.info('Guided setup will be available soon!');
-      onClose();
-    }
+  const handleGuidedSetup = () => {
+    // This will be implemented later
+    toast.info('Guided setup will be available soon!');
+    onClose();
   };
 
   return (
@@ -80,10 +75,10 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
         <ScrollArea className="flex-1 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <Card 
-              className={`cursor-pointer border-2 transition-all ${
-                selectedOption === 'sample' ? 'border-primary' : 'border-muted hover:border-muted/80'
+              className={`cursor-pointer border-2 border-muted hover:border-primary transition-all ${
+                isAdding ? 'opacity-70 pointer-events-none' : ''
               }`}
-              onClick={() => setSelectedOption('sample')}
+              onClick={isAdding ? undefined : handleAddSampleWorkflow}
             >
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
@@ -95,43 +90,38 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
               <CardContent className="text-sm">
                 Begin with a simple, ready-to-use workflow to explore the platform's capabilities.
               </CardContent>
-              <CardFooter className="pt-2 justify-end">
-                {selectedOption === 'sample' && <Check className="h-5 w-5 text-primary" />}
+              <CardFooter className="pt-2 justify-between">
+                <span className="text-xs text-muted-foreground">{isAdding ? 'Setting up...' : 'Click to add'}</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </CardFooter>
             </Card>
 
             <Card 
-              className={`cursor-pointer border-2 transition-all ${
-                selectedOption === 'guided' ? 'border-primary' : 'border-muted hover:border-muted/80'
-              }`}
-              onClick={() => setSelectedOption('guided')}
+              className="cursor-pointer border-2 border-muted hover:border-primary transition-all"
+              onClick={handleGuidedSetup}
             >
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
                   <ArrowRight className="w-5 h-5 mr-2" />
                   Guided Setup
-                  <Badge variant="secondary" className="ml-2 text-xs">coming soon</Badge>
+                  <Badge variant="secondary" className="ml-2 text-xs">soon</Badge>
                 </CardTitle>
                 <CardDescription>Answer a few questions to create your workflow</CardDescription>
               </CardHeader>
               <CardContent className="text-sm">
                 We'll guide you through creating a custom workflow based on your specific needs.
               </CardContent>
-              <CardFooter className="pt-2 justify-end">
-                {selectedOption === 'guided' && <Check className="h-5 w-5 text-primary" />}
+              <CardFooter className="pt-2 justify-between">
+                <span className="text-xs text-muted-foreground">Click to preview</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </CardFooter>
             </Card>
           </div>
         </ScrollArea>
 
         <DialogFooter className={isMobile ? "flex-col space-y-2 mt-4" : ""}>
-          <Button variant="outline" onClick={onClose} className={isMobile ? "w-full" : ""}>Cancel</Button>
-          <Button 
-            onClick={handleGetStarted} 
-            disabled={!selectedOption || isAdding}
-            className={isMobile ? "w-full" : ""}
-          >
-            {isAdding ? 'Setting up...' : 'Get Started'}
+          <Button variant="outline" onClick={onClose} className={isMobile ? "w-full" : ""}>
+            Cancel
           </Button>
         </DialogFooter>
       </DialogContent>
