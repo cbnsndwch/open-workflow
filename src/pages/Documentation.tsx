@@ -10,12 +10,12 @@ const Documentation = () => {
       <header className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <GitBranch className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <GitBranch className="h-6 w-6 text-amber-500 dark:text-amber-400" />
             <span className="font-semibold text-xl">OpenWorkflow</span>
           </div>
           <a 
             href="/" 
-            className="text-purple-600 dark:text-purple-400 hover:underline flex items-center gap-1"
+            className="text-amber-500 dark:text-amber-400 hover:underline flex items-center gap-1"
           >
             Back to Home <ArrowRight className="h-4 w-4" />
           </a>
@@ -27,7 +27,7 @@ const Documentation = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-8">
-              <Book className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              <Book className="h-8 w-8 text-amber-500 dark:text-amber-400" />
               <h1 className="text-3xl font-bold">Documentation</h1>
             </div>
             
