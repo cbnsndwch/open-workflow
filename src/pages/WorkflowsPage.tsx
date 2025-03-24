@@ -70,8 +70,13 @@ const WorkflowsPage = () => {
             {currentAccount ? `Manage your workflows in ${currentAccount.name}` : 'Manage your workflows'}
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> New Workflow
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-10 w-10"
+          title="New Workflow"
+        >
+          <Plus className="h-5 w-5" />
         </Button>
       </div>
       
