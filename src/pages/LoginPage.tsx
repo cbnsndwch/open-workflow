@@ -23,7 +23,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { GitBranch, Mail, Lock, EyeOff, Eye, Github, Twitter } from 'lucide-react';
+import { GitBranch, Mail, Lock, EyeOff, Eye } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -174,25 +174,7 @@ export default function LoginPage() {
               </form>
             </Form>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-muted"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <Button variant="outline" className="w-full bg-background/50" disabled>
-                <Github className="mr-2 h-4 w-4" />
-                Github
-              </Button>
-              <Button variant="outline" className="w-full bg-background/50" disabled>
-                <Twitter className="mr-2 h-4 w-4" />
-                Twitter
-              </Button>
-            </div>
+            {/* Social login section removed as requested */}
           </CardContent>
           
           <CardFooter className="flex flex-col border-t border-muted/30 pt-5">
