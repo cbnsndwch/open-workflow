@@ -45,6 +45,21 @@ export const handlers = [
   // Login handler - properly handle username or email
   http.post('/api/auth/login', async ({ request }) => {
     try {
+      const contentType = request.headers.get('Content-Type');
+      
+      // Ensure we're getting JSON
+      if (!contentType || !contentType.includes('application/json')) {
+        return new HttpResponse(
+          JSON.stringify({ error: 'Content-Type must be application/json' }),
+          { 
+            status: 415,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+      }
+      
       // Type the request body correctly
       const { identifier, password } = await request.json() as LoginRequest;
       
@@ -54,9 +69,14 @@ export const handlers = [
       );
       
       if (!user) {
-        return HttpResponse.json(
-          { error: 'Invalid credentials' }, 
-          { status: 401 }
+        return new HttpResponse(
+          JSON.stringify({ error: 'Invalid credentials' }),
+          { 
+            status: 401,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
         );
       }
       
@@ -67,21 +87,34 @@ export const handlers = [
         return { ...org, role: membership.role };
       });
       
-      return HttpResponse.json({
-        user: { 
-          id: user.id, 
-          email: user.email, 
-          name: user.name, 
-          role: user.role,
-          username: user.username 
-        },
-        organizations: userOrgs,
-      });
+      return new HttpResponse(
+        JSON.stringify({
+          user: { 
+            id: user.id, 
+            email: user.email, 
+            name: user.name, 
+            role: user.role,
+            username: user.username 
+          },
+          organizations: userOrgs,
+        }),
+        { 
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     } catch (error) {
       console.error('Error in login handler:', error);
-      return HttpResponse.json(
-        { error: 'Server error' },
-        { status: 500 }
+      return new HttpResponse(
+        JSON.stringify({ error: 'Server error' }),
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
     }
   }),
@@ -91,29 +124,66 @@ export const handlers = [
     const authData = localStorage.getItem('auth');
     
     if (!authData) {
-      return HttpResponse.json(null, { status: 401 });
+      return new HttpResponse(
+        JSON.stringify(null),
+        { 
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     }
     
     try {
-      return HttpResponse.json(JSON.parse(authData));
+      return new HttpResponse(
+        authData,
+        { 
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     } catch (error) {
       console.error('Error parsing auth data in /me endpoint:', error);
-      return HttpResponse.json(
-        { error: 'Invalid auth data' },
-        { status: 500 }
+      return new HttpResponse(
+        JSON.stringify({ error: 'Invalid auth data' }),
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
     }
   }),
   
   http.post('/api/auth/logout', () => {
-    return HttpResponse.json({ success: true }, { status: 200 });
+    return new HttpResponse(
+      JSON.stringify({ success: true }),
+      { 
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   }),
   
   http.get('/api/organizations', () => {
     const authData = localStorage.getItem('auth');
     
     if (!authData) {
-      return HttpResponse.json(null, { status: 401 });
+      return new HttpResponse(
+        JSON.stringify(null),
+        { 
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     }
     
     try {
@@ -124,12 +194,25 @@ export const handlers = [
         return { ...org, role: membership.role };
       });
       
-      return HttpResponse.json(userOrgs);
+      return new HttpResponse(
+        JSON.stringify(userOrgs),
+        { 
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     } catch (error) {
       console.error('Error in organizations endpoint:', error);
-      return HttpResponse.json(
-        { error: 'Server error' },
-        { status: 500 }
+      return new HttpResponse(
+        JSON.stringify({ error: 'Server error' }),
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
     }
   }),
