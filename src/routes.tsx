@@ -2,6 +2,7 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth/AuthContext';
+import { WorkflowProvider } from './contexts/WorkflowContext';
 
 import { AppLayout } from './components/layout/AppLayout'; // Use named import
 import LoginPage from './pages/LoginPage';
@@ -11,20 +12,25 @@ import AccountSelectPage from './pages/AccountSelectPage';
 import NotFound from './pages/NotFound';
 import SettingsPage from './pages/SettingsPage';
 
-// Wrap each route element with AuthProvider
-const wrapWithAuth = (element: React.ReactNode) => (
-  <AuthProvider>{element}</AuthProvider>
-);
-
 // Create and export the router
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: wrapWithAuth(<LoginPage />),
+    element: (
+      <AuthProvider>
+        <LoginPage />
+      </AuthProvider>
+    ),
   },
   {
     path: '/',
-    element: wrapWithAuth(<AppLayout />),
+    element: (
+      <AuthProvider>
+        <WorkflowProvider>
+          <AppLayout />
+        </WorkflowProvider>
+      </AuthProvider>
+    ),
     children: [
       {
         path: '/',

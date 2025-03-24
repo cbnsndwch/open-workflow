@@ -76,9 +76,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <WorkflowProvider>
-            <Routes />
-          </WorkflowProvider>
+          <Routes />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
