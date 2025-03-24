@@ -112,7 +112,7 @@ export function OnboardingWizard({ open, onClose }: OnboardingWizardProps) {
                 </CardTitle>
                 <CardDescription>Answer a few questions to create your workflow</CardDescription>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
+              <CardContent className="text-sm">
                 We'll guide you through creating a custom workflow based on your specific needs.
               </CardContent>
               <CardFooter className="pt-2 justify-end">
