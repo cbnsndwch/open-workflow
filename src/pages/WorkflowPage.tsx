@@ -12,6 +12,8 @@ const WorkflowPage = () => {
   const { user, currentAccount } = useAuth();
   const { getWorkflowById } = useWorkflowContext();
   
+  const workflow = id ? getWorkflowById(id) : undefined;
+  
   // If no user is logged in, don't render anything (auth context will handle redirect)
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -24,11 +26,11 @@ const WorkflowPage = () => {
   
   return (
     <div className="h-full flex flex-col">
-      <WorkflowHeader workflowId={id} />
+      <WorkflowHeader />
       <div className="flex-1 overflow-hidden bg-muted/20">
-        <WorkflowEditor />
+        <WorkflowEditor initialWorkflow={workflow} />
       </div>
-      <WorkflowFooter workflowId={id} />
+      <WorkflowFooter />
     </div>
   );
 };

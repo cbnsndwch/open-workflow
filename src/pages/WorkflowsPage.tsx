@@ -51,7 +51,7 @@ const WorkflowsPage = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkedForWorkflows, setCheckedForWorkflows] = useState(false);
   
-  // If no user is logged in, don't render anything (auth context will handle redirect)
+  // If no user is logged in, redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
   }

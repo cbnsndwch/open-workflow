@@ -15,6 +15,7 @@ export async function initMsw() {
       // Log when we're starting MSW
       console.log('Starting MSW...');
       
+      // Make sure we're not handling HTML 
       await worker.start({
         onUnhandledRequest: 'bypass',
         serviceWorker: {
@@ -26,6 +27,7 @@ export async function initMsw() {
         },
       });
       
+      // Verify that MSW is working by logging
       console.log('MSW initialized successfully');
       return true;
     } catch (error) {
@@ -38,5 +40,8 @@ export async function initMsw() {
 
 // Export a function to check if MSW is active
 export const isMswReady = () => {
-  return Boolean((window as any).__MSW_REGISTRATION__);
+  // Make sure we log this for debugging
+  const isActive = Boolean((window as any).__MSW_REGISTRATION__);
+  console.log('MSW ready check:', isActive);
+  return isActive;
 };
