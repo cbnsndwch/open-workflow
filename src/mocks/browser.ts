@@ -40,8 +40,6 @@ export async function initMsw() {
 
 // Export a function to check if MSW is active
 export const isMswReady = () => {
-  // Make sure we log this for debugging
-  const isActive = Boolean((window as any).__MSW_REGISTRATION__);
-  console.log('MSW ready check:', isActive);
-  return isActive;
+  // Check if the MSW registration exists in the window object
+  return Boolean((window as any).__MSW_REGISTRATION__);
 };
