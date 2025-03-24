@@ -25,7 +25,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-2 border-t border-sidebar-border flex flex-col gap-2 px-0">
         <HelpSection />
-        <SidebarSeparator />
+        
         <UserProfile />
       </SidebarFooter>
     </Sidebar>;
