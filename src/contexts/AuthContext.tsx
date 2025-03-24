@@ -50,10 +50,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // First check localStorage
+        const storedAuth = localStorage.getItem('auth');
+        if (storedAuth) {
+          try {
+            const parsedData = JSON.parse(storedAuth);
+            setAuthData({
+              user: parsedData.user || null,
+              organizations: parsedData.organizations || []
+            });
+            setIsLoading(false);
+            return;
+          } catch (e) {
+            console.error("Error parsing stored auth data:", e);
+            localStorage.removeItem('auth');
+          }
+        }
+
+        // Then check API
         const response = await fetch('/api/auth/me');
         if (response.ok) {
           const data = await response.json();
-          setAuthData(data);
+          const formattedData = {
+            user: data.user || null,
+            organizations: data.organizations || []
+          };
+          setAuthData(formattedData);
+          localStorage.setItem('auth', JSON.stringify(formattedData));
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -80,10 +103,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json();
-      setAuthData(data);
+      
+      // Ensure consistent data structure
+      const formattedData = {
+        user: data.user || null,
+        organizations: data.organizations || []
+      };
+      
+      setAuthData(formattedData);
       
       // Store in localStorage for persistence and for the loader to use
-      localStorage.setItem('auth', JSON.stringify(data));
+      localStorage.setItem('auth', JSON.stringify(formattedData));
       
       toast.success('Logged in successfully');
     } catch (error) {

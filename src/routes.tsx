@@ -21,8 +21,18 @@ export async function authLoader({ request }: LoaderFunctionArgs) {
     return redirect(`/login?redirectTo=${path}`);
   }
   
-  // User is authenticated, return the parsed auth data
-  return JSON.parse(authData);
+  try {
+    // User is authenticated, return the parsed auth data with a standard structure
+    const parsedData = JSON.parse(authData);
+    return { 
+      user: parsedData.user || null,
+      organizations: parsedData.organizations || []
+    };
+  } catch (error) {
+    console.error("Error parsing auth data:", error);
+    localStorage.removeItem('auth'); // Clear invalid data
+    return redirect('/login');
+  }
 }
 
 export const router = createBrowserRouter([

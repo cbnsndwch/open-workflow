@@ -51,6 +51,7 @@ export default function LoginPage() {
       navigate(redirectTo);
     } catch (error) {
       // Error is already handled in the login function
+      console.error("Login submission error:", error);
     }
   };
 
