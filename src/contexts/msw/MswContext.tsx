@@ -1,3 +1,4 @@
+
 import {
     createContext,
     useContext,
@@ -5,7 +6,7 @@ import {
     useEffect,
     ReactNode
 } from 'react';
-import { initMsw, isMswReady } from '@/mocks/browser';
+import { worker, isMswReady } from '@/mocks/browser';
 
 interface MswContextType {
     isMswActive: boolean;
@@ -36,20 +37,24 @@ export const MswProvider = ({ children }: MswProviderProps) => {
             return;
         }
 
-        async function setupMsw() {
-            try {
-                console.log('Setting up MSW...');
-                const success = await initMsw();
-                setIsMswActive(success);
-            } catch (error) {
-                console.error('MSW setup failed:', error);
-                setIsMswActive(false);
-            } finally {
-                setIsMswLoading(false);
-            }
+        // Check if MSW is already initialized
+        if (isMswReady()) {
+            setIsMswActive(true);
+            setIsMswLoading(false);
+            return;
         }
 
-        setupMsw();
+        // MSW initialization is now handled in main.tsx before app rendering
+        // Just update state based on whether MSW is ready
+        const checkMswReady = () => {
+            const ready = isMswReady();
+            setIsMswActive(ready);
+            setIsMswLoading(false);
+        };
+
+        // Check after a short delay to allow for initialization
+        const timer = setTimeout(checkMswReady, 300);
+        return () => clearTimeout(timer);
     }, []);
 
     // In production or if MSW fails to load, we should use the fallback mode

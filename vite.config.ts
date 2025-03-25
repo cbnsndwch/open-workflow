@@ -1,3 +1,4 @@
+
 import path from 'path';
 
 import { defineConfig } from 'vite';
@@ -22,6 +23,10 @@ export default defineConfig(({ mode }) => {
         build: {
             minify: false, // Disable minification to get readable error messages
             sourcemap: true // Enable source maps for better debugging
+        },
+        // Make sure the MSW worker script is served with the correct MIME type
+        optimizeDeps: {
+            exclude: ['msw']
         }
     };
 });

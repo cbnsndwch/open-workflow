@@ -1,11 +1,9 @@
+
 import { setupWorker } from 'msw/browser';
 import { handlers } from './handlers';
 
 // This configures a Service Worker with the given request handlers
 export const worker = setupWorker(...handlers);
-
-// Explicitly set the path to the worker script
-const workerPath = '/mockServiceWorker.js';
 
 /**
  * Initialize MSW and return true if successful, false otherwise
@@ -20,11 +18,8 @@ export async function initMsw(): Promise<boolean> {
             await worker.start({
                 onUnhandledRequest: 'bypass',
                 serviceWorker: {
-                    url: workerPath,
-                    options: {
-                        // Force update of the worker on each start
-                        updateViaCache: 'none'
-                    }
+                    // Use the local MSW worker script directly
+                    url: '/mockServiceWorker.js'
                 }
             });
 
