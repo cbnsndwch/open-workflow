@@ -14,7 +14,10 @@ export default defineConfig(({ mode }) => {
             host: '::',
             port: 8080
         },
-        plugins: [react(), ...devPlugins],
+        plugins: [
+          react(), 
+          // ...devPlugins
+        ],
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src')
