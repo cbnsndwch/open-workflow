@@ -1,11 +1,10 @@
-
 .workflow-container {
     @apply w-full h-full bg-[#fcfcfc] relative overflow-hidden border border-[#00000008];
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .dark .workflow-container {
-    @apply bg-background border-border;
+    @apply bg-[--background] border-[--border];
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -19,7 +18,7 @@
 }
 
 .dark .workflow-node {
-    @apply bg-card border-border;
+    @apply bg-[--card] border-[--border];
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -122,7 +121,7 @@
 }
 
 .dark .workflow-editor-header {
-    @apply border-border;
+    @apply border-[--border];
 }
 
 .code-editor {
@@ -133,7 +132,7 @@
 }
 
 .dark .code-editor {
-    @apply bg-muted border-border;
+    @apply bg-[--muted] border-[--border];
 }
 
 .workflow-controls {
@@ -144,7 +143,6 @@
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
 }
 
-/* ReactFlow specific dark mode styles */
 .dark-flow .react-flow__node {
     @apply bg-card text-foreground border-border;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

@@ -7,11 +7,11 @@
 
 @layer base {
     * {
-        @apply border-[--border]; /* Changed from border-border to border-[--border] */
+        @apply border-[--border];
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-[--background] text-[--foreground];
         font-family: 'Inter', sans-serif;
     }
 }
