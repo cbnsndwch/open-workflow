@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         },
         plugins: [
           react(), 
-          // ...devPlugins
+          ...devPlugins
         ],
         resolve: {
             alias: {
