@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -112,7 +113,7 @@
 }
 
 .workflow-node {
-    @apply absolute bg-white rounded-lg p-4 flex flex-col items-center justify-center;
+    @apply absolute bg-[white] rounded-lg p-4 flex flex-col items-center justify-center;
     min-width: 120px;
     min-height: 60px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -174,16 +175,16 @@
 }
 
 .workflow-port {
-    @apply w-3 h-3 rounded-full bg-white absolute border border-[#d1d5db];
+    @apply w-3 h-3 rounded-full bg-[white] absolute border border-[#d1d5db];
     transition: all 0.2s ease;
 }
 
 .dark .workflow-port {
-    @apply bg-card border-muted;
+    @apply bg-[--card] border-muted;
 }
 
 .workflow-port:hover {
-    @apply bg-blue-500 border-blue-600;
+    @apply bg-[#3b82f6] border-[#2563eb];
     transform: scale(1.2);
 }
 
@@ -196,19 +197,19 @@
 }
 
 .workflow-node-start {
-    @apply bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200;
+    @apply bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] border-[#bfdbfe];
 }
 
 .dark .workflow-node-start {
-    @apply from-blue-950 to-blue-900 border-blue-800;
+    @apply from-[#0c4a6e] to-[#075985] border-[#0369a1];
 }
 
 .workflow-node-terminal {
-    @apply bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200;
+    @apply bg-gradient-to-br from-[#f9fafb] to-[#f3f4f6] border-[#e5e7eb];
 }
 
 .dark .workflow-node-terminal {
-    @apply from-gray-900 to-gray-800 border-gray-700;
+    @apply from-[#18181b] to-[#27272a] border-[#3f3f46];
 }
 
 .workflow-node-kind {
@@ -216,7 +217,7 @@
 }
 
 .dark .workflow-node-kind {
-    @apply text-gray-400;
+    @apply text-[#9ca3af];
 }
 
 .workflow-editor-header {
@@ -247,40 +248,40 @@
 }
 
 .dark-flow .react-flow__node {
-    @apply bg-card text-foreground border-border;
+    @apply bg-[--card] text-[--foreground] border-[--border];
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .dark-flow .react-flow__handle {
-    @apply bg-muted border-border;
+    @apply bg-[--muted] border-[--border];
 }
 
 .flow-controls-dark {
-    @apply bg-card border-border text-foreground;
+    @apply bg-[--card] border-[--border] text-[--foreground];
 }
 
 .flow-controls-dark button {
-    @apply bg-card border-border text-foreground;
+    @apply bg-[--card] border-[--border] text-[--foreground];
 }
 
 .flow-controls-dark button:hover {
-    @apply bg-muted;
+    @apply bg-[--muted];
 }
 
 .flow-minimap-dark {
-    @apply bg-card border-border;
+    @apply bg-[--card] border-[--border];
 }
 
 .flow-minimap-dark .react-flow__minimap-mask {
-    @apply fill-card;
+    @apply fill-[--card];
 }
 
 .flow-minimap-dark .react-flow__minimap-node {
-    @apply fill-muted stroke-border;
+    @apply fill-[--muted] stroke-[--border];
 }
 
 .glass-card {
-    @apply bg-white bg-opacity-70 backdrop-blur-lg rounded-xl border border-[#00000008] p-6 shadow-sm;
+    @apply bg-[white] bg-opacity-70 backdrop-blur-lg rounded-xl border border-[#00000008] p-6 shadow-sm;
 }
 
 .node-animate-in {
