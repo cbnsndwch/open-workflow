@@ -1,10 +1,11 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
+
 import {
     SidebarProvider,
     SidebarInset,
     SidebarRail
 } from '@/components/ui/sidebar';
+
 import { AppSidebar } from './AppSidebar';
 import { PageHeader } from './PageHeader';
 

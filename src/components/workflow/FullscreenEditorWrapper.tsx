@@ -1,6 +1,8 @@
 import React from 'react';
-import { WorkflowGraph } from '@/lib/workflow/types';
+
 import WorkflowEditor from '@/components/WorkflowEditor';
+
+import { WorkflowGraph } from '@/lib/workflow/types';
 
 interface FullscreenEditorWrapperProps {
     workflow: WorkflowGraph;

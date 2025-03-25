@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/auth';
 import { User, LogIn } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/auth';
 
 export const DemoAccounts: React.FC = () => {
     const { login } = useAuth();
-    const navigate = useNavigate();
 
     const handleQuickLogin = async (identifier: string, password: string) => {
         try {

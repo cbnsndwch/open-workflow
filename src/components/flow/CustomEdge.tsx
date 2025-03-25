@@ -1,9 +1,8 @@
-
-import React from 'react';
 import { EdgeProps, getBezierPath, MarkerType } from '@xyflow/react';
+
 import { useTheme } from '@/components/theme/theme-provider';
 
-const CustomEdge: React.FC<EdgeProps> = ({
+export default function CustomEdge({
     id,
     sourceX,
     sourceY,
@@ -14,11 +13,13 @@ const CustomEdge: React.FC<EdgeProps> = ({
     style = {},
     markerEnd,
     data
-}) => {
+}: EdgeProps) {
     const { theme } = useTheme();
-    const isDarkTheme = theme === 'dark' || 
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
+    const isDarkTheme =
+        theme === 'dark' ||
+        (theme === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+
     // getBezierPath returns an array with [path, labelX, labelY, offsetX, offsetY]
     const [edgePath, labelX, labelY] = getBezierPath({
         sourceX,
@@ -61,6 +62,4 @@ const CustomEdge: React.FC<EdgeProps> = ({
             )}
         </>
     );
-};
-
-export default CustomEdge;
+}

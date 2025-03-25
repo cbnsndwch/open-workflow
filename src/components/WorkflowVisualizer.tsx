@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+
 import { WorkflowGraph, ValidationResult } from '@/lib/workflow/types';
 import { validateWorkflow } from '@/lib/workflow/validator';
+
 import ReactFlowWorkflow from './ReactFlowWorkflow';
 
 interface WorkflowVisualizerProps {
@@ -11,13 +13,13 @@ interface WorkflowVisualizerProps {
     readOnly?: boolean;
 }
 
-const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
+export default function WorkflowVisualizer({
     workflow,
     onNodeClick,
     onWorkflowChange,
     className,
     readOnly = true
-}) => {
+}: WorkflowVisualizerProps) {
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 
     useEffect(() => {
@@ -47,6 +49,4 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
             )}
         </div>
     );
-};
-
-export default WorkflowVisualizer;
+}

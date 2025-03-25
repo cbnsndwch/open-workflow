@@ -1,17 +1,18 @@
-import React from 'react';
 import { GitBranch } from 'lucide-react';
+
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarHeader,
-    SidebarSeparator
+    SidebarHeader
 } from '@/components/ui/sidebar';
+import { useAuth } from '@/contexts/auth';
+
 import { MainNavigation } from './sidebar/MainNavigation';
 import { AccountSwitcher } from './sidebar/AccountSwitcher';
 import { UserProfile } from './sidebar/UserProfile';
 import { HelpSection } from './sidebar/HelpSection';
-import { useAuth } from '@/contexts/auth';
+
 export function AppSidebar() {
     const { currentAccount } = useAuth();
     return (

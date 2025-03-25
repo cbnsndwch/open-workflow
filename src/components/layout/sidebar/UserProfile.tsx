@@ -1,6 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { User } from 'lucide-react';
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/auth';
+
 import { UserAvatar } from './UserAvatar';
 import { UserProfileActions } from './UserProfileActions';
 

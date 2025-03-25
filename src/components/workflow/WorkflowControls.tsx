@@ -1,10 +1,11 @@
-import React from 'react';
+import { Expand } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Expand } from 'lucide-react';
+
 import { useWorkflowContext } from '@/contexts/workflow';
 
-const WorkflowControls: React.FC = () => {
+export default function WorkflowControls() {
     const {
         editMode,
         setEditMode,
@@ -75,6 +76,4 @@ const WorkflowControls: React.FC = () => {
             )}
         </div>
     );
-};
-
-export default WorkflowControls;
+}

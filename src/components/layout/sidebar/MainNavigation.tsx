@@ -1,6 +1,7 @@
 import React from 'react';
-import { Home, GitBranch } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { Home, GitBranch } from 'lucide-react';
+
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -12,7 +13,7 @@ import {
 
 type NavItem = {
     title: string;
-    icon: React.ComponentType<any>;
+    icon: React.ComponentType;
     path: string;
 };
 

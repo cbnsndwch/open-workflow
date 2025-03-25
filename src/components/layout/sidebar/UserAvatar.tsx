@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User } from '@/contexts/auth/types';
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
-import { useWorkflowContext } from '@/contexts/workflow/WorkflowProvider';
+
 import { simpleWorkflow } from '@/data/sampleWorkflows';
-import { useAuth } from '@/contexts/auth';
+
 import {
     Dialog,
     DialogContent,
@@ -23,6 +23,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+
+import { useWorkflowContext } from '@/contexts/workflow/WorkflowProvider';
+import { useAuth } from '@/contexts/auth';
 
 interface OnboardingWizardProps {
     open: boolean;

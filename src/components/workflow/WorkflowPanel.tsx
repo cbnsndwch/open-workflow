@@ -1,7 +1,9 @@
 import React from 'react';
-import { WorkflowGraph } from '@/lib/workflow/types';
+
 import WorkflowVisualizer from '@/components/WorkflowVisualizer';
 import WorkflowEditor from '@/components/WorkflowEditor';
+
+import { WorkflowGraph } from '@/lib/workflow/types';
 
 interface WorkflowPanelProps {
     workflow: WorkflowGraph;
@@ -11,13 +13,13 @@ interface WorkflowPanelProps {
     className?: string;
 }
 
-const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
+export default function WorkflowPanel({
     workflow,
     editMode,
     onNodeClick,
     onWorkflowChange,
     className
-}) => {
+}: WorkflowPanelProps) {
     return (
         <div className={className}>
             {editMode ? (
@@ -35,6 +37,4 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
             )}
         </div>
     );
-};
-
-export default WorkflowPanel;
+}

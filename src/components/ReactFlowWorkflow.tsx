@@ -1,5 +1,5 @@
-import React from 'react';
 import { WorkflowGraph } from '@/lib/workflow/types';
+
 import FlowConverter from './flow/FlowConverter';
 
 interface ReactFlowWorkflowProps {
@@ -9,8 +9,6 @@ interface ReactFlowWorkflowProps {
     className?: string;
 }
 
-const ReactFlowWorkflow: React.FC<ReactFlowWorkflowProps> = props => {
+export default function ReactFlowWorkflow(props: ReactFlowWorkflowProps) {
     return <FlowConverter {...props} />;
-};
-
-export default ReactFlowWorkflow;
+}

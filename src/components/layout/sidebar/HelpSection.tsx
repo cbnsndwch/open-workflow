@@ -1,6 +1,6 @@
-import React from 'react';
-import { CircleHelp } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { CircleHelp } from 'lucide-react';
+
 import {
     SidebarMenu,
     SidebarMenuItem,

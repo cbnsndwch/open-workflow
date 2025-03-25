@@ -1,8 +1,9 @@
-
 import React from 'react';
-import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
+
 import { useTheme } from '@/components/theme/theme-provider';
+
+import { Button } from '../ui/button';
 
 interface CustomNodeProps {
     data: {
@@ -15,57 +16,59 @@ interface CustomNodeProps {
     selected: boolean;
 }
 
-const CustomNode: React.FC<CustomNodeProps> = ({ data, selected }) => {
+export default function CustomNode({ data, selected }: CustomNodeProps) {
     const { theme } = useTheme();
-    const isDarkTheme = theme === 'dark' || 
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const isDarkTheme =
+        theme === 'dark' ||
+        (theme === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    const nodeTypeColors: Record<string, { light: string, dark: string }> = {
-        'core:triggers:manual': { 
+    const nodeTypeColors: Record<string, { light: string; dark: string }> = {
+        'core:triggers:manual': {
             light: 'bg-blue-100 border-blue-400',
             dark: 'bg-blue-900/50 border-blue-700'
         },
-        'core:http_request': { 
+        'core:http_request': {
             light: 'bg-purple-100 border-purple-400',
             dark: 'bg-purple-900/50 border-purple-700'
         },
-        'core:switch': { 
+        'core:switch': {
             light: 'bg-yellow-100 border-yellow-400',
             dark: 'bg-yellow-900/50 border-yellow-700'
         },
-        'core:code': { 
+        'core:code': {
             light: 'bg-green-100 border-green-400',
             dark: 'bg-green-900/50 border-green-700'
         },
-        'core:if': { 
+        'core:if': {
             light: 'bg-orange-100 border-orange-400',
             dark: 'bg-orange-900/50 border-orange-700'
         },
-        'core:no_op': { 
+        'core:no_op': {
             light: 'bg-gray-100 border-gray-400',
-            dark: 'bg-gray-800 border-gray-600' 
+            dark: 'bg-gray-800 border-gray-600'
         },
-        'core:set': { 
+        'core:set': {
             light: 'bg-indigo-100 border-indigo-400',
             dark: 'bg-indigo-900/50 border-indigo-700'
         },
-        'noco_db:action': { 
+        'noco_db:action': {
             light: 'bg-pink-100 border-pink-400',
             dark: 'bg-pink-900/50 border-pink-700'
         },
-        'core:aggregate': { 
+        'core:aggregate': {
             light: 'bg-teal-100 border-teal-400',
-            dark: 'bg-teal-900/50 border-teal-700' 
+            dark: 'bg-teal-900/50 border-teal-700'
         },
-        'core:filter': { 
+        'core:filter': {
             light: 'bg-red-100 border-red-400',
             dark: 'bg-red-900/50 border-red-700'
         },
-        'core:split_input': { 
+        'core:split_input': {
             light: 'bg-emerald-100 border-emerald-400',
             dark: 'bg-emerald-900/50 border-emerald-700'
         },
-        default: { 
+        default: {
             light: 'bg-white border-gray-300',
             dark: 'bg-gray-800 border-gray-600'
         }
@@ -76,8 +79,8 @@ const CustomNode: React.FC<CustomNodeProps> = ({ data, selected }) => {
     const textColor = isDarkTheme ? 'text-gray-200' : 'text-gray-800';
     const subtextColor = isDarkTheme ? 'text-gray-400' : 'text-gray-500';
     const connectorColor = isDarkTheme ? 'bg-gray-600' : 'bg-gray-300';
-    const buttonColor = isDarkTheme 
-        ? 'bg-gray-700 border-blue-700 hover:bg-blue-800 hover:border-blue-600' 
+    const buttonColor = isDarkTheme
+        ? 'bg-gray-700 border-blue-700 hover:bg-blue-800 hover:border-blue-600'
         : 'bg-white border-blue-300 hover:bg-blue-50 hover:border-blue-400';
     const iconColor = isDarkTheme ? 'text-blue-400' : 'text-blue-600';
 
@@ -88,14 +91,18 @@ const CustomNode: React.FC<CustomNodeProps> = ({ data, selected }) => {
                 className={`px-4 py-2 rounded-lg shadow-sm border ${nodeColor} ${selected ? 'ring-2 ring-primary' : ''}`}
             >
                 <div className={`font-medium ${textColor}`}>{data.label}</div>
-                <div className={`text-xs ${subtextColor} mt-1`}>{data.kind}</div>
+                <div className={`text-xs ${subtextColor} mt-1`}>
+                    {data.kind}
+                </div>
             </div>
 
             {/* Connector line and add button for non-terminal nodes */}
             {!data.isTerminal && (
                 <div className="flex flex-col items-center">
                     {/* Vertical connector line */}
-                    <div className={`w-[2px] h-[30px] ${connectorColor} mt-1`}></div>
+                    <div
+                        className={`w-[2px] h-[30px] ${connectorColor} mt-1`}
+                    ></div>
 
                     {/* Add node button */}
                     <div className="relative -mt-[1px]">
@@ -116,6 +123,4 @@ const CustomNode: React.FC<CustomNodeProps> = ({ data, selected }) => {
             )}
         </div>
     );
-};
-
-export default CustomNode;
+}

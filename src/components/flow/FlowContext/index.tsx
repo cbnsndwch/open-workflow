@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Node,
     Edge,
@@ -8,29 +8,8 @@ import {
     addEdge,
     MarkerType
 } from '@xyflow/react';
-import { WorkflowGraph } from '@/lib/workflow/types';
 
-interface FlowContextType {
-    nodes: Node[];
-    edges: Edge[];
-    onNodesChange: (changes: any) => void;
-    onEdgesChange: (changes: any) => void;
-    onConnect: (connection: Connection) => void;
-    selectedSourceNodeId: string | null;
-    setSelectedSourceNodeId: (id: string | null) => void;
-    showNodePalette: boolean;
-    setShowNodePalette: (show: boolean) => void;
-}
-
-const FlowContext = createContext<FlowContextType | undefined>(undefined);
-
-export const useFlowContext = () => {
-    const context = useContext(FlowContext);
-    if (!context) {
-        throw new Error('useFlowContext must be used within a FlowProvider');
-    }
-    return context;
-};
+import { FlowContext } from './useFlowContext';
 
 interface FlowProviderProps {
     children: React.ReactNode;
@@ -40,13 +19,13 @@ interface FlowProviderProps {
     onConnect?: (params: Connection) => void;
 }
 
-export const FlowProvider: React.FC<FlowProviderProps> = ({
+export function FlowProvider({
     children,
     initialNodes,
     initialEdges,
     readOnly = false,
     onConnect: externalOnConnect
-}) => {
+}: FlowProviderProps) {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<
@@ -92,4 +71,4 @@ export const FlowProvider: React.FC<FlowProviderProps> = ({
     return (
         <FlowContext.Provider value={value}>{children}</FlowContext.Provider>
     );
-};
+}

@@ -1,9 +1,9 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
-const CallToAction = () => {
+export default function CallToAction() {
     return (
         <section className="py-20 bg-amber-100">
             <div className="container mx-auto px-4 text-center">
@@ -24,6 +24,5 @@ const CallToAction = () => {
             </div>
         </section>
     );
-};
+}
 
-export default CallToAction;

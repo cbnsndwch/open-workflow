@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
+
 import { WorkflowGraph } from '@/lib/workflow/types';
 import {
     workflowToReactFlow,
     updateWorkflowWithConnection
 } from '@/lib/workflow/convert';
+
 import { FlowProvider } from './FlowContext';
 import FlowCanvas from './FlowCanvas';
 import FlowNodePalette from './FlowNodePalette';
@@ -26,12 +28,12 @@ interface FlowConverterProps {
     className?: string;
 }
 
-const FlowConverter: React.FC<FlowConverterProps> = ({
+export default function FlowConverter({
     workflow,
     onWorkflowChange,
     readOnly = false,
     className
-}) => {
+}: FlowConverterProps) {
     const [initialNodes, setInitialNodes] = useState([]);
     const [initialEdges, setInitialEdges] = useState([]);
     const [selectedSourceNodeId, setSelectedSourceNodeId] = useState<
@@ -155,6 +157,4 @@ const FlowConverter: React.FC<FlowConverterProps> = ({
             </ReactFlowProvider>
         </div>
     );
-};
-
-export default FlowConverter;
+}

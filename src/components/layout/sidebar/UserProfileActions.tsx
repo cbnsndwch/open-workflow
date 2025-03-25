@@ -1,6 +1,6 @@
-import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Building, Check, Settings, LogOut } from 'lucide-react';
+
 import {
     DropdownMenuSub,
     DropdownMenuSubTrigger,

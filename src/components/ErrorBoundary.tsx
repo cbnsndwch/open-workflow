@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
 import {
     isRouteErrorResponse,
     useNavigate,
     useRouteError
 } from 'react-router-dom';
+
 import { Button } from './ui/button';
-import { useState, useEffect } from 'react';
 
 interface FallbackProps {
     error: unknown;
 }
 
 // Component to display when not in a router context
-const ErrorFallback = ({ error }: FallbackProps) => {
+function ErrorFallback({ error }: FallbackProps) {
     const [errorDetails, setErrorDetails] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>(
         'An unexpected error occurred'
@@ -87,25 +89,15 @@ const ErrorFallback = ({ error }: FallbackProps) => {
             </div>
         </div>
     );
-};
+}
 
 // Main error boundary component
 export function ErrorBoundary() {
-    // Try to use useRouteError, but wrap in try/catch to handle when not in router context
-    let routeError = null;
-    let isInRouterContext = true;
-
-    try {
-        routeError = useRouteError();
-    } catch (e) {
-        isInRouterContext = false;
-        console.warn(
-            'ErrorBoundary: Not in a router context, using fallback error handler'
-        );
-    }
+    const navigate = useNavigate();
+    const routeError = useRouteError();
 
     // If not in a router context, use the error from props
-    if (!isInRouterContext) {
+    if (!routeError) {
         return (
             <ErrorFallback
                 error={
@@ -152,8 +144,6 @@ export function ErrorBoundary() {
             '\n\nThis might be a destructuring error where the code is trying to destructure a value that is null or undefined. Check for places where objects or arrays are being destructured without proper null checks.';
     }
 
-    // Get navigate function for route-based navigation
-    const navigate = useNavigate();
 
     // Original error in raw format (for debugging)
     const rawError = routeError

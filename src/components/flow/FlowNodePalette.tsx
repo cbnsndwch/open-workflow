@@ -1,4 +1,3 @@
-import React from 'react';
 import NodePalette from '../NodePalette';
 
 interface FlowNodePaletteProps {
@@ -7,12 +6,10 @@ interface FlowNodePaletteProps {
     onAddNode: (nodeType: string, nodeName: string) => void;
 }
 
-const FlowNodePalette: React.FC<FlowNodePaletteProps> = ({
+export default function FlowNodePalette({
     show,
     onClose,
     onAddNode
-}) => {
+}: FlowNodePaletteProps) {
     return <NodePalette open={show} onSelect={onAddNode} onClose={onClose} />;
-};
-
-export default FlowNodePalette;
+}

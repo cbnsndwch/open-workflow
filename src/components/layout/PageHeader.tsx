@@ -1,9 +1,9 @@
-import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, Play } from 'lucide-react';
+
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Play } from 'lucide-react';
 import { useWorkflowContext } from '@/contexts/workflow';
 
 interface PageHeaderProps {

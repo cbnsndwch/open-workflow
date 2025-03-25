@@ -1,10 +1,9 @@
-import React from 'react';
 import { format } from 'date-fns';
-import { User } from '@/contexts/auth/types';
-import { useAuth } from '@/contexts/auth';
 import { Info } from 'lucide-react';
 
-export const LastLoginInfo: React.FC = () => {
+import { useAuth } from '@/contexts/auth';
+
+export function LastLoginInfo() {
     const auth = useAuth();
     const user = auth?.user;
 
@@ -28,4 +27,4 @@ export const LastLoginInfo: React.FC = () => {
             <span>Last login: {formatLastLogin(user.lastLogin)}</span>
         </div>
     );
-};
+}

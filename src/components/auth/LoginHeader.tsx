@@ -1,7 +1,6 @@
-import React from 'react';
 import { GitBranch } from 'lucide-react';
 
-export const LoginHeader = () => {
+export function LoginHeader() {
     return (
         <div className="flex flex-col items-center space-y-2 text-center">
             <div className="size-16 flex items-center justify-center rounded-full bg-primary/10 mb-2">
@@ -11,4 +10,4 @@ export const LoginHeader = () => {
             <p className="text-muted-foreground">Sign in to your account</p>
         </div>
     );
-};
+}

@@ -1,12 +1,11 @@
-import React from 'react';
 import {
     RectangleHorizontal,
     GitBranch,
     LayoutTemplate,
     Combine,
-    Check,
-    X
+    Check
 } from 'lucide-react';
+
 import {
     Sheet,
     SheetContent,
@@ -49,11 +48,11 @@ interface NodePaletteProps {
     onClose?: () => void;
 }
 
-const NodePalette: React.FC<NodePaletteProps> = ({
+export default function NodePalette({
     open = false,
     onSelect,
     onClose
-}) => {
+}: NodePaletteProps) {
     const handleNodeSelect = (nodeType: (typeof NodeTypes)[number]) => {
         if (onSelect) {
             onSelect(nodeType.id, nodeType.name);
@@ -126,6 +125,4 @@ const NodePalette: React.FC<NodePaletteProps> = ({
             </SheetContent>
         </Sheet>
     );
-};
-
-export default NodePalette;
+}

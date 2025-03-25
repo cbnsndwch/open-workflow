@@ -1,14 +1,12 @@
-import React from 'react';
-
 interface RememberForgotSectionProps {
     rememberMe: boolean;
     toggleRememberMe: () => void;
 }
 
-export const RememberForgotSection = ({
+export function RememberForgotSection({
     rememberMe,
     toggleRememberMe
-}: RememberForgotSectionProps) => {
+}: RememberForgotSectionProps) {
     return (
         <div className="flex items-center justify-between pt-2">
             <div className="flex items-center space-x-2">
@@ -34,4 +32,4 @@ export const RememberForgotSection = ({
             </a>
         </div>
     );
-};
+}
