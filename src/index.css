@@ -113,7 +113,7 @@
 }
 
 .workflow-node {
-    @apply absolute bg-[white] rounded-lg p-4 flex flex-col items-center justify-center;
+    @apply absolute bg-[white] rounded-[0.5rem] p-4 flex flex-col items-center justify-center;
     min-width: 120px;
     min-height: 60px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -140,7 +140,7 @@
 }
 
 .dark .workflow-node-label {
-    @apply text-muted-foreground;
+    @apply text-[--muted-foreground];
 }
 
 .workflow-node-title {
@@ -148,7 +148,7 @@
 }
 
 .dark .workflow-node-title {
-    @apply text-foreground;
+    @apply text-[--foreground];
 }
 
 .workflow-edge {
@@ -180,7 +180,7 @@
 }
 
 .dark .workflow-port {
-    @apply bg-[--card] border-muted;
+    @apply bg-[--card] border-[--muted];
 }
 
 .workflow-port:hover {
@@ -229,7 +229,7 @@
 }
 
 .code-editor {
-    @apply font-mono text-sm h-96 overflow-auto p-4 rounded-lg;
+    @apply font-mono text-sm h-96 overflow-auto p-4 rounded-[0.5rem];
     background-color: #f9fafc;
     border: 1px solid rgba(0, 0, 0, 0.05);
     outline: none;
@@ -281,7 +281,7 @@
 }
 
 .glass-card {
-    @apply bg-[white] bg-opacity-70 backdrop-blur-lg rounded-xl border border-[#00000008] p-6 shadow-sm;
+    @apply bg-[white] bg-opacity-70 backdrop-blur-lg rounded-[0.75rem] border border-[#00000008] p-6 shadow-sm;
 }
 
 .node-animate-in {
