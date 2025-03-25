@@ -1,6 +1,6 @@
 
 .workflow-container {
-    @apply w-full h-full bg-[#fcfcfc] relative overflow-hidden border border-[rgba(0,0,0,0.05)];
+    @apply w-full h-full bg-[#fcfcfc] relative overflow-hidden border border-[#00000008];
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
@@ -118,7 +118,7 @@
 }
 
 .workflow-editor-header {
-    @apply mb-4 pb-3 border-b border-[rgba(0,0,0,0.05)];
+    @apply mb-4 pb-3 border-b border-[#00000008];
 }
 
 .dark .workflow-editor-header {
