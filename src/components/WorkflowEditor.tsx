@@ -52,6 +52,7 @@ export default function WorkflowEditor({
 
     return (
         <div
+            id="workflow-editor"
             className={`h-full bg-card ${fullscreen ? 'fixed inset-0 z-50 bg-background' : ''} ${className || ''}`}
         >
             {activeWorkflow ? (
