@@ -15,7 +15,7 @@ export function AppLayout() {
                 <AppSidebar />
                 <SidebarRail />
 
-                <SidebarInset className="flex flex-col">
+                <SidebarInset className="flex flex-col !overflow-hidden">
                     <PageHeader />
                     <main className="flex-1 p-0 overflow-auto">
                         <Outlet />
