@@ -1,4 +1,3 @@
-
 import type { Config } from 'tailwindcss';
 
 import tailwindAnimate from 'tailwindcss-animate';
@@ -21,6 +20,33 @@ export default {
             }
         },
         extend: {
+            textColor: {
+                foreground: 'var(--foreground)',
+                'primary-foreground': 'var(--primary-foreground)',
+                'secondary-foreground': 'var(--secondary-foreground)',
+                'muted-foreground': 'var(--muted-foreground)',
+                'accent-foreground': 'var(--accent-foreground)',
+                'destructive-foreground': 'var(--destructive-foreground)',
+                'popover-foreground': 'var(--popover-foreground)',
+                'card-foreground': 'var(--card-foreground)'
+            },
+            backgroundColor: {
+                background: 'var(--background)',
+                primary: 'var(--primary)',
+                secondary: 'var(--secondary)',
+                muted: 'var(--muted)',
+                accent: 'var(--accent)',
+                destructive: 'var(--destructive)',
+                popover: 'var(--popover)',
+                card: 'var(--card)'
+            },
+            borderColor: {
+                DEFAULT: 'var(--border)',
+                input: 'var(--input)'
+            },
+            ringColor: {
+                DEFAULT: 'var(--ring)'
+            },
             colors: {
                 border: 'var(--border)',
                 input: 'var(--input)',
@@ -59,11 +85,9 @@ export default {
                     DEFAULT: 'var(--sidebar-background)',
                     foreground: 'var(--sidebar-foreground)',
                     primary: 'var(--sidebar-primary)',
-                    'primary-foreground':
-                        'var(--sidebar-primary-foreground)',
+                    'primary-foreground': 'var(--sidebar-primary-foreground)',
                     accent: 'var(--sidebar-accent)',
-                    'accent-foreground':
-                        'var(--sidebar-accent-foreground)',
+                    'accent-foreground': 'var(--sidebar-accent-foreground)',
                     border: 'var(--sidebar-border)',
                     ring: 'var(--sidebar-ring)'
                 },
@@ -74,7 +98,6 @@ export default {
                     4: 'var(--chart-4)',
                     5: 'var(--chart-5)'
                 },
-                // Using amber color directly
                 amber: {
                     500: '#f59e0b'
                 }
