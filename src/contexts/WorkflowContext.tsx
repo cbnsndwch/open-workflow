@@ -6,7 +6,7 @@ import {
     updateWorkflowApi,
     createWorkflowApi
 } from './workflow/workflowService';
-import { useMsw } from './msw/MswContext';
+import { useMsw } from './msw/useMsw';
 
 interface WorkflowContextType {
     workflows: WorkflowWithMeta[];

@@ -24,7 +24,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import { useWorkflowContext } from '@/contexts/workflow/WorkflowProvider';
+import { useWorkflowContext } from '@/contexts/workflow/useWorkflowContext';
 import { useAuth } from '@/contexts/auth';
 
 interface OnboardingWizardProps {

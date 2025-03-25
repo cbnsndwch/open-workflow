@@ -1,7 +1,7 @@
 import { WorkflowGraph } from '@/lib/workflow/types';
 import { WorkflowWithMeta } from './types';
 import { getWorkflowsForAccount } from '@/mocks/data/workflows';
-import { useMsw } from '../msw/MswContext';
+import { useMsw } from '../msw/useMsw';
 
 /**
  * Fetches workflows for a specific account

@@ -1,32 +1,14 @@
+import { useState, useEffect, ReactNode } from 'react';
 
-import {
-    createContext,
-    useContext,
-    useState,
-    useEffect,
-    ReactNode
-} from 'react';
-import { worker, isMswReady } from '@/mocks/browser';
+import { isMswReady } from '@/mocks/browser';
 
-interface MswContextType {
-    isMswActive: boolean;
-    isMswLoading: boolean;
-    useFallback: boolean;
-}
-
-const MswContext = createContext<MswContextType>({
-    isMswActive: false,
-    isMswLoading: true,
-    useFallback: false
-});
-
-export const useMsw = () => useContext(MswContext);
+import { MswContext } from './useMsw';
 
 interface MswProviderProps {
     children: ReactNode;
 }
 
-export const MswProvider = ({ children }: MswProviderProps) => {
+export function MswProvider({ children }: MswProviderProps) {
     const [isMswActive, setIsMswActive] = useState(false);
     const [isMswLoading, setIsMswLoading] = useState(true);
 
@@ -67,4 +49,4 @@ export const MswProvider = ({ children }: MswProviderProps) => {
             {children}
         </MswContext.Provider>
     );
-};
+}

@@ -3,7 +3,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import { MswProvider } from './contexts/msw/MswContext';
+import { MswProvider } from './contexts/msw/MswProvider';
 import Routes from './routes';
 import { useState } from 'react';
 

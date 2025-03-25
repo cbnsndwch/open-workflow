@@ -1,21 +1,18 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { WorkflowGraph } from '@/lib/workflow/types';
-import { WorkflowContextType, WorkflowWithMeta } from './types';
-import { useWorkflowExecution } from '@/hooks/useWorkflowExecution';
+import { useState, useEffect, PropsWithChildren } from 'react';
+
 import { useAuth } from '@/contexts/auth';
+import { useWorkflowExecution } from '@/hooks/useWorkflowExecution';
+import { WorkflowGraph } from '@/lib/workflow/types';
+
+import { WorkflowWithMeta } from './types';
+import { WorkflowContext } from './useWorkflowContext';
 import {
     fetchWorkflowsForAccount,
     updateWorkflowApi,
     createWorkflowApi
 } from './workflowService';
 
-const WorkflowContext = createContext<WorkflowContextType | undefined>(
-    undefined
-);
-
-export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({
-    children
-}) => {
+export function WorkflowProvider({ children }: PropsWithChildren) {
     const [workflows, setWorkflows] = useState<WorkflowWithMeta[]>([]);
     const [activeWorkflowId, setActiveWorkflowId] = useState<string | null>(
         null
@@ -166,14 +163,4 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({
             {children}
         </WorkflowContext.Provider>
     );
-};
-
-export const useWorkflowContext = (): WorkflowContextType => {
-    const context = useContext(WorkflowContext);
-    if (context === undefined) {
-        throw new Error(
-            'useWorkflowContext must be used within a WorkflowProvider'
-        );
-    }
-    return context;
-};
+}

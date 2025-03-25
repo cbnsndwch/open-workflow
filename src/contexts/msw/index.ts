@@ -1,1 +1,1 @@
-export * from './MswContext';
+export * from './MswProvider';

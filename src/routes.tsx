@@ -4,9 +4,9 @@ import {
     RouterProvider,
     Navigate
 } from 'react-router-dom';
-import { AuthProvider } from './contexts/auth/AuthContext';
+import { AuthProvider } from './contexts/auth/AuthProvider';
 import { WorkflowProvider } from './contexts/workflow/WorkflowProvider';
-import { useMsw } from './contexts/msw/MswContext';
+import { useMsw } from './contexts/msw/useMsw';
 
 import { AppLayout } from './components/layout/AppLayout';
 import LandingPage from './pages/LandingPage';

@@ -1,7 +1,10 @@
 import { toast } from 'sonner';
-import { AuthData, DEMO_AUTH_DATA } from '../types';
-import { addLoginRecord } from './loginHistoryService';
+
 import { users, accounts, memberships } from '@/mocks/data';
+
+import { AuthData, DEMO_AUTH_DATA } from '../types';
+
+import { addLoginRecord } from './loginHistoryService';
 
 export const loginUser = async (
     identifier: string,
