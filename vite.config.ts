@@ -1,4 +1,3 @@
-
 import path from 'path';
 
 import { defineConfig } from 'vite';
@@ -12,12 +11,10 @@ export default defineConfig(({ mode }) => {
     return {
         server: {
             host: '::',
-            port: 8080
+            port: 8080,
+            allowedHosts: true
         },
-        plugins: [
-          react(), 
-          ...devPlugins
-        ],
+        plugins: [react(), ...devPlugins],
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src')
