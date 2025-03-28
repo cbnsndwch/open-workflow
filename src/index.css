@@ -113,7 +113,7 @@
 }
 
 .workflow-node {
-    @apply absolute bg-[white] rounded-[0.5rem] p-4 flex flex-col items-center justify-center;
+    @apply absolute bg-[white] rounded-[0.5rem] p-[1rem] flex flex-col items-center justify-center;
     min-width: 120px;
     min-height: 60px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -229,7 +229,7 @@
 }
 
 .code-editor {
-    @apply font-mono text-sm h-96 overflow-auto p-4 rounded-[0.5rem];
+    @apply font-mono text-sm h-96 overflow-auto p-[1rem] rounded-[0.5rem];
     background-color: #f9fafc;
     border: 1px solid rgba(0, 0, 0, 0.05);
     outline: none;
@@ -281,7 +281,7 @@
 }
 
 .glass-card {
-    @apply bg-[white] bg-opacity-70 backdrop-blur-lg rounded-[0.75rem] border border-[#00000008] p-6 shadow-sm;
+    @apply bg-[white] bg-opacity-70 backdrop-blur-lg rounded-[0.75rem] border border-[#00000008] p-[1.5rem] shadow-sm;
 }
 
 .node-animate-in {
